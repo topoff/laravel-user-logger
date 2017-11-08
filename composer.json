@@ -33,9 +33,6 @@
     }
   },
   "extra": {
-    "branch-alias": {
-      "dev-master": "2.1.x-dev"
-    },
     "laravel": {
       "providers": [
         "to-dev\\Tracker\\TrackerServiceProvider"
