@@ -9,6 +9,6 @@ return [
      |
      */
 
-    'enabled' => env('DEBUGBAR_ENABLED', null),
+    'enabled' => env('TRACKER_ENABLED', null),
 
 ];

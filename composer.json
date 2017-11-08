@@ -24,12 +24,12 @@
   },
   "autoload": {
     "psr-4": {
-      "to-dev\\Tracker\\": "src"
+      "Todev\\Tracker\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "to-dev\\Tracker\\Test\\": "tests"
+      "Todev\\Tracker\\Test\\": "tests"
     }
   },
   "config": {
@@ -38,11 +38,8 @@
   "extra": {
     "laravel": {
       "providers": [
-        "to-dev\\Tracker\\TrackerServiceProvider"
-      ],
-      "aliases": {
-        "Tracker": "to-dev\\Tracker\\Facade"
-      }
+        "Todev\\Tracker\\TrackerServiceProvider"
+      ]
     }
   },
   "minimum-stability": "dev"
