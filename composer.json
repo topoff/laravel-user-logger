@@ -1,10 +1,10 @@
 {
-  "name": "to-dev/tracker",
+  "name": "topoff/tracker",
   "description": "Laravel Tracker",
   "keywords": [
     "tracker"
   ],
-  "homepage": "https://github.com/to-dev/tracker",
+  "homepage": "https://github.com/topoff/tracker",
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -24,12 +24,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Todev\\Tracker\\": "src/"
+      "Topoff\\Tracker\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Todev\\Tracker\\Test\\": "tests"
+      "Topoff\\Tracker\\Test\\": "tests"
     }
   },
   "config": {
@@ -38,7 +38,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Todev\\Tracker\\TrackerServiceProvider"
+        "Topoff\\Tracker\\TrackerServiceProvider"
       ]
     }
   },
