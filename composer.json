@@ -32,6 +32,9 @@
       "to-dev\\Tracker\\Test\\": "tests"
     }
   },
+  "config": {
+    "sort-packages": true
+  },
   "extra": {
     "laravel": {
       "providers": [
