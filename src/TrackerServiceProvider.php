@@ -1,16 +1,10 @@
 <?php
 
-namespace Spatie\Backup;
+namespace Todev\Tracker;
 
 use Illuminate\Support\ServiceProvider;
-use Spatie\Backup\Commands\ListCommand;
-use Spatie\Backup\Helpers\ConsoleOutput;
-use Spatie\Backup\Commands\BackupCommand;
-use Spatie\Backup\Commands\CleanupCommand;
-use Spatie\Backup\Commands\MonitorCommand;
-use Spatie\Backup\Notifications\EventHandler;
 
-class BackupServiceProvider extends ServiceProvider
+class TrackerServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
