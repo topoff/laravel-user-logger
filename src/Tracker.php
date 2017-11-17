@@ -32,7 +32,7 @@ class Tracker
     public function __construct($app = NULL) {
         $this->app = $app ?? app();
 
-        //\Log::debug('Tracker construct');
+        \Log::debug('Tracker construct');
     }
 
     /**
@@ -40,7 +40,7 @@ class Tracker
      */
     public function boot()
     {
-        //\Log::debug('Tracker boot');
+        \Log::debug('Tracker boot');
     }
 
     /**
