@@ -17,11 +17,9 @@ class TrackerServiceProvider extends ServiceProvider
             __DIR__.'/../config/tracker.php' => config_path('tracker.php'),
         ], 'config');
 
-        $this->publishes([
-            __DIR__.'/../resources/lang' => resource_path('lang/vendor/tracker'),
-        ]);
+        $this->loadMigrationsFrom(__DIR__.'/../resources/Migrations/');
 
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang/', 'tracker');
+//        $this->loadTranslationsFrom(__DIR__.'/../resources/lang/', 'tracker');
 
         $this->registerMiddleware(InjectTracker::class);
     }
