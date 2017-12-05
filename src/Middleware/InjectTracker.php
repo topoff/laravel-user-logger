@@ -31,7 +31,7 @@ class InjectTracker
     {
         $this->container = $container;
         $this->tracker = $tracker;
-//        $this->except = config('tracker.except') ?: [];
+        $this->except = config('tracker.do_not_track_routes') ?: [];
     }
 
     /**

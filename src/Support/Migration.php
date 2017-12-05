@@ -21,8 +21,8 @@ class Migration extends IlluminateMigration
         $app = $app ?? app();
         $config = $app['config'];
         $this->connection = $config->get('tracker.connection2');
-        if (empty($connection)){
-            throw new Exception("connection im config file nicht definiert");
+        if (empty($this->connection)){
+            throw new Exception("topoff/Tracker: connection im config file nicht definiert");
         }
     }
 

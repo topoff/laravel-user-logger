@@ -35,6 +35,6 @@ class CreateDevicesTable extends Migration
      */
     public function down()
     {
-        Schema::connection($this->connection)->dropIfExists('show_video');
+        Schema::connection($this->connection)->dropIfExists('devices');
     }
 }

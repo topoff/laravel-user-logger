@@ -2,7 +2,7 @@
 
 namespace Topoff\Tracker\Models;
 
-class Device extends Base
+class Agent extends Base
 {
     /**
      * Indicates if the model should be timestamped.
@@ -16,7 +16,7 @@ class Device extends Base
      *
      * @var string
      */
-    protected $table = 'devices';
+    protected $table = 'agents';
 
     /**
      * The attributes that are mass assignable.
@@ -24,10 +24,9 @@ class Device extends Base
      * @var array
      */
     protected $fillable = [
-        'kind',
-        'model',
-        'platform',
-        'platform_version',
-        'is_mobile',
+        'name',
+        'name_hash',
+        'browser',
+        'browser_version',
     ];
 }

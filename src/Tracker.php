@@ -5,6 +5,7 @@ namespace Topoff\Tracker;
 use Illuminate\Http\Request;
 use Jenssegers\Agent\Agent;
 use Topoff\Tracker\Repositories\DeviceRepository;
+use UserAgentParser\Provider;
 
 /**
  * Class Tracker
@@ -51,8 +52,6 @@ class Tracker
     {
         \Log::debug('Tracker construct');
 
-
-
         $this->app = $app ?? app();
         $config = $this->app['config'];
         $this->connection = $config->get('tracker.connection2');
@@ -70,6 +69,31 @@ class Tracker
         \Log::debug('Tracker boot');
 
         $this->deviceRepository->findOrCreateDevice($this->agent);
+
+        $userAgent = 'Mozilla/5.0 (iPod; U; CPU iPhone OS 4_3_5 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5';
+        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+
+        $chain = new Provider\Chain([
+                                        new Provider\BrowscapPhp(),
+                                        new Provider\JenssegersAgent(),
+                                        new Provider\PiwikDeviceDetector(),
+                                        new Provider\UAParser(),
+                                    ]);
+
+        /* @var $result \UserAgentParser\Model\UserAgent */
+        $result = $chain->parse($userAgent);
+        // optional add all headers, to improve the result further (used currently only by WhichBrowser)
+        //$result = $chain->parse($userAgent, getallheaders());
+
+        $result->getBrowser()->getName(); // Mobile Safari
+
+        $result->getOperatingSystem()->getName(); // iOS
+
+        $result->getDevice()->getBrand(); // iPod Touch
+        $result->getDevice()->getBrand(); // Apple
+        $result->getDevice()->getType(); // portable media player
+
+        $resultArray = $result->toArray();
     }
 
 
@@ -90,7 +114,7 @@ class Tracker
      *
      * @return boolean
      */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         if ($this->enabled === NULL) {
             $config = $this->app['config'];
