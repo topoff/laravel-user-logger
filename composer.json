@@ -21,7 +21,8 @@
     "piwik/device-detector": "^3.9",
     "browscap/browscap-php": "^3.1",
     "laravel/framework": "~5.5",
-    "ua-parser/uap-php": "~3.4"
+    "ua-parser/uap-php": "~3.4",
+    "snowplow/referer-parser": "~0.1"
   },
   "require-dev": {
     "phpunit/phpunit": "^6.0"
