@@ -17,7 +17,6 @@
     "php": ">=7.0",
     "jaybizzle/crawler-detect": "~1.2",
     "jenssegers/agent": "~2.6",
-    "thadafinser/user-agent-parser": "^2.0",
     "piwik/device-detector": "^3.9",
     "browscap/browscap-php": "^3.1",
     "laravel/framework": "~5.5",
@@ -27,6 +26,12 @@
   "require-dev": {
     "phpunit/phpunit": "^6.0"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/topoff/tracker"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "Topoff\\Tracker\\": "src/"
