@@ -22,15 +22,16 @@
     "laravel/framework": "~5.5",
     "ua-parser/uap-php": "~3.4",
     "snowplow/referer-parser": "~0.1",
-    "topoff/user-agent-parser": "^2.0"
+    "thadafinser/user-agent-parser": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "^6.0"
   },
   "repositories": [
     {
+      "_comment": "Damit wird statt thadafinser/user-agent-parser das packet topoff/user-agent-parser verwendet, branch dev-master siehe oben. Erlaubt Bugfixes und weiterentwicklungen",
       "type": "vcs",
-      "url": "https://github.com/topoff/tracker"
+      "url": "https://github.com/topoff/user-agent-parser"
     }
   ],
   "autoload": {
