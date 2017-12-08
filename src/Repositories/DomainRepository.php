@@ -2,12 +2,12 @@
 
 namespace Topoff\Tracker\Repositories;
 
-use Topoff\Tracker\Models\Agent;
+use Topoff\Tracker\Models\Domain;
 
-class AgentRepository
+class DomainRepository
 {
     /**
-     * Finds an existing Agent or creates a new DB Record
+     * Finds an existing Domain or creates a new DB Record
      *
      * @param array $attributes
      *
@@ -15,6 +15,6 @@ class AgentRepository
      */
     public function findOrCreate(Array $attributes)
     {
-        return Agent::firstOrCreate($attributes);
+        return Domain::firstOrCreate($attributes);
     }
 }

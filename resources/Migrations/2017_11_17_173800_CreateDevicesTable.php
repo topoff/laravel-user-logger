@@ -17,14 +17,16 @@ class CreateDevicesTable extends Migration
             $table->bigIncrements('id');
 
             $table->string('kind', 16)->index();
-            $table->string('model', 64)->index();
-            $table->string('platform', 64)->index();
-            $table->string('platform_version', 16)->index();
+            $table->string('model', 64)->index()->nullable();
+            $table->string('platform', 64)->index()->nullable();
+            $table->string('platform_version', 16)->index()->nullable();
             $table->boolean('is_mobile');
+            $table->boolean('is_robot');
 
             $table->unique(['kind', 'model', 'platform', 'platform_version']);
 
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
     }
 

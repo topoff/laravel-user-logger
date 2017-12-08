@@ -3,6 +3,7 @@
 use Closure;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
+use Monolog\Logger;
 use Topoff\Tracker\Tracker;
 
 class InjectTracker
@@ -22,6 +23,11 @@ class InjectTracker
     protected $except = [];
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * Create a new middleware instance.
      *
      * @param  Container $container
@@ -37,8 +43,9 @@ class InjectTracker
     /**
      * Handle an incoming request.
      *
-     * @param  Request  $request
-     * @param  Closure  $next
+     * @param  Request $request
+     * @param  Closure $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -53,7 +60,8 @@ class InjectTracker
     /**
      * Determine if the request has a URI that should be ignored.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
+     *
      * @return bool
      */
     protected function inExceptArray($request)
