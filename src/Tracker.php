@@ -5,8 +5,10 @@ namespace Topoff\Tracker;
 use Exception;
 use Illuminate\Http\Request;
 use Jenssegers\Agent\Agent;
+use Topoff\Tracker\Models\Device;
 use Topoff\Tracker\Models\Log;
 use Topoff\Tracker\Models\Session;
+use Topoff\Tracker\Parsers\LanguageParser;
 use Topoff\Tracker\Parsers\RefererParser;
 use Topoff\Tracker\Parsers\UserAgentParser;
 use Topoff\Tracker\Repositories\AgentRepository;
@@ -19,6 +21,8 @@ use Topoff\Tracker\Repositories\RefererRepository;
 use Topoff\Tracker\Repositories\SessionRepository;
 use Topoff\Tracker\Repositories\UriRepository;
 use Log as Logger;
+use Topoff\Tracker\Support\Authentication;
+use Topoff\Tracker\Support\SessionHelper;
 
 /**
  * Class Tracker
@@ -103,6 +107,23 @@ class Tracker
     private $cookieRepository;
 
     /**
+     * Log
+     *
+     * @var Log
+     */
+    private $log;
+
+    /**
+     * @var Session
+     */
+    private $session;
+
+    /**
+     * @var
+     */
+    private $device;
+
+    /**
      * Tracker constructor.
      *
      * @param null               $app
@@ -154,18 +175,16 @@ class Tracker
      */
     public function boot()
     {
-        \Log::debug('Tracker boot, uri: ' . $this->request->getUri());
+//        \Log::debug('Tracker boot, uri: ' . $this->request->getUri());
 
+        // try - catch in middleware not working as expected: https://github.com/laravel/framework/issues/14573
+        // Intentional used twice, in InjectTracker Middleware -> completly surpresses errors in this package
+        // and here: does log some of them..
         try {
-            $this->createLog();
+            $this->log = $this->createLog();
         } catch (Exception $e) {
-            // WTF: try - catch not working in middleware : https://github.com/laravel/framework/issues/14573
-            // With this code, every error is surpressed, if one occurs it will jump directly in the finally
-            // Block with ignoring the error.. strange
+            // Sometimes reached..
             Logger::warning('Error in topoff/tracker: ' . $e->getMessage(), $e->getTrace());
-        } finally {
-            echo 'BAL';
-            //
         }
     }
 
@@ -174,11 +193,11 @@ class Tracker
      *
      * @return Log
      */
-    public function createLog(): Log
+    private function createLog(string $event = null): Log
     {
         $uri = $this->uriRepository->findOrCreate(['uri' => $this->request->getUri()]);
 
-        return $this->logRepository->findOrCreate($this->getOrCreateSession(), $uri);
+        return $this->logRepository->findOrCreate($this->getOrCreateSession(), $uri, $event);
     }
 
     /**
@@ -186,25 +205,26 @@ class Tracker
      *
      * @return Session
      */
-    public function getOrCreateSession(): Session
+    private function getOrCreateSession(): Session
     {
-        //$userAgent = 'Mozilla/5.0 (iPod; U; CPU iPhone OS 4_3_5 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5';
-        //$userAgent = $_SERVER['HTTP_USER_AGENT'];
         $userAgent = $this->request->userAgent();
         $userAgentParser = new UserAgentParser($userAgent);
 
         $refererUrl = $this->request->headers->get('referer');
-        //$refererUrl = "http://www.google.com/search?q=gateway+oracle+cards+denise+linn&hl=en&client=safari";
-        $refererParser = new RefererParser($refererUrl, 'https://www.top-offerten.ch/blabla');
+        $refererParser = new RefererParser($refererUrl, $this->request->url());
         $refererAttributes = $refererParser->getRefererAttributes();
 
-        $device = $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes());
+        $this->device = $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes());
         $agent = $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes());
-        $language = $this->languageRepository->findOrCreate($userAgentParser->getLanguageAttributes());
+        $languageParser = new LanguageParser($this->request);
+        $language = $this->languageRepository->findOrCreate($languageParser->getLanguageAttributes());
         $domain = $refererAttributes ? $this->domainRepository->findOrCreate($refererAttributes['domain']) : NULL;
         $referer = $domain ? $this->refererRepository->findOrCreate(['domain_id' => $domain->id]) : NULL;
 
-        return $this->sessionRepository->findOrCreate($this->request->session()->getId(), $this->request->user(), $device, $agent, $referer, $language, $this->request->ip(), $device['is_robot']);
+        $session = new SessionHelper($this->request);
+        $user = null; // Not yet found a method the get the authenticated user in a middleware
+        $this->session = $this->sessionRepository->findOrCreate($session->getSessionUuid(), $user, $this->device, $agent, $referer, $language, $this->request->ip(), $this->device['is_robot']);
+        return $this->session;
     }
 
     /**
@@ -222,5 +242,51 @@ class Tracker
         }
 
         return $this->enabled;
+    }
+
+    /**
+     * Update an existing Log with an Event or create a new Log
+     *
+     * @param string $event
+     *
+     * @return Log
+     */
+    public function trackEvent(string $event): Log
+    {
+        if ($this->log){
+            return $this->logRepository->updateWithEvent($this->log, $event);
+        } else {
+            return $this->createLog($event);
+        }
+    }
+
+    /**
+     * Gets the Session ofthe current Request
+     *
+     * @return Session
+     */
+    public function getCurrentSession(): ?Session
+    {
+        return $this->session;
+    }
+
+    /**
+     * Gets the Log of the current Request
+     *
+     * @return null|Log
+     */
+    public function getCurrentLog(): ?Log
+    {
+        return $this->log;
+    }
+
+    /**
+     * Gets the device of the current Request
+     *
+     * @return null|Device
+     */
+    public function getCurrentDevice(): ?Device
+    {
+        return $this->device;
     }
 }

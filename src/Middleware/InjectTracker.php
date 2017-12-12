@@ -50,11 +50,19 @@ class InjectTracker
      */
     public function handle($request, Closure $next)
     {
-        if ($this->tracker->isEnabled() && !$this->inExceptArray($request)) {
-            $this->tracker->boot();
+        // try - catch in middleware not working as expected: https://github.com/laravel/framework/issues/14573
+        // BUT - regardless use it:
+        // this does not log the error, but surpresses it completly
+        try {
+            if ($this->tracker->isEnabled() && !$this->inExceptArray($request)) {
+                $this->tracker->boot();
+            }
+        } catch (Exception $e) {
+//             Never reached
+            Logger::warning('Error in topoff/tracker: ' . $e->getMessage(), $e->getTrace());
+        } finally {
+            return $next($request);
         }
-
-        return $next($request);
     }
 
     /**

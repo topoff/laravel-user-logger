@@ -97,23 +97,6 @@ class UserAgentParser
     }
 
     /**
-     * Delivers the language attributes from the agent of the current request
-     *
-     * @return array|null
-     */
-    public function getLanguageAttributes(): ?array
-    {
-        try {
-            return [
-                'preference' => 'de',
-                'range'      => 'de,en,fr',
-            ];
-        } catch (\Exception $e) {
-            return NULL;
-        }
-    }
-
-    /**
      * nginx funktion to add the missing function getallheaders()
      */
     private function addFunctionGetAllHeaders()

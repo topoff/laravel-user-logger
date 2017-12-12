@@ -16,7 +16,7 @@ class CreateSessionsTable extends Migration
         Schema::connection($this->connection)->create('sessions', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->string('session_key')->unique()->nullable();
+            $table->uuid('session_key')->unique()->nullable();
             $table->integer('user_id')->unsigned()->nullable();
             $table->bigInteger('device_id')->unsigned()->nullable();
             $table->bigInteger('agent_id')->unsigned()->nullable();

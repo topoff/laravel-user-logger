@@ -25,6 +25,7 @@ class Log extends Base
      */
     protected $fillable = [
         'session_id',
-        'uri_id'
+        'uri_id',
+        'event'
     ];
 }

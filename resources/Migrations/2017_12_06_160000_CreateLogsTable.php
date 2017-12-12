@@ -18,6 +18,7 @@ class CreateLogsTable extends Migration
 
             $table->bigInteger('session_id')->unsigned()->nullable()->index();
             $table->bigInteger('uri_id')->unsigned()->index();
+            $table->string('event', 50)->nullable()->index();
 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

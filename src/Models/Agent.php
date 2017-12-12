@@ -25,7 +25,6 @@ class Agent extends Base
      */
     protected $fillable = [
         'name',
-        'name_hash',
         'browser',
         'browser_version',
     ];
