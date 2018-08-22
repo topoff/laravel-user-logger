@@ -17,10 +17,10 @@
     "php": ">=7.0",
     "jaybizzle/crawler-detect": "~1.2",
     "jenssegers/agent": "~2.6",
-    "piwik/device-detector": "^3.9",
-    "browscap/browscap-php": "^3.1",
+    "piwik/device-detector": "^3.11",
+    "browscap/browscap-php": "^4.1",
     "laravel/framework": "~5.6",
-    "ua-parser/uap-php": "~3.4",
+    "ua-parser/uap-php": "~3.5",
     "snowplow/referer-parser": "~0.1"
   },
   "require-dev": {
