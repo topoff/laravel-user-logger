@@ -3,6 +3,7 @@
 namespace Topoff\Tracker\Parsers;
 
 use BrowscapPHP\Browscap;
+use Illuminate\Cache\Repository;
 use UserAgentParser\Provider;
 
 /**
@@ -31,10 +32,12 @@ class UserAgentParser
     {
         $this->userAgent = $userAgent;
 
-        $browscapParser = new Browscap();
+//        $logger = new \Log();
+//        $cache = app()->make('cache');
+//        $browscapParser = new Browscap($cache, $logger);
         $chain = new Provider\Chain([
                                         new Provider\JenssegersAgent(),
-                                        new Provider\BrowscapPhp($browscapParser),
+//                                        new Provider\BrowscapPhp($browscapParser),
                                         new Provider\PiwikDeviceDetector(),
                                         new Provider\UAParser(),
                                     ]);

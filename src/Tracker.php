@@ -8,6 +8,7 @@ use Jenssegers\Agent\Agent;
 use Topoff\Tracker\Models\Device;
 use Topoff\Tracker\Models\Log;
 use Topoff\Tracker\Models\Session;
+use Topoff\Tracker\Models\Uri;
 use Topoff\Tracker\Parsers\LanguageParser;
 use Topoff\Tracker\Parsers\RefererParser;
 use Topoff\Tracker\Parsers\UserAgentParser;
@@ -152,9 +153,10 @@ class Tracker
                                 Agent $agent,
                                 Request $request)
     {
+        // ist config('key') in package ok or not?
         $this->app = $app ?? app();
         $config = $this->app['config'];
-        $this->connection = $config->get('tracker.connection2');
+//        $this->connection = config('tracker.connection');
         $test = $GLOBALS['request']->getRequestUri();
 
         $this->deviceRepository = $deviceRepository;
@@ -180,12 +182,12 @@ class Tracker
         // try - catch in middleware not working as expected: https://github.com/laravel/framework/issues/14573
         // Intentional used twice, in InjectTracker Middleware -> completly surpresses errors in this package
         // and here: does log some of them..
-        try {
+//        try {
             $this->log = $this->createLog();
-        } catch (Exception $e) {
+//        } catch (Exception $e) {
             // Sometimes reached..
-            Logger::warning('Error in topoff/tracker: ' . $e->getMessage(), $e->getTrace());
-        }
+//            Logger::warning('Error in topoff/tracker: ' . $e->getMessage(), $e->getTrace());
+//        }
     }
 
     /**

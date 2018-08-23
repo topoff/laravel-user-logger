@@ -5,6 +5,13 @@ namespace Topoff\Tracker\Models;
 class Referer extends Base
 {
     /**
+     * The connection name for the model.
+     *
+     * @var string
+     */
+    protected $connection = 'user-tracker';
+
+    /**
      * Indicates if the model should be timestamped.
      *
      * @var bool

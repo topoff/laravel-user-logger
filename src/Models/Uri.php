@@ -2,8 +2,22 @@
 
 namespace Topoff\Tracker\Models;
 
-class Uri extends Base
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Class Uri
+ *
+ * @package Topoff\Tracker\Models
+ */
+class Uri extends Model
 {
+    /**
+     * The connection name for the model.
+     *
+     * @var string
+     */
+    protected $connection = 'user-tracker';
+
     /**
      * Indicates if the model should be timestamped.
      *
