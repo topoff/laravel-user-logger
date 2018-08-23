@@ -1,16 +1,14 @@
 {
   "name": "topoff/user-tracker",
   "description": "Laravel Tracker",
-  "keywords": [
-    "tracker"
-  ],
+  "keywords": ["tracker"],
   "homepage": "https://github.com/topoff/tracker",
   "type": "library",
   "license": "MIT",
   "authors": [
     {
-      "name": "Andreas Berger",
-      "email": "a@bergerweb.ch"
+      "name": "ndberg",
+      "email": "spam@bergerweb.ch"
     }
   ],
   "require": {
@@ -22,14 +20,14 @@
     "laravel/framework": "~5.6",
     "ua-parser/uap-php": "~3.5",
     "snowplow/referer-parser": "~0.1",
-    "thadafinser/user-agent-parser": "~2.0"
+    "topoff/user-agent-parser": "~2.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^6.0"
   },
   "repositories": [
     {
-      "_comment": "Damit wird statt thadafinser/user-agent-parser das packet topoff/user-agent-parser verwendet, branch dev-master siehe oben. Erlaubt Bugfixes und weiterentwicklungen",
+      "_comment": "Damit topoff/user-agent-parser gefunden wird, obwohl es noch nicht auf packagist veröffentlicht wurde.",
       "type": "vcs",
       "url": "https://github.com/topoff/user-agent-parser"
     }
