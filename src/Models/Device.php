@@ -7,18 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Device extends Model
 {
     /**
-     * The connection name for the model.
-     *
-     * @var string
-     */
-    protected $connection = 'user-tracker';
-
-    /**
      * Indicates if the model should be timestamped.
      *
      * @var bool
      */
     public $timestamps = false;
+
+    /**
+     * The connection name for the model.
+     *
+     * @var string
+     */
+    protected $connection = 'user-tracker';
 
     /**
      * The table associated with the model.
@@ -38,5 +38,16 @@ class Device extends Model
         'platform',
         'platform_version',
         'is_mobile',
+        'is_robot',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_mobile' => 'boolean',
+        'is_robot'  => 'boolean',
     ];
 }

@@ -29,7 +29,7 @@ class RefererParser
     }
 
     /**
-     * Delievers the Attributes of the Referer
+     * Delivers the Attributes of the Referer
      *
      * @return array|null
      */

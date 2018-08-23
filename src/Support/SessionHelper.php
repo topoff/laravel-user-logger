@@ -28,10 +28,12 @@ class SessionHelper
 
     /**
      * Session constructor.
+     *
+     * @param Request $request
      */
     public function __construct(Request $request)
     {
-        $this->sessionName = \Config::get('tracker.tracker_session_name') ?? 'tracker_session';
+        $this->sessionName = config('tracker.tracker_session_name') ?? 'tracker_session';
 
         $this->request = $request;
     }
@@ -40,6 +42,7 @@ class SessionHelper
      * Get current Session UUID
      *
      * @return string
+     * @throws \Exception
      */
     public function getSessionUuid(): string
     {
@@ -50,6 +53,7 @@ class SessionHelper
      * Create new Session UUID
      *
      * @return string
+     * @throws \Exception
      */
     private function createSessionUuid(): string
     {

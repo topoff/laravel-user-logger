@@ -8,7 +8,7 @@
   "authors": [
     {
       "name": "ndberg",
-      "email": "spam@bergerweb.ch"
+      "email": "a@bergerweb.ch"
     }
   ],
   "require": {
@@ -16,7 +16,6 @@
     "jaybizzle/crawler-detect": "~1.2",
     "jenssegers/agent": "~2.6",
     "piwik/device-detector": "^3.11",
-    "browscap/browscap-php": "^4.1",
     "laravel/framework": "~5.6",
     "ua-parser/uap-php": "~3.5",
     "snowplow/referer-parser": "~0.1",
@@ -25,13 +24,6 @@
   "require-dev": {
     "phpunit/phpunit": "^6.0"
   },
-  "repositories": [
-    {
-      "_comment": "Damit topoff/user-agent-parser gefunden wird, obwohl es noch nicht auf packagist veröffentlicht wurde.",
-      "type": "vcs",
-      "url": "https://github.com/topoff/user-agent-parser"
-    }
-  ],
   "autoload": {
     "psr-4": {
       "Topoff\\Tracker\\": "src/"
@@ -39,7 +31,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Topoff\\Tracker\\Test\\": "tests"
+      "Topoff\\User-Tracker\\Test\\": "tests"
     }
   },
   "config": {

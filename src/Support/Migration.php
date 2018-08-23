@@ -12,18 +12,11 @@ class Migration extends IlluminateMigration
     /**
      * Migration constructor.
      *
-     * @param $app
-     *
      * @throws Exception
      */
-    public function __construct($app = NULL)
+    public function __construct()
     {
-        $app = $app ?? app();
-        $config = $app['config'];
-        $this->connection = $config->get('tracker.connection');
-        if (empty($this->connection)){
-            throw new Exception("topoff/Tracker: connection im config file nicht definiert");
-        }
+        $this->connection = 'user-tracker';
     }
 
 }

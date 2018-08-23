@@ -2,8 +2,6 @@
 
 namespace Topoff\Tracker\Parsers;
 
-use BrowscapPHP\Browscap;
-use Illuminate\Cache\Repository;
 use UserAgentParser\Provider;
 
 /**
@@ -27,34 +25,22 @@ class UserAgentParser
      * UserAgentParser constructor.
      *
      * @param string $userAgent
+     *
+     * @throws \UserAgentParser\Exception\PackageNotLoadedException
+     * @throws \UserAgentParser\Exception\NoResultFoundException
      */
     public function __construct(string $userAgent)
     {
         $this->userAgent = $userAgent;
 
-//        $logger = new \Log();
-//        $cache = app()->make('cache');
-//        $browscapParser = new Browscap($cache, $logger);
         $chain = new Provider\Chain([
                                         new Provider\JenssegersAgent(),
-//                                        new Provider\BrowscapPhp($browscapParser),
                                         new Provider\PiwikDeviceDetector(),
                                         new Provider\UAParser(),
                                     ]);
 
         /* @var $result \UserAgentParser\Model\UserAgent */
         $this->parseResult = $chain->parse($this->userAgent);
-        // optional add all headers, to improve the result further (used currently only by WhichBrowser)
-        //        $test = $this->addFunctionGetAllHeaders();
-//        $this->parseResult = $chain->parse($this->userAgent, getallheaders());
-
-        //        $agent = new \Jenssegers\Agent\Agent();
-        //        $df = $agent->platform();
-        //        $asd = $agent->device();
-        //
-        //        $uaparse = Parser::create()->parse($userAgent);
-        //        $sa = $uaparse->device;
-        //        $op = $uaparse->os;
     }
 
     /**
@@ -84,11 +70,10 @@ class UserAgentParser
     {
         try {
             $device = $this->parseResult->getDevice();
-            $agent = new \Jenssegers\Agent\Agent();
 
             return [
                 'kind'             => $device->getType(),
-                'model'            => $device->getModel() ?? $agent->device(),
+                'model'            => $device->getModel(),
                 'platform'         => $this->parseResult->getOperatingSystem()->getName(),
                 'platform_version' => $this->parseResult->getOperatingSystem()->getVersion()->getComplete(),
                 'is_mobile'        => $this->parseResult->isMobile(),
@@ -100,7 +85,7 @@ class UserAgentParser
     }
 
     /**
-     * nginx funktion to add the missing function getallheaders()
+     * nginx function to add the missing function getallheaders()
      */
     private function addFunctionGetAllHeaders()
     {

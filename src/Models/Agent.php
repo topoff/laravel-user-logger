@@ -7,18 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Agent extends Model
 {
     /**
-     * The connection name for the model.
-     *
-     * @var string
-     */
-    protected $connection = 'user-tracker';
-
-    /**
      * Indicates if the model should be timestamped.
      *
      * @var bool
      */
     public $timestamps = false;
+
+    /**
+     * The connection name for the model.
+     *
+     * @var string
+     */
+    protected $connection = 'user-tracker';
 
     /**
      * The table associated with the model.

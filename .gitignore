@@ -1,20 +1,3 @@
-vendor/
-node_modules/
-npm-debug.log
-
-# Laravel 5 & Lumen specific
-public/storage
-public/hot
-storage/*.key
-.env
-Homestead.yaml
-Homestead.json
-
-# Rocketeer PHP task runner and deployment package. https://github.com/rocketeers/rocketeer
-.rocketeer/
-
-
-
 # Following: Created by https://www.gitignore.io/api/jetbrains
 ### JetBrains ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm

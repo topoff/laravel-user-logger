@@ -22,24 +22,26 @@ class LanguageParser
     protected $defaultLanguage;
 
     /**
-     * @var Array
+     * @var array
      */
     protected $acceptedLanguages;
 
     /**
      * LanguageParser constructor.
+     *
+     * @param Request $request
      */
     public function __construct(Request $request)
     {
         $this->request = $request;
 
-        $this->parselanguages();
+        $this->parseLanguages();
     }
 
     /**
      * Get accept languages.
      */
-    private function parselanguages(): void
+    private function parseLanguages(): void
     {
         $acceptLanguage = $this->request->header('accept-language');
 
