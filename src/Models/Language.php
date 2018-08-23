@@ -2,7 +2,9 @@
 
 namespace Topoff\Tracker\Models;
 
-class Language extends Base
+use Illuminate\Database\Eloquent\Model;
+
+class Language extends Model
 {
     /**
      * The connection name for the model.

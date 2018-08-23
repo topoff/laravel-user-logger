@@ -2,7 +2,9 @@
 
 namespace Topoff\Tracker\Models;
 
-class Referer extends Base
+use Illuminate\Database\Eloquent\Model;
+
+class Referer extends Model
 {
     /**
      * The connection name for the model.

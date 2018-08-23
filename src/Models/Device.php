@@ -2,7 +2,9 @@
 
 namespace Topoff\Tracker\Models;
 
-class Device extends Base
+use Illuminate\Database\Eloquent\Model;
+
+class Device extends Model
 {
     /**
      * The connection name for the model.

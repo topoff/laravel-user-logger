@@ -2,7 +2,9 @@
 
 namespace Topoff\Tracker\Models;
 
-class Session extends Base
+use Illuminate\Database\Eloquent\Model;
+
+class Session extends Model
 {
     /**
      * The connection name for the model.
