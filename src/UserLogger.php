@@ -178,7 +178,10 @@ class UserLogger
     {
         if (config('app.debug')) {
             // Display Error
-            $this->log = $this->createLog();
+            $crawlerDetect = new CrawlerDetect;
+            if (config('tracker.log_robots') || !$crawlerDetect->isCrawler()) {
+                $this->log = $this->createLog();
+            }
         } else {
             // try - catch in middleware not working as expected: https://github.com/laravel/framework/issues/14573
             // Intentional used twice, in InjectUserLogger Middleware -> completely suppresses errors in this package
@@ -224,11 +227,6 @@ class UserLogger
      */
     protected function getOrCreateSession(): Session
     {
-        $session = new SessionHelper($this->request);
-        if (!$session->isExistingSession()){
-
-        }
-
         try {
             $userAgentParser = new UserAgentParser($this->request->userAgent());
             $this->device = $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes());
@@ -251,13 +249,13 @@ class UserLogger
         $this->language = $this->languageRepository->findOrCreate($languageParser->getLanguageAttributes());
 
         // Session
+        $session = new SessionHelper($this->request);
         $this->session = $this->sessionRepository->findOrCreate($session->getSessionUuid(),
                                                                 Auth::user(),
                                                                 $this->device,
                                                                 $this->agent,
                                                                 $this->referer,
                                                                 $this->language,
-                                                                $this->domain,
                                                                 $this->request->ip(),
                                                                 $this->device['is_robot']);
 
@@ -273,7 +271,7 @@ class UserLogger
     {
         if ($this->enabled === NULL) {
             $config = $this->app['config'];
-            $configEnabled = $config->get('tracker.enabled') ?? false;
+            $configEnabled = $config->get('user-logger.enabled') ?? false;
 
             $this->enabled = $configEnabled && !$this->app->runningInConsole() && !$this->app->environment('testing');
         }

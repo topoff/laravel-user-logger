@@ -3,7 +3,6 @@
 namespace Topoff\LaravelUserLogger;
 
 use Illuminate\Routing\Router;
-use Jenssegers\Agent\Agent;
 use Topoff\LaravelUserLogger\Middleware\InjectUserLogger;
 use Topoff\LaravelUserLogger\Repositories\AgentRepository;
 use Topoff\LaravelUserLogger\Repositories\DeviceRepository;
@@ -22,7 +21,7 @@ class UserLoggerServiceProvider extends \Illuminate\Support\ServiceProvider
     public function boot()
     {
         $this->publishes([
-                             __DIR__ . '/../config/tracker.php' => config_path('tracker.php'),
+                             __DIR__ . '/../config/user-logger.php' => config_path('user-logger.php'),
                          ],
                          'config');
 
@@ -48,7 +47,7 @@ class UserLoggerServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/tracker.php', 'tracker');
+        $this->mergeConfigFrom(__DIR__ . '/../config/user-logger.php', 'user-logger');
 
         $this->app->singleton(UserLogger::class,
             function ($app) {
@@ -64,6 +63,6 @@ class UserLoggerServiceProvider extends \Illuminate\Support\ServiceProvider
                                       $app['request']);
             });
 
-        $this->app->alias(UserLogger::class, 'tracker');
+        $this->app->alias(UserLogger::class, 'userLogger');
     }
 }

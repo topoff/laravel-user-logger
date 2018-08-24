@@ -10,7 +10,7 @@ return [
      */
 
     // Enable tracker
-    'enabled' => env('TRACKER_ENABLED', false),
+    'enabled' => env('USER_LOGGER_ENABLED', false),
 
     // Log robots
     'log_robots' => false,
