@@ -51,3 +51,7 @@ You need to create a connection namend laravel-user-logger in your config/databa
             'engine' => null,
         ],
 ```
+
+## Update
+
+This package uses https://github.com/snowplow-referer-parser/referer-parser. There you find information to update the list of known referers.
