@@ -42,7 +42,6 @@ class Session extends Model
         'referer_id',
         'cookie_id',
         'language_id',
-        'domain_id',
         'client_ip',
         'is_robot',
     ];
