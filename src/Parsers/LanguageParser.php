@@ -1,13 +1,13 @@
 <?php
 
-namespace Topoff\Tracker\Parsers;
+namespace Topoff\LaravelUserLogger\Parsers;
 
 use Illuminate\Http\Request;
 
 /**
  * Class LanguageParser
  *
- * @package Topoff\Tracker\Parsers
+ * @package Topoff\LaravelUserLogger\Parsers
  */
 class LanguageParser
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Topoff\Tracker\Repositories;
+namespace Topoff\LaravelUserLogger\Repositories;
 
-use Topoff\Tracker\Models\Uri;
+use Topoff\LaravelUserLogger\Models\Uri;
 
 class UriRepository
 {

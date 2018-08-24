@@ -1,15 +1,15 @@
 <?php
 
-namespace Topoff\Tracker\Repositories;
+namespace Topoff\LaravelUserLogger\Repositories;
 
-use Topoff\Tracker\Models\Log;
-use Topoff\Tracker\Models\Session;
-use Topoff\Tracker\Models\Uri;
+use Topoff\LaravelUserLogger\Models\Log;
+use Topoff\LaravelUserLogger\Models\Session;
+use Topoff\LaravelUserLogger\Models\Uri;
 
 /**
  * Class LogRepository
  *
- * @package Topoff\Tracker\Repositories
+ * @package Topoff\LaravelUserLogger\Repositories
  */
 class LogRepository
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Topoff\Tracker\Repositories;
+namespace Topoff\LaravelUserLogger\Repositories;
 
-use Topoff\Tracker\Models\Language;
+use Topoff\LaravelUserLogger\Models\Language;
 
 class LanguageRepository
 {

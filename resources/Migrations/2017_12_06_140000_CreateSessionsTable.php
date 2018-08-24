@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Topoff\Tracker\Support\Migration;
+use Topoff\LaravelUserLogger\Support\Migration;
 
 class CreateSessionsTable extends Migration
 {

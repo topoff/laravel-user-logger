@@ -1,6 +1,6 @@
 <?php
 
-namespace Topoff\Tracker\Models;
+namespace Topoff\LaravelUserLogger\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,7 +18,7 @@ class Language extends Model
      *
      * @var string
      */
-    protected $connection = 'user-tracker';
+    protected $connection = 'laravel-user-logger';
 
     /**
      * The table associated with the model.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Topoff\Tracker\Parsers;
+namespace Topoff\LaravelUserLogger\Parsers;
 
 use Snowplow\RefererParser\Parser;
 use Snowplow\RefererParser\Referer;

@@ -1,8 +1,8 @@
 {
-  "name": "topoff/user-tracker",
-  "description": "Laravel Tracker",
-  "keywords": ["tracker"],
-  "homepage": "https://github.com/topoff/tracker",
+  "name": "topoff/laravel-user-logger",
+  "description": "Laravel User Logger",
+  "keywords": ["laravel user logger"],
+  "homepage": "https://github.com/topoff/laravel-user-logger",
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -26,12 +26,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Topoff\\Tracker\\": "src/"
+      "Topoff\\LaravelUserLogger\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Topoff\\User-Tracker\\Test\\": "tests"
+      "Topoff\\LaravelUserLogger\\Test\\": "tests"
     }
   },
   "config": {
@@ -40,10 +40,10 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Topoff\\Tracker\\TrackerServiceProvider"
+        "Topoff\\LaravelUserLogger\\UserLoggerServiceProvider"
       ],
       "aliases": {
-        "Tracker": "Topoff\\Tracker\\Facade"
+        "Tracker": "Topoff\\LaravelUserLogger\\Facade"
       }
     }
   },

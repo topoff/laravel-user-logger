@@ -1,13 +1,13 @@
 <?php
 
-namespace Topoff\Tracker\Models;
+namespace Topoff\LaravelUserLogger\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Uri
  *
- * @package Topoff\Tracker\Models
+ * @package Topoff\LaravelUserLogger\Models
  */
 class Uri extends Model
 {
@@ -23,7 +23,7 @@ class Uri extends Model
      *
      * @var string
      */
-    protected $connection = 'user-tracker';
+    protected $connection = 'laravel-user-logger';
 
     /**
      * The table associated with the model.

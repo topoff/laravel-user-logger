@@ -1,6 +1,6 @@
 <?php
 
-namespace Topoff\Tracker;
+namespace Topoff\LaravelUserLogger;
 
 use Auth;
 use Exception;
@@ -9,30 +9,30 @@ use Illuminate\Http\Request;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Jenssegers\Agent\Agent;
 use Log as Logger;
-use Topoff\Tracker\Models\Device;
-use Topoff\Tracker\Models\Language;
-use Topoff\Tracker\Models\Log;
-use Topoff\Tracker\Models\Referer;
-use Topoff\Tracker\Models\Session;
-use Topoff\Tracker\Parsers\LanguageParser;
-use Topoff\Tracker\Parsers\RefererParser;
-use Topoff\Tracker\Parsers\UserAgentParser;
-use Topoff\Tracker\Repositories\AgentRepository;
-use Topoff\Tracker\Repositories\DeviceRepository;
-use Topoff\Tracker\Repositories\DomainRepository;
-use Topoff\Tracker\Repositories\LanguageRepository;
-use Topoff\Tracker\Repositories\LogRepository;
-use Topoff\Tracker\Repositories\RefererRepository;
-use Topoff\Tracker\Repositories\SessionRepository;
-use Topoff\Tracker\Repositories\UriRepository;
-use Topoff\Tracker\Support\SessionHelper;
+use Topoff\LaravelUserLogger\Models\Device;
+use Topoff\LaravelUserLogger\Models\Language;
+use Topoff\LaravelUserLogger\Models\Log;
+use Topoff\LaravelUserLogger\Models\Referer;
+use Topoff\LaravelUserLogger\Models\Session;
+use Topoff\LaravelUserLogger\Parsers\LanguageParser;
+use Topoff\LaravelUserLogger\Parsers\RefererParser;
+use Topoff\LaravelUserLogger\Parsers\UserAgentParser;
+use Topoff\LaravelUserLogger\Repositories\AgentRepository;
+use Topoff\LaravelUserLogger\Repositories\DeviceRepository;
+use Topoff\LaravelUserLogger\Repositories\DomainRepository;
+use Topoff\LaravelUserLogger\Repositories\LanguageRepository;
+use Topoff\LaravelUserLogger\Repositories\LogRepository;
+use Topoff\LaravelUserLogger\Repositories\RefererRepository;
+use Topoff\LaravelUserLogger\Repositories\SessionRepository;
+use Topoff\LaravelUserLogger\Repositories\UriRepository;
+use Topoff\LaravelUserLogger\Support\SessionHelper;
 
 /**
- * Class Tracker
+ * Class UserLogger
  *
- * @package Topoff\Tracker
+ * @package Topoff\LaravelUserLogger
  */
-class Tracker
+class UserLogger
 {
     /**
      * The Laravel application instance.
@@ -126,7 +126,7 @@ class Tracker
     protected $referer;
 
     /**
-     * Tracker constructor.
+     * UserLogger constructor.
      *
      * @param Application        $app
      * @param AgentRepository    $agentRepository
@@ -156,7 +156,7 @@ class Tracker
     }
 
     /**
-     * Boot the Tracker
+     * Boot the UserLogger
      *
      * @throws \UserAgentParser\Exception\NoResultFoundException
      * @throws \UserAgentParser\Exception\PackageNotLoadedException
@@ -168,7 +168,7 @@ class Tracker
             $this->log = $this->createLog();
         } else {
             // try - catch in middleware not working as expected: https://github.com/laravel/framework/issues/14573
-            // Intentional used twice, in InjectTracker Middleware -> completely suppresses errors in this package
+            // Intentional used twice, in InjectUserLogger Middleware -> completely suppresses errors in this package
             // and here: does log some of them..
             try {
                 $crawlerDetect = new CrawlerDetect;
@@ -241,7 +241,7 @@ class Tracker
     }
 
     /**
-     * Check if the Tracker is enabled
+     * Check if the UserLogger is enabled
      *
      * @return boolean
      */

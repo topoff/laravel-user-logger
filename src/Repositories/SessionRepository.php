@@ -1,15 +1,15 @@
 <?php
 
-namespace Topoff\Tracker\Repositories;
+namespace Topoff\LaravelUserLogger\Repositories;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User;
-use Topoff\Tracker\Models\Agent;
-use Topoff\Tracker\Models\Device;
-use Topoff\Tracker\Models\Domain;
-use Topoff\Tracker\Models\Language;
-use Topoff\Tracker\Models\Referer;
-use Topoff\Tracker\Models\Session;
+use Topoff\LaravelUserLogger\Models\Agent;
+use Topoff\LaravelUserLogger\Models\Device;
+use Topoff\LaravelUserLogger\Models\Domain;
+use Topoff\LaravelUserLogger\Models\Language;
+use Topoff\LaravelUserLogger\Models\Referer;
+use Topoff\LaravelUserLogger\Models\Session;
 
 class SessionRepository
 {

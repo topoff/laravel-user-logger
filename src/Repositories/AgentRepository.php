@@ -1,8 +1,8 @@
 <?php
 
-namespace Topoff\Tracker\Repositories;
+namespace Topoff\LaravelUserLogger\Repositories;
 
-use Topoff\Tracker\Models\Agent;
+use Topoff\LaravelUserLogger\Models\Agent;
 
 class AgentRepository
 {

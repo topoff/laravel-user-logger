@@ -1,6 +1,6 @@
 <?php
 
-namespace Topoff\Tracker\Support;
+namespace Topoff\LaravelUserLogger\Support;
 
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
@@ -8,7 +8,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * Class Session
  *
- * @package Topoff\Tracker\Support
+ * @package Topoff\LaravelUserLogger\Support
  */
 class SessionHelper
 {

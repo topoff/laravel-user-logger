@@ -1,20 +1,20 @@
-<?php namespace Topoff\Tracker\Middleware;
+<?php namespace Topoff\LaravelUserLogger\Middleware;
 
 use Closure;
 use Exception;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
 use Log;
-use Topoff\Tracker\Tracker;
+use Topoff\LaravelUserLogger\UserLogger;
 
-class InjectTracker
+class InjectUserLogger
 {
     /**
-     * The Tracker instance
+     * The UserLogger instance
      *
-     * @var Tracker
+     * @var UserLogger
      */
-    protected $tracker;
+    protected $userLogger;
 
     /**
      * The URIs that should be excluded.
@@ -26,11 +26,11 @@ class InjectTracker
     /**
      * Create a new middleware instance.
      *
-     * @param Tracker    $tracker
+     * @param UserLogger $userLogger
      */
-    public function __construct(Tracker $tracker)
+    public function __construct(UserLogger $userLogger)
     {
-        $this->tracker = $tracker;
+        $this->userLogger = $userLogger;
         $this->except = config('tracker.do_not_track_routes') ?: [];
     }
 
@@ -48,8 +48,8 @@ class InjectTracker
     {
         if (config('app.debug')) {
             // Error will be displayed
-            if ($this->tracker->isEnabled() && !$this->inExceptArray($request)) {
-                $this->tracker->boot();
+            if ($this->userLogger->isEnabled() && !$this->inExceptArray($request)) {
+                $this->userLogger->boot();
             }
 
             return $next($request);
@@ -58,8 +58,8 @@ class InjectTracker
             // BUT - regardless use it:
             // this does not log the error, but suppresses it completely
             try {
-                if ($this->tracker->isEnabled() && !$this->inExceptArray($request)) {
-                    $this->tracker->boot();
+                if ($this->userLogger->isEnabled() && !$this->inExceptArray($request)) {
+                    $this->userLogger->boot();
                 }
             } catch (Exception $e) {
                 // will mostly not be called

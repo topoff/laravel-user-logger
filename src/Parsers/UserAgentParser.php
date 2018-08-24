@@ -1,13 +1,13 @@
 <?php
 
-namespace Topoff\Tracker\Parsers;
+namespace Topoff\LaravelUserLogger\Parsers;
 
 use UserAgentParser\Provider;
 
 /**
  * Class MultiUserAgentParser
  *
- * @package Topoff\Tracker\Parsers
+ * @package Topoff\LaravelUserLogger\Parsers
  */
 class UserAgentParser
 {
