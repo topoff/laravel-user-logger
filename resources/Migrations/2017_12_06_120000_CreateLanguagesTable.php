@@ -16,7 +16,7 @@ class CreateLanguagesTable extends Migration
         Schema::connection($this->connection)->create('languages', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->string('preference')->index();
+            $table->string('preference', 30)->nullable()->index();
             $table->string('range')->nullable();
             $table->unique(['preference', 'range']);
 

@@ -7,9 +7,10 @@ use Exception;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
-use Jenssegers\Agent\Agent;
 use Log as Logger;
+use Topoff\LaravelUserLogger\Models\Agent;
 use Topoff\LaravelUserLogger\Models\Device;
+use Topoff\LaravelUserLogger\Models\Domain;
 use Topoff\LaravelUserLogger\Models\Language;
 use Topoff\LaravelUserLogger\Models\Log;
 use Topoff\LaravelUserLogger\Models\Referer;
@@ -26,6 +27,7 @@ use Topoff\LaravelUserLogger\Repositories\RefererRepository;
 use Topoff\LaravelUserLogger\Repositories\SessionRepository;
 use Topoff\LaravelUserLogger\Repositories\UriRepository;
 use Topoff\LaravelUserLogger\Support\SessionHelper;
+use UserAgentParser\Exception\NoResultFoundException;
 
 /**
  * Class UserLogger
@@ -34,6 +36,11 @@ use Topoff\LaravelUserLogger\Support\SessionHelper;
  */
 class UserLogger
 {
+    /**
+     * @var Domain
+     */
+    protected $domain;
+
     /**
      * The Laravel application instance.
      *
@@ -128,23 +135,30 @@ class UserLogger
     /**
      * UserLogger constructor.
      *
-     * @param Application        $app
-     * @param AgentRepository    $agentRepository
-     * @param DeviceRepository   $deviceRepository
-     * @param DomainRepository   $domainRepository
+     * @param Application $app
+     * @param AgentRepository $agentRepository
+     * @param DeviceRepository $deviceRepository
+     * @param DomainRepository $domainRepository
      * @param LanguageRepository $languageRepository
-     * @param LogRepository      $logRepository
-     * @param UriRepository      $uriRepository
-     * @param RefererRepository  $refererRepository
-     * @param SessionRepository  $sessionRepository
-     * @param Agent              $agent
-     * @param Request            $request
+     * @param LogRepository $logRepository
+     * @param UriRepository $uriRepository
+     * @param RefererRepository $refererRepository
+     * @param SessionRepository $sessionRepository
+     * @param Request $request
      */
-    public function __construct(Application $app, AgentRepository $agentRepository, DeviceRepository $deviceRepository, DomainRepository $domainRepository, LanguageRepository $languageRepository, LogRepository $logRepository, UriRepository $uriRepository, RefererRepository $refererRepository, SessionRepository $sessionRepository, Agent $agent, Request $request)
+    public function __construct(Application $app,
+                                AgentRepository $agentRepository,
+                                DeviceRepository $deviceRepository,
+                                DomainRepository $domainRepository,
+                                LanguageRepository $languageRepository,
+                                LogRepository $logRepository,
+                                UriRepository $uriRepository,
+                                RefererRepository $refererRepository,
+                                SessionRepository $sessionRepository,
+                                Request $request)
     {
         $this->app = $app;
         $this->deviceRepository = $deviceRepository;
-        $this->agent = $agent;
         $this->request = $request;
         $this->uriRepository = $uriRepository;
         $this->agentRepository = $agentRepository;
@@ -158,7 +172,6 @@ class UserLogger
     /**
      * Boot the UserLogger
      *
-     * @throws \UserAgentParser\Exception\NoResultFoundException
      * @throws \UserAgentParser\Exception\PackageNotLoadedException
      */
     public function boot()
@@ -188,29 +201,42 @@ class UserLogger
      * @param string|null $event
      *
      * @return Log
-     * @throws \UserAgentParser\Exception\NoResultFoundException
      * @throws \UserAgentParser\Exception\PackageNotLoadedException
      * @throws Exception
      */
     protected function createLog(string $event = NULL): Log
     {
+        // URI
         $uri = $this->uriRepository->findOrCreate(['uri' => $this->request->getRequestUri()]);
 
-        return $this->logRepository->findOrCreate($this->getOrCreateSession(), $uri, $event);
+        // Domain
+        $this->domain = $this->domainRepository->findOrCreate(['name' => $this->request->getHost()]);
+
+        return $this->logRepository->findOrCreate($this->getOrCreateSession(), $this->domain, $uri, $event);
     }
 
     /**
      * Get or Create The Session Record of the Request
      *
      * @return Session
-     * @throws \UserAgentParser\Exception\NoResultFoundException
      * @throws \UserAgentParser\Exception\PackageNotLoadedException
      * @throws Exception
      */
     protected function getOrCreateSession(): Session
     {
-        $userAgent = $this->request->userAgent();
-        $userAgentParser = new UserAgentParser($userAgent);
+        $session = new SessionHelper($this->request);
+        if (!$session->isExistingSession()){
+
+        }
+
+        try {
+            $userAgentParser = new UserAgentParser($this->request->userAgent());
+            $this->device = $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes());
+            $this->agent = $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes());
+        } catch (NoResultFoundException $e) {
+            $this->device = $this->deviceRepository->findOrCreateNotDetected();
+            $this->agent = $this->agentRepository->findOrCreateNotDetected();
+        }
 
         // Referer
         $refererUrl = $this->request->headers->get('referer');
@@ -220,22 +246,20 @@ class UserLogger
         $refererAttributes = $refererParserAttributes ? array_except($refererParserAttributes, ['domain']) : NULL;
         $this->referer = $refererDomain ? $this->refererRepository->findOrCreate(array_merge(['domain_id' => $refererDomain->id], $refererAttributes, ['url' => $refererUrl])) : NULL;
 
-        // Device
-        $this->device = $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes());
-
-        // Agent
-        $agent = $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes());
-
         // Language
         $languageParser = new LanguageParser($this->request);
         $this->language = $this->languageRepository->findOrCreate($languageParser->getLanguageAttributes());
 
-        // Domain
-        $domain = $this->domainRepository->findOrCreate(['name' => $this->request->getHost()]);
-
         // Session
-        $session = new SessionHelper($this->request);
-        $this->session = $this->sessionRepository->findOrCreate($session->getSessionUuid(), Auth::user(), $this->device, $agent, $this->referer, $this->language, $domain, $this->request->ip(), $this->device['is_robot']);
+        $this->session = $this->sessionRepository->findOrCreate($session->getSessionUuid(),
+                                                                Auth::user(),
+                                                                $this->device,
+                                                                $this->agent,
+                                                                $this->referer,
+                                                                $this->language,
+                                                                $this->domain,
+                                                                $this->request->ip(),
+                                                                $this->device['is_robot']);
 
         return $this->session;
     }
@@ -263,7 +287,6 @@ class UserLogger
      * @param string $event
      *
      * @return Log
-     * @throws \UserAgentParser\Exception\NoResultFoundException
      * @throws \UserAgentParser\Exception\PackageNotLoadedException
      */
     public function trackEvent(string $event): Log
@@ -323,5 +346,25 @@ class UserLogger
     public function getCurrentLanguage(): ?Language
     {
         return $this->language;
+    }
+
+    /**
+     * Get the User Agent of the current Request
+     *
+     * @return null|Agent
+     */
+    public function getCurrentAgent(): ?Agent
+    {
+        return $this->agent;
+    }
+
+    /**
+     * Get the Domain of the current Request
+     *
+     * @return null|Domain
+     */
+    public function getCurrentDomain(): ?Domain
+    {
+        return $this->domain;
     }
 }

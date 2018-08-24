@@ -3,6 +3,8 @@
 namespace Topoff\LaravelUserLogger\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Referer extends Model
 {
@@ -40,4 +42,24 @@ class Referer extends Model
         'source',
         'search_terms',
     ];
+
+    /**
+     * Can have many Sessions
+     *
+     * @return HasMany
+     */
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(Session::class);
+    }
+
+    /**
+     * Belongs to one Domain
+     *
+     * @return HasMany
+     */
+    public function domain(): BelongsTo
+    {
+        return $this->belongsTo(Domain::class);
+    }
 }

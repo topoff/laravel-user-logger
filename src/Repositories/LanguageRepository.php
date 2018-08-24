@@ -11,10 +11,14 @@ class LanguageRepository
      *
      * @param array $attributes
      *
-     * @return mixed
+     * @return Language
      */
-    public function findOrCreate(Array $attributes)
+    public function findOrCreate(Array $attributes): Language
     {
+        if (empty($attributes['preference'])) {
+            $attributes['preference'] = 'unknown';
+        }
+
         return Language::firstOrCreate($attributes);
     }
 }

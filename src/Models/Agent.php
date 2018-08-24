@@ -3,7 +3,14 @@
 namespace Topoff\LaravelUserLogger\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Class Agent
+ * @package Topoff\LaravelUserLogger\Models
+ */
 class Agent extends Model
 {
     /**
@@ -37,4 +44,14 @@ class Agent extends Model
         'browser',
         'browser_version',
     ];
+
+    /**
+     * Can have many Sessions
+     *
+     * @return HasMany
+     */
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(Session::class);
+    }
 }

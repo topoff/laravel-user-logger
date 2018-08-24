@@ -20,8 +20,8 @@ class CreateReferersTable extends Migration
                 $table->bigInteger('domain_id')->unsigned();
                 $table->string('url')->unique()->index();
 //                $table->string('host')->index();
-                $table->string('medium')->nullable()->index();
-                $table->string('source')->nullable()->index();
+                $table->string('medium', 40)->nullable()->index();
+                $table->string('source', 30)->nullable()->index();
                 $table->string('search_terms')->nullable()->index();
 
                 $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

@@ -79,7 +79,10 @@ class LanguageParser
                 'range'      => $this->acceptedLanguages,
             ];
         } catch (\Exception $e) {
-            return NULL;
+            return [
+                'preference' => 'unknown',
+                'range'      => NULL,
+            ];
         }
     }
 }

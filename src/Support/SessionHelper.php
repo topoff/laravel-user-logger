@@ -61,4 +61,14 @@ class SessionHelper
         $this->request->session()->put($this->sessionName, $uuid);
         return $uuid;
     }
+
+    /**
+     * Is it an existing session?
+     *
+     * @return bool
+     */
+    public function isExistingSession(): bool
+    {
+        return $this->request->session()->has($this->sessionName);
+    }
 }

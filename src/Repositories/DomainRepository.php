@@ -11,10 +11,14 @@ class DomainRepository
      *
      * @param array $attributes
      *
-     * @return mixed
+     * @return Domain
      */
-    public function findOrCreate(Array $attributes)
+    public function findOrCreate(Array $attributes): Domain
     {
+        if (empty($attributes['name'])) {
+            $attributes['name'] = 'unknown';
+        }
+
         return Domain::firstOrCreate($attributes);
     }
 }

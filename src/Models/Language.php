@@ -3,6 +3,7 @@
 namespace Topoff\LaravelUserLogger\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Language extends Model
 {
@@ -36,4 +37,14 @@ class Language extends Model
         'preference',
         'range',
     ];
+
+    /**
+     * Can have many Sessions
+     *
+     * @return HasMany
+     */
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(Session::class);
+    }
 }

@@ -17,6 +17,7 @@ class CreateLogsTable extends Migration
             $table->bigIncrements('id');
 
             $table->bigInteger('session_id')->unsigned()->nullable()->index();
+            $table->bigInteger('domain_id')->unsigned()->nullable()->index();
             $table->bigInteger('uri_id')->unsigned()->index();
             $table->string('event', 50)->nullable()->index();
 
@@ -24,6 +25,7 @@ class CreateLogsTable extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 
             $table->foreign('session_id')->references('id')->on('sessions');
+            $table->foreign('domain_id')->references('id')->on('domains');
             $table->foreign('uri_id')->references('id')->on('uris');
         });
     }

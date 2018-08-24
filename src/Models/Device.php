@@ -3,6 +3,7 @@
 namespace Topoff\LaravelUserLogger\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Device extends Model
 {
@@ -50,4 +51,14 @@ class Device extends Model
         'is_mobile' => 'boolean',
         'is_robot'  => 'boolean',
     ];
+
+    /**
+     * Can have many Sessions
+     *
+     * @return HasMany
+     */
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(Session::class);
+    }
 }

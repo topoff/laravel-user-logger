@@ -2,6 +2,7 @@
 
 namespace Topoff\LaravelUserLogger\Repositories;
 
+use Topoff\LaravelUserLogger\Models\Domain;
 use Topoff\LaravelUserLogger\Models\Log;
 use Topoff\LaravelUserLogger\Models\Session;
 use Topoff\LaravelUserLogger\Models\Uri;
@@ -17,18 +18,19 @@ class LogRepository
      * Finds an existing Log (Request) or creates a new DB Record
      *
      * @param Session $session
-     * @param Uri     $uri
-     * @param string  $event
+     * @param Domain $domain
+     * @param Uri $uri
+     * @param string $event
      *
      * @return Log
      */
-    public function findOrCreate(Session $session, Uri $uri, string $event = NULL): Log
+    public function findOrCreate(Session $session, Domain $domain, Uri $uri, string $event = NULL): Log
     {
-        return Log::create(['session_id' => $session->id ?? NULL, 'uri_id' => $uri->id, 'event' => $event]);
+        return Log::create(['session_id' => $session->id ?? NULL, 'domain_id' => $domain->id, 'uri_id' => $uri->id, 'event' => $event]);
     }
 
     /**
-     * @param Log    $log
+     * @param Log $log
      * @param string $event
      *
      * @return Log
@@ -37,6 +39,7 @@ class LogRepository
     {
         $log->event = $event;
         $log->save();
+        
         return $log;
     }
 }

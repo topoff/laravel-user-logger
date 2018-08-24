@@ -22,9 +22,8 @@ class CreateSessionsTable extends Migration
             $table->bigInteger('agent_id')->unsigned()->nullable();
             $table->bigInteger('referer_id')->unsigned()->nullable();
             $table->bigInteger('language_id')->unsigned()->nullable();
-            $table->bigInteger('domain_id')->unsigned()->nullable();
-            $table->string('client_ip')->nullable();
-            $table->boolean('is_robot')->default(false);
+            $table->string('client_ip', 45)->nullable();
+            $table->boolean('is_robot')->nullable();
 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
@@ -33,7 +32,6 @@ class CreateSessionsTable extends Migration
             $table->foreign('agent_id')->references('id')->on('agents');
             $table->foreign('referer_id')->references('id')->on('referers');
             $table->foreign('language_id')->references('id')->on('languages');
-            $table->foreign('domain_id')->references('id')->on('domains');
         });
     }
 

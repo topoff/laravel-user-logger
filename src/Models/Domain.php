@@ -3,6 +3,7 @@
 namespace Topoff\LaravelUserLogger\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Domain extends Model
 {
@@ -35,4 +36,14 @@ class Domain extends Model
     protected $fillable = [
         'name',
     ];
+
+    /**
+     * Can have many Logs
+     *
+     * @return HasMany
+     */
+    public function logs(): HasMany
+    {
+        return $this->hasMany(Log::class);
+    }
 }

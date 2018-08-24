@@ -16,12 +16,12 @@ class CreateDevicesTable extends Migration
         Schema::connection($this->connection)->create('devices', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->string('kind', 16)->index();
+            $table->string('kind', 16)->index()->nullable();
             $table->string('model', 64)->index()->nullable();
             $table->string('platform', 64)->index()->nullable();
             $table->string('platform_version', 16)->index()->nullable();
-            $table->boolean('is_mobile');
-            $table->boolean('is_robot');
+            $table->boolean('is_mobile')->index()->nullable();
+            $table->boolean('is_robot')->index()->nullable();
 
             $table->unique(['kind', 'model', 'platform', 'platform_version']);
 

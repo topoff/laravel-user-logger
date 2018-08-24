@@ -11,15 +11,14 @@ class RefererRepository
      *
      * @param array $attributes
      *
-     * @return mixed
+     * @return Referer
      */
-    public function findOrCreate(Array $attributes)
+    public function findOrCreate(Array $attributes): Referer
     {
+        if (empty($attributes['url'])) {
+            $attributes['url'] = 'unknown';
+        }
+
         return Referer::firstOrCreate($attributes);
-    }
-
-    public function findOrCreateWithRelations(Array $attributes)
-    {
-
     }
 }

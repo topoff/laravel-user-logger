@@ -3,6 +3,8 @@
 namespace Topoff\LaravelUserLogger\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Log extends Model
 {
@@ -37,4 +39,34 @@ class Log extends Model
         'uri_id',
         'event',
     ];
+
+    /**
+     * Belongs to one Session
+     *
+     * @return BelongsTo
+     */
+    public function session(): BelongsTo
+    {
+        return $this->belongsTo(Session::class);
+    }
+
+    /**
+     * Belongs to one URI
+     *
+     * @return BelongsTo
+     */
+    public function uri(): BelongsTo
+    {
+        return $this->belongsTo(Uri::class);
+    }
+
+    /**
+     * Belongs to one Domain
+     *
+     * @return BelongsTo
+     */
+    public function domain(): BelongsTo
+    {
+        return $this->belongsTo(Domain::class);
+    }
 }
