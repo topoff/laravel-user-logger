@@ -33,7 +33,7 @@ class SessionHelper
      */
     public function __construct(Request $request)
     {
-        $this->sessionName = config('tracker.tracker_session_name') ?? 'tracker_session';
+        $this->sessionName = config('user-logger.session_name') ?? 'user_logger_session';
 
         $this->request = $request;
     }

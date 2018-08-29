@@ -179,7 +179,7 @@ class UserLogger
         if (config('app.debug')) {
             // Display Error
             $crawlerDetect = new CrawlerDetect;
-            if (config('tracker.log_robots') || !$crawlerDetect->isCrawler()) {
+            if (config('user-logger.log_robots') || !$crawlerDetect->isCrawler()) {
                 $this->log = $this->createLog();
             }
         } else {
@@ -188,7 +188,7 @@ class UserLogger
             // and here: does log some of them..
             try {
                 $crawlerDetect = new CrawlerDetect;
-                if (config('tracker.log_robots') || !$crawlerDetect->isCrawler()) {
+                if (config('user-logger.log_robots') || !$crawlerDetect->isCrawler()) {
                     $this->log = $this->createLog();
                 }
             } catch (Exception $e) {

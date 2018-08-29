@@ -31,7 +31,7 @@ class InjectUserLogger
     public function __construct(UserLogger $userLogger)
     {
         $this->userLogger = $userLogger;
-        $this->except = config('tracker.do_not_track_routes') ?: [];
+        $this->except = config('user-logger.do_not_track_routes') ?: [];
     }
 
     /**
@@ -41,7 +41,6 @@ class InjectUserLogger
      * @param  Closure $next
      *
      * @return mixed
-     * @throws \UserAgentParser\Exception\NoResultFoundException
      * @throws \UserAgentParser\Exception\PackageNotLoadedException
      */
     public function handle($request, Closure $next)

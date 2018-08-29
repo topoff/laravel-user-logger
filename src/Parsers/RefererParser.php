@@ -5,6 +5,11 @@ namespace Topoff\LaravelUserLogger\Parsers;
 use Snowplow\RefererParser\Parser;
 use Snowplow\RefererParser\Referer;
 
+/**
+ * Class RefererParser
+ *
+ * @package Topoff\LaravelUserLogger\Parsers
+ */
 class RefererParser
 {
     /**
@@ -13,6 +18,11 @@ class RefererParser
      * @var Referer
      */
     protected $referer;
+
+    /**
+     * @var string
+     */
+    protected $refererUrl;
 
     /**
      * RefererParser constructor.
@@ -26,6 +36,8 @@ class RefererParser
             $parser = new Parser();
             $this->referer = $parser->parse($refererUrl, $pageUrl);
         }
+
+        $this->refererUrl = $refererUrl;
     }
 
     /**
@@ -38,7 +50,7 @@ class RefererParser
         try {
             if ($this->referer && $this->referer->isKnown()) {
                 return [
-                    'domain'       => $this->referer->getMedium(),
+                    'domain'       => $this->getHost(),
                     'medium'       => $this->referer->getMedium(),
                     'source'       => $this->referer->getSource(),
                     'search_terms' => $this->referer->getSearchTerm(),
@@ -49,5 +61,15 @@ class RefererParser
         } catch (\Exception $e) {
             return NULL;
         }
+    }
+
+    /**
+     * Gets the host from the referer Url
+     *
+     * @return string
+     */
+    public function getHost(): string
+    {
+        return parse_url($this->refererUrl, PHP_URL_HOST);
     }
 }

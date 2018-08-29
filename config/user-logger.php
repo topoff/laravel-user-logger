@@ -9,9 +9,33 @@ return [
      |
      */
 
-    // Enable tracker
-    'enabled' => env('USER_LOGGER_ENABLED', false),
+    /*
+     * Enable User Logger
+     */
+    'enabled'             => env('USER_LOGGER_ENABLED', false),
 
-    // Log robots
-    'log_robots' => false,
+    /*
+     * Log robots?
+     */
+    'log_robots'          => false,
+
+    /*
+     * Which uri names are not trackable?
+     */
+    'do_not_track_routes' => [
+        'debugbar*',
+        'debugbar.*',
+        '_debugbar*',
+        'log-viewer*',
+        'admin*',
+        '*.jpg',
+        '*.jpeg',
+        '*.js',
+        '*.css',
+    ],
+
+    /*
+     * session_name
+     */
+    'session_name' => 'user-logger-session',
 ];
