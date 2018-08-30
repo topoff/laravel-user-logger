@@ -40,10 +40,18 @@ class UtmSourceParser
     public function getResult(): ?RefererResult
     {
         if ($this->hasUtmSource()) {
-            if ($this->request->get('utm_source') === 'google') {
-                $source = new UtmSourceGoogle($this->request);
-            } else {
-                $source = new UtmSourceDefault($this->request);
+            switch($this->request->get('utm_source')) {
+                case 'google':
+                    $source = new UtmSourceGoogle($this->request);
+                    break;
+
+                case 'bing':
+                    $source = new UtmSourceBing($this->request);
+                    break;
+
+                default:
+                    $source = new UtmSourceDefault($this->request);
+                    break;
             }
 
             return $source->getResult();
