@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User;
 use Topoff\LaravelUserLogger\Models\Agent;
 use Topoff\LaravelUserLogger\Models\Device;
-use Topoff\LaravelUserLogger\Models\Domain;
 use Topoff\LaravelUserLogger\Models\Language;
 use Topoff\LaravelUserLogger\Models\Referer;
 use Topoff\LaravelUserLogger\Models\Session;
@@ -29,7 +28,14 @@ class SessionRepository
      *
      * @return Session
      */
-    public function findOrCreate(string $key, User $user = NULL, Device $device = NULL, Agent $agent = NULL, Referer $referer = NULL, Language $language = NULL, string $clientIp = NULL, ?bool $isRobot = false): Session
+    public function findOrCreate(string $key,
+                                 User $user = NULL,
+                                 Device $device = NULL,
+                                 Agent $agent = NULL,
+                                 Referer $referer = NULL,
+                                 Language $language = NULL,
+                                 string $clientIp = NULL,
+                                 ?bool $isRobot = false): Session
     {
         $session = Session::firstOrCreate(['session_key' => $key], [
             'user_id'     => $user->id ?? NULL,
@@ -43,7 +49,7 @@ class SessionRepository
 
         if ($session->exists === true) {
             $session->updated_at = Carbon::now();
-            $session->user_id = $session->user_id ?? $user->id;
+            $session->user_id = $session->user_id ?? (isset($user) ? $user->id : NULL);
             $session->save();
         }
 
