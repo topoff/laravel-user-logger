@@ -18,6 +18,7 @@ use Topoff\LaravelUserLogger\Models\Session;
 use Topoff\LaravelUserLogger\Parsers\LanguageParser;
 use Topoff\LaravelUserLogger\Parsers\RefererParser;
 use Topoff\LaravelUserLogger\Parsers\UserAgentParser;
+use Topoff\LaravelUserLogger\Parsers\UtmSourceParser;
 use Topoff\LaravelUserLogger\Repositories\AgentRepository;
 use Topoff\LaravelUserLogger\Repositories\DeviceRepository;
 use Topoff\LaravelUserLogger\Repositories\DomainRepository;
@@ -135,16 +136,16 @@ class UserLogger
     /**
      * UserLogger constructor.
      *
-     * @param Application $app
-     * @param AgentRepository $agentRepository
-     * @param DeviceRepository $deviceRepository
-     * @param DomainRepository $domainRepository
+     * @param Application        $app
+     * @param AgentRepository    $agentRepository
+     * @param DeviceRepository   $deviceRepository
+     * @param DomainRepository   $domainRepository
      * @param LanguageRepository $languageRepository
-     * @param LogRepository $logRepository
-     * @param UriRepository $uriRepository
-     * @param RefererRepository $refererRepository
-     * @param SessionRepository $sessionRepository
-     * @param Request $request
+     * @param LogRepository      $logRepository
+     * @param UriRepository      $uriRepository
+     * @param RefererRepository  $refererRepository
+     * @param SessionRepository  $sessionRepository
+     * @param Request            $request
      */
     public function __construct(Application $app,
                                 AgentRepository $agentRepository,
@@ -209,11 +210,11 @@ class UserLogger
      */
     protected function createLog(string $event = NULL): Log
     {
-        // URI
-        $uri = $this->uriRepository->findOrCreate(['uri' => $this->request->getRequestUri()]);
+        // URI -> decoded path liefert ohne variablen
+        $uri = $this->uriRepository->findOrCreate(['uri' => $this->request->decodedPath()]);
 
         // Domain
-        $this->domain = $this->domainRepository->findOrCreate(['name' => $this->request->getHost()]);
+        $this->domain = $this->domainRepository->findOrCreate(['name' => $this->request->getHost(), 'local' => true]);
 
         return $this->logRepository->findOrCreate($this->getOrCreateSession(), $this->domain, $uri, $event);
     }
@@ -227,8 +228,10 @@ class UserLogger
      */
     protected function getOrCreateSession(): Session
     {
+        $this->referer = $this->getOrCreateReferer();
+
         try {
-            $userAgentParser = new UserAgentParser($this->request->userAgent());
+            $userAgentParser = new UserAgentParser($this->request);
             $this->device = $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes());
             $this->agent = $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes());
         } catch (NoResultFoundException $e) {
@@ -236,30 +239,49 @@ class UserLogger
             $this->agent = $this->agentRepository->findOrCreateNotDetected();
         }
 
-        // Referer
-        $refererUrl = $this->request->headers->get('referer');
-        $refererParser = new RefererParser($refererUrl, $this->request->url());
-        $refererParserAttributes = $refererParser->getRefererAttributes();
-        $refererDomain = $refererParserAttributes ? $this->domainRepository->findOrCreate(['name' => $refererParserAttributes['domain']]) : NULL;
-        $refererAttributes = $refererParserAttributes ? array_except($refererParserAttributes, ['domain']) : NULL;
-        $this->referer = $refererDomain ? $this->refererRepository->findOrCreate(array_merge(['domain_id' => $refererDomain->id], $refererAttributes, ['url' => $refererUrl])) : NULL;
-
         // Language
         $languageParser = new LanguageParser($this->request);
         $this->language = $this->languageRepository->findOrCreate($languageParser->getLanguageAttributes());
 
         // Session
         $session = new SessionHelper($this->request);
-        $this->session = $this->sessionRepository->findOrCreate($session->getSessionUuid(),
-                                                                Auth::user(),
-                                                                $this->device,
-                                                                $this->agent,
-                                                                $this->referer,
-                                                                $this->language,
-                                                                $this->request->ip(),
-                                                                $this->device['is_robot']);
+        $this->session = $this->sessionRepository->findOrCreate($session->getSessionUuid(), Auth::user(), $this->device, $this->agent, $this->referer, $this->language, $this->request->ip(), $this->device['is_robot']);
 
         return $this->session;
+    }
+
+    /**
+     * Get Referer, utm_source parameter wins over client referer
+     *
+     * @return null|Referer
+     */
+    protected function getOrCreateReferer(): ?Referer
+    {
+        $refererUrl = $this->request->headers->get('referer');
+        $utmParser = new UtmSourceParser($this->request);
+        if ($utmParser->hasUtmSource() === true) {
+            $refererResult = $utmParser->getResult();
+        } else {
+            $refererParser = new RefererParser($refererUrl, $this->request->url());
+            $refererResult = $refererParser->getResult();
+        }
+
+        if (!empty($refererResult->domain)) {
+            $domain = $this->getOrCreateDomain($refererResult->domain);
+            $referer = $this->refererRepository->findOrCreate($domain, $refererResult);
+        }
+
+        return $referer ?? NULL;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Domain
+     */
+    protected function getOrCreateDomain(string $name): Domain
+    {
+        return $this->domainRepository->findOrCreate(['name' => $name, 'local' => false]);
     }
 
     /**

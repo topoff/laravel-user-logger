@@ -35,6 +35,7 @@ class Domain extends Model
      */
     protected $fillable = [
         'name',
+        'local',
     ];
 
     /**

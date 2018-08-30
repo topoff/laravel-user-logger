@@ -15,6 +15,8 @@ class SessionRepository
 {
     /**
      * Finds an existing Uri or creates a new DB Record
+     * If there was no user in the session but now there is one, it gets updated.
+     * updates field updated_at on every access
      *
      * @param string        $key
      * @param User|null     $user
@@ -41,6 +43,7 @@ class SessionRepository
 
         if ($session->exists === true) {
             $session->updated_at = Carbon::now();
+            $session->user_id = $session->user_id ?? $user->id;
             $session->save();
         }
 

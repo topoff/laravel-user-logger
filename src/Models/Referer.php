@@ -40,7 +40,13 @@ class Referer extends Model
         'host',
         'medium',
         'source',
-        'search_terms',
+        'keywords',
+        'campaign',
+        'adgroup',
+        'matchtype',
+        'device',
+        'adposition',
+        'network',
     ];
 
     /**

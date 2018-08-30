@@ -19,10 +19,15 @@ class CreateReferersTable extends Migration
 
                 $table->bigInteger('domain_id')->unsigned();
                 $table->string('url')->unique()->index();
-//                $table->string('host')->index();
-                $table->string('medium', 40)->nullable()->index();
+                $table->string('medium', 20)->nullable()->index();
                 $table->string('source', 30)->nullable()->index();
-                $table->string('search_terms')->nullable()->index();
+                $table->string('keywords')->nullable()->index();
+                $table->string('campaign', 70)->nullable()->index();
+                $table->string('adgroup', 70)->nullable()->index();
+                $table->string('matchtype', 6)->nullable()->index();
+                $table->string('device', 7)->nullable()->index();
+                $table->string('adposition', 5)->nullable()->index();
+                $table->string('network', 7)->nullable()->index();
 
                 $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
                 $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

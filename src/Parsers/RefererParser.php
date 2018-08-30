@@ -13,16 +13,16 @@ use Snowplow\RefererParser\Referer;
 class RefererParser
 {
     /**
+     * @var string
+     */
+    protected $refererUrl;
+
+    /**
      * Referer: Result of Parsing
      *
      * @var Referer
      */
     protected $referer;
-
-    /**
-     * @var string
-     */
-    protected $refererUrl;
 
     /**
      * RefererParser constructor.
@@ -43,33 +43,63 @@ class RefererParser
     /**
      * Delivers the Attributes of the Referer
      *
-     * @return array|null
+     * @return null|RefererResult
      */
-    public function getRefererAttributes()
+    public function getResult(): ?RefererResult
     {
-        try {
-            if ($this->referer && $this->referer->isKnown()) {
-                return [
-                    'domain'       => $this->getHost(),
-                    'medium'       => $this->referer->getMedium(),
-                    'source'       => $this->referer->getSource(),
-                    'search_terms' => $this->referer->getSearchTerm(),
-                ];
-            } else {
-                return NULL;
-            }
-        } catch (\Exception $e) {
-            return NULL;
+        $refererResult = new RefererResult();
+
+        if (isset($this->referer) && $this->referer->isKnown() && $this->referer->isValid()) {
+            $refererResult->url = $this->refererUrl;
+            $refererResult->domain = parse_url($this->refererUrl, PHP_URL_HOST);
+            $refererResult->source = $this->getSource();
+            $refererResult->medium = $this->getMedium();
+            $refererResult->campaign = '';
+            $refererResult->adgroup = '';
+            $refererResult->matchtype = '';
+            $refererResult->device = '';
+            $refererResult->keywords = $this->getKeywords();
+            $refererResult->adposition = '';
+            $refererResult->network = '';
+            $refererResult->gclid = '';
+        }
+
+        return $refererResult;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSource(): string
+    {
+        if ($this->referer && $this->referer->isKnown()) {
+            return $this->referer->getSource();
+        } else {
+            return '';
         }
     }
 
     /**
-     * Gets the host from the referer Url
-     *
      * @return string
      */
-    public function getHost(): string
+    protected function getMedium(): string
     {
-        return parse_url($this->refererUrl, PHP_URL_HOST);
+        if ($this->referer && $this->referer->isKnown()) {
+            return $this->referer->getMedium();
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getKeywords(): string
+    {
+        if ($this->referer && $this->referer->isKnown()) {
+            return $this->referer->getSearchTerm();
+        } else {
+            return '';
+        }
     }
 }
