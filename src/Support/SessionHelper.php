@@ -59,6 +59,7 @@ class SessionHelper
     {
         $uuid = Uuid::uuid1()->toString();
         $this->request->session()->put($this->sessionName, $uuid);
+
         return $uuid;
     }
 

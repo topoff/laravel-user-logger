@@ -22,12 +22,10 @@ class UserLoggerServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         $this->publishes([
                              __DIR__ . '/../config/user-logger.php' => config_path('user-logger.php'),
-                         ],
-                         'config');
+                         ], 'config');
 
         $this->loadMigrationsFrom(__DIR__ . '/../resources/Migrations/');
 
-        // Problem, it's not possible (yet?) to control the execution order of the middlewares
         $this->registerMiddleware(InjectUserLogger::class);
     }
 
@@ -49,19 +47,9 @@ class UserLoggerServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/user-logger.php', 'user-logger');
 
-        $this->app->singleton(UserLogger::class,
-            function ($app) {
-                return new UserLogger($app,
-                                      new AgentRepository(),
-                                      new DeviceRepository(),
-                                      new DomainRepository(),
-                                      new LanguageRepository(),
-                                      new LogRepository(),
-                                      new UriRepository(),
-                                      new RefererRepository(),
-                                      new SessionRepository(),
-                                      $app['request']);
-            });
+        $this->app->singleton(UserLogger::class, function ($app) {
+            return new UserLogger($app, new AgentRepository(), new DeviceRepository(), new DomainRepository(), new LanguageRepository(), new LogRepository(), new UriRepository(), new RefererRepository(), new SessionRepository(), $app['request']);
+        });
 
         $this->app->alias(UserLogger::class, 'userLogger');
     }

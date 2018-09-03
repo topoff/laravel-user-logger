@@ -32,11 +32,11 @@ You can change the configuration with
 php artisan vendor:publish
 ```
 
-You need to create a connection namend laravel-user-logger in your config/database.php
+You need to create a connection namend user-logger in your config/database.php
 
 
 ```php
-        'laravel-user-logger' => [
+        'user-logger' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),

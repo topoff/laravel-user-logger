@@ -6,8 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Class Session
+ *
+ * @package Topoff\LaravelUserLogger\Models
+ */
 class Session extends Model
 {
+    /**
+     * Necessary, Because the primary key is a uuid
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
     /**
      * Indicates if the model should be timestamped.
      *
@@ -20,7 +32,7 @@ class Session extends Model
      *
      * @var string
      */
-    protected $connection = 'laravel-user-logger';
+    protected $connection = 'user-logger';
 
     /**
      * The table associated with the model.
@@ -35,7 +47,7 @@ class Session extends Model
      * @var array
      */
     protected $fillable = [
-        'session_key',
+        'id',
         'user_id',
         'device_id',
         'agent_id',

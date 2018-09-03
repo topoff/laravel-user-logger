@@ -10,14 +10,18 @@ use Topoff\LaravelUserLogger\Models\Language;
 use Topoff\LaravelUserLogger\Models\Referer;
 use Topoff\LaravelUserLogger\Models\Session;
 
+/**
+ * Class SessionRepository
+ *
+ * @package Topoff\LaravelUserLogger\Repositories
+ */
 class SessionRepository
 {
     /**
-     * Finds an existing Uri or creates a new DB Record
+     * Get or Create a session
      * If there was no user in the session but now there is one, it gets updated.
-     * updates field updated_at on every access
      *
-     * @param string        $key
+     * @param string        $uuid
      * @param User|null     $user
      * @param Device|null   $device
      * @param Agent|null    $agent
@@ -28,7 +32,7 @@ class SessionRepository
      *
      * @return Session
      */
-    public function findOrCreate(string $key,
+    public function findOrCreate(string $uuid,
                                  User $user = NULL,
                                  Device $device = NULL,
                                  Agent $agent = NULL,
@@ -37,22 +41,52 @@ class SessionRepository
                                  string $clientIp = NULL,
                                  ?bool $isRobot = false): Session
     {
-        $session = Session::firstOrCreate(['session_key' => $key], [
+        if (config('user-logger.log_ip') !== true) {
+            $clientIp = NULL;
+        }
+
+        $session = Session::firstOrCreate(['id' => $uuid], [
             'user_id'     => $user->id ?? NULL,
             'device_id'   => $device->id ?? NULL,
             'agent_id'    => $agent->id ?? NULL,
             'referer_id'  => $referer->id ?? NULL,
             'language_id' => $language->id ?? NULL,
-            'client_ip'   => $clientIp ?? NULL,
+            'client_ip'   => !empty($clientIp) ? $this->hashIp($clientIp) : NULL,
             'is_robot'    => $isRobot,
         ]);
 
-        if ($session->exists === true) {
+        if (empty($session->user_id) && isset($user)) {
             $session->updated_at = Carbon::now();
-            $session->user_id = $session->user_id ?? (isset($user) ? $user->id : NULL);
+            $session->user_id = $user->id;
             $session->save();
         }
 
         return $session;
+    }
+
+    /**
+     * Hash the ip and change it a bit that it don't fits with lookup tables
+     * a little bit security through obscurity
+     *
+     * @param string $clientIp
+     *
+     * @return string
+     */
+    private function hashIp(string $clientIp): string
+    {
+        $clientIp = md5($clientIp);
+        return substr($clientIp, 0, 10) . substr($clientIp, 20) . substr($clientIp, 10, 10);
+    }
+
+    /**
+     * Get an existing session
+     *
+     * @param string $uuid
+     *
+     * @return null|Session
+     */
+    public function find(string $uuid): ?Session
+    {
+        return Session::find($uuid);
     }
 }

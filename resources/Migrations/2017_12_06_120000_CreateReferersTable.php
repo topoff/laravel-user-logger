@@ -30,7 +30,6 @@ class CreateReferersTable extends Migration
                 $table->string('network', 7)->nullable()->index();
 
                 $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-                $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 
                 $table->foreign('domain_id')->references('id')->on('domains');
             });

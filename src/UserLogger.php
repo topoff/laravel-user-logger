@@ -194,7 +194,7 @@ class UserLogger
                 }
             } catch (Exception $e) {
                 // Sometimes reached..
-                Logger::warning('Error in topoff/tracker: ' . $e->getMessage(), $e->getTrace());
+                Logger::warning('Error in topoff/user-logger: ' . $e->getMessage(), $e->getTrace());
             }
         }
     }
@@ -216,7 +216,8 @@ class UserLogger
         // Domain
         $this->domain = $this->domainRepository->findOrCreate(['name' => $this->request->getHost(), 'local' => true]);
 
-        return $this->logRepository->findOrCreate($this->getOrCreateSession(), $this->domain, $uri, $event);
+        // Log
+        return $this->logRepository->create($this->getOrCreateSession(), $this->domain, $uri, $event);
     }
 
     /**
@@ -228,26 +229,39 @@ class UserLogger
      */
     protected function getOrCreateSession(): Session
     {
-        $this->referer = $this->getOrCreateReferer();
-
-        try {
-            $userAgentParser = new UserAgentParser($this->request);
-            $this->device = $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes());
-            $this->agent = $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes());
-        } catch (NoResultFoundException $e) {
-            $this->device = $this->deviceRepository->findOrCreateNotDetected();
-            $this->agent = $this->agentRepository->findOrCreateNotDetected();
+        $session = new SessionHelper($this->request);
+        if ($session->isExistingSession()) {
+            // Prüfen ob die Session wirklich in der DB vorhanden ist, sollte eigentlich zu 100%
+            // todo, später entfernen und direkt über die session id gehen, bessere performance
+            $this->session = $this->sessionRepository->find($session->getSessionUuid());
+            \Log::warning(get_class($this) . '->' . __FUNCTION__ . ': die session ' . $session->getSessionUuid() . ' wurde nicht in der DB table sessions gefunden.');
         }
 
-        // Language
-        $languageParser = new LanguageParser($this->request);
-        $this->language = $this->languageRepository->findOrCreate($languageParser->getLanguageAttributes());
+        if (empty($this->session)) {
+            $this->referer = $this->getOrCreateReferer();
 
-        // Session
-        $session = new SessionHelper($this->request);
-        $this->session = $this->sessionRepository->findOrCreate($session->getSessionUuid(), Auth::user(), $this->device, $this->agent, $this->referer, $this->language, $this->request->ip(), $this->device['is_robot']);
+            try {
+                $userAgentParser = new UserAgentParser($this->request);
+                $this->device = $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes());
+                $this->agent = $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes());
+            } catch (NoResultFoundException $e) {
+                $this->device = NULL; //$this->deviceRepository->findOrCreateNotDetected();
+                $this->agent = NULL; //$this->agentRepository->findOrCreateNotDetected();
+            }
 
-        return $this->session;
+            // Language
+            $languageParser = new LanguageParser($this->request);
+            if (!empty($languageParser)) {
+                $this->language = $this->languageRepository->findOrCreate($languageParser->getLanguageAttributes());
+            } else {
+                $this->language = NULL;
+            }
+
+            // Session
+            return $this->sessionRepository->findOrCreate($session->getSessionUuid(), Auth::user(), $this->device, $this->agent, $this->referer, $this->language, $this->request->ip(), $this->device['is_robot']);
+        } else {
+            return $this->session;
+        }
     }
 
     /**
@@ -304,17 +318,24 @@ class UserLogger
     /**
      * Update an existing Log with an Event or create a new Log
      *
-     * @param string $event
+     * @param string      $event
+     *
+     * @param string|null $entityType
+     * @param string|null    $entityId
      *
      * @return Log
      * @throws \UserAgentParser\Exception\PackageNotLoadedException
      */
-    public function trackEvent(string $event): Log
+    public function setEvent(string $event, string $entityType = NULL, string $entityId = NULL): ?Log
     {
-        if ($this->log) {
-            return $this->logRepository->updateWithEvent($this->log, $event);
+        if ($this->isEnabled()) {
+            if ($this->log) {
+                return $this->logRepository->updateWithEvent($this->log, $event, $entityType, $entityId);
+            } else {
+                return $this->createLog($event);
+            }
         } else {
-            return $this->createLog($event);
+            return null;
         }
     }
 
@@ -345,6 +366,12 @@ class UserLogger
      */
     public function getCurrentDevice(): ?Device
     {
+        // because of performance it's just parsed in the first request,
+        // so otherwise it has to be taken from the db out of the session
+        if (empty($this->device)) {
+            $this->device = $this->session->device;
+        }
+
         return $this->device;
     }
 
@@ -355,16 +382,31 @@ class UserLogger
      */
     public function getCurrentReferer(): ?Referer
     {
+        // because of performance it's just parsed in the first request,
+        // so otherwise it has to be taken from the db out of the session
+        if (empty($this->referer)) {
+            $this->referer = $this->session->referer;
+        }
+
         return $this->referer;
     }
 
     /**
      * Get the (browser) language of the current Request
+     * Private because it's not set in every request,
+     * because of performance improvement, we just
+     * parse it if there is no session
      *
      * @return null|Language
      */
     public function getCurrentLanguage(): ?Language
     {
+        // because of performance it's just parsed in the first request,
+        // so otherwise it has to be taken from the db out of the session
+        if (empty($this->language)) {
+            $this->language = $this->session->language;
+        }
+
         return $this->language;
     }
 
@@ -375,6 +417,12 @@ class UserLogger
      */
     public function getCurrentAgent(): ?Agent
     {
+        // because of performance it's just parsed in the first request,
+        // so otherwise it has to be taken from the db out of the session
+        if (empty($this->agent)) {
+            $this->agent = $this->session->agent;
+        }
+
         return $this->agent;
     }
 

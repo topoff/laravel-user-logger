@@ -15,10 +15,6 @@ class LanguageRepository
      */
     public function findOrCreate(Array $attributes): Language
     {
-        if (empty($attributes['preference'])) {
-            $attributes['preference'] = 'unknown';
-        }
-
         return Language::firstOrCreate($attributes);
     }
 }

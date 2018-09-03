@@ -14,15 +14,13 @@ class CreateSessionsTable extends Migration
     public function up()
     {
         Schema::connection($this->connection)->create('sessions', function (Blueprint $table) {
-            $table->bigIncrements('id');
-
-            $table->uuid('session_key')->unique()->nullable();
+            $table->uuid('id')->primary();
             $table->integer('user_id')->unsigned()->nullable();
             $table->bigInteger('device_id')->unsigned()->nullable();
             $table->bigInteger('agent_id')->unsigned()->nullable();
             $table->bigInteger('referer_id')->unsigned()->nullable();
             $table->bigInteger('language_id')->unsigned()->nullable();
-            $table->string('client_ip', 45)->nullable();
+            $table->string('client_ip', 32)->nullable();
             $table->boolean('is_robot')->nullable();
 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

@@ -26,17 +26,23 @@ return [
         'debugbar*',
         'debugbar.*',
         '_debugbar*',
-        'log-viewer*',
-        'admin*',
         '*.jpg',
         '*.jpeg',
         '*.js',
         '*.css',
         '*.map',
+        '*.png',
+        '*.gif',
     ],
 
     /*
      * session_name
      */
-    'session_name' => 'user-logger-session',
+    'session_name'        => 'user-logger-session',
+
+    /*
+     * log ip -> its always hashed
+     */
+    'log_ip'              => true,
+
 ];

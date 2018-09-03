@@ -24,7 +24,7 @@ class Uri extends Model
      *
      * @var string
      */
-    protected $connection = 'laravel-user-logger';
+    protected $connection = 'user-logger';
 
     /**
      * The table associated with the model.
