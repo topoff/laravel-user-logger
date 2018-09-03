@@ -299,6 +299,30 @@ class UserLogger
     }
 
     /**
+     * Update an existing Log with an Event or create a new Log
+     *
+     * @param string      $event
+     *
+     * @param string|null $entityType
+     * @param string|null $entityId
+     *
+     * @return Log
+     * @throws \UserAgentParser\Exception\PackageNotLoadedException
+     */
+    public function setEvent(string $event, string $entityType = NULL, string $entityId = NULL): ?Log
+    {
+        if ($this->isEnabled()) {
+            if ($this->log) {
+                return $this->logRepository->updateWithEvent($this->log, $event, $entityType, $entityId);
+            } else {
+                return $this->createLog($event);
+            }
+        } else {
+            return NULL;
+        }
+    }
+
+    /**
      * Check if the UserLogger is enabled
      *
      * @return boolean
@@ -313,30 +337,6 @@ class UserLogger
         }
 
         return $this->enabled;
-    }
-
-    /**
-     * Update an existing Log with an Event or create a new Log
-     *
-     * @param string      $event
-     *
-     * @param string|null $entityType
-     * @param string|null    $entityId
-     *
-     * @return Log
-     * @throws \UserAgentParser\Exception\PackageNotLoadedException
-     */
-    public function setEvent(string $event, string $entityType = NULL, string $entityId = NULL): ?Log
-    {
-        if ($this->isEnabled()) {
-            if ($this->log) {
-                return $this->logRepository->updateWithEvent($this->log, $event, $entityType, $entityId);
-            } else {
-                return $this->createLog($event);
-            }
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -366,10 +366,14 @@ class UserLogger
      */
     public function getCurrentDevice(): ?Device
     {
-        // because of performance it's just parsed in the first request,
-        // so otherwise it has to be taken from the db out of the session
-        if (empty($this->device)) {
-            $this->device = $this->session->device;
+        try {
+            // because of performance it's just parsed in the first request,
+            // so otherwise it has to be taken from the db out of the session
+            if (empty($this->device) && !empty($this->session)) {
+                $this->device = $this->session->device;
+            }
+        } catch (Exception $e) {
+            $this->device = NULL;
         }
 
         return $this->device;
@@ -382,10 +386,14 @@ class UserLogger
      */
     public function getCurrentReferer(): ?Referer
     {
-        // because of performance it's just parsed in the first request,
-        // so otherwise it has to be taken from the db out of the session
-        if (empty($this->referer)) {
-            $this->referer = $this->session->referer;
+        try {
+            // because of performance it's just parsed in the first request,
+            // so otherwise it has to be taken from the db out of the session
+            if (empty($this->referer) && !empty($this->session)) {
+                $this->referer = $this->session->referer;
+            }
+        } catch (Exception $e) {
+            $this->referer = NULL;
         }
 
         return $this->referer;
@@ -401,10 +409,14 @@ class UserLogger
      */
     public function getCurrentLanguage(): ?Language
     {
-        // because of performance it's just parsed in the first request,
-        // so otherwise it has to be taken from the db out of the session
-        if (empty($this->language)) {
-            $this->language = $this->session->language;
+        try {
+            // because of performance it's just parsed in the first request,
+            // so otherwise it has to be taken from the db out of the session
+            if (empty($this->language) && !empty($this->session)) {
+                $this->language = $this->session->language;
+            }
+        } catch (Exception $e) {
+            $this->language = NULL;
         }
 
         return $this->language;
@@ -417,10 +429,14 @@ class UserLogger
      */
     public function getCurrentAgent(): ?Agent
     {
-        // because of performance it's just parsed in the first request,
-        // so otherwise it has to be taken from the db out of the session
-        if (empty($this->agent)) {
-            $this->agent = $this->session->agent;
+        try {
+            // because of performance it's just parsed in the first request,
+            // so otherwise it has to be taken from the db out of the session
+            if (empty($this->agent) && !empty($this->session)) {
+                $this->agent = $this->session->agent;
+            }
+        } catch (Exception $e) {
+            $this->agent = NULL;
         }
 
         return $this->agent;
