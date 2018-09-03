@@ -84,4 +84,28 @@ class UtmSourceBing extends AbstractUtmSource
         }
     }
 
+    /**
+     * @return string
+     */
+    protected function getAdgroupId(): string
+    {
+        return $this->request->get('utm_content') ?? '';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getKeywords(): string
+    {
+        return $this->request->get('utm_term') ?? '';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCampaignId(): string
+    {
+        return $this->request->get('utm_campaign') ?? '';
+    }
+
 }
