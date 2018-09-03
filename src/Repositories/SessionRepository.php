@@ -75,7 +75,7 @@ class SessionRepository
     private function hashIp(string $clientIp): string
     {
         $clientIp = md5($clientIp);
-        return substr($clientIp, 0, 10) . substr($clientIp, 20) . substr($clientIp, 10, 10);
+        return substr($clientIp, 0, 10) . substr($clientIp, 20, 12) . substr($clientIp, 11, 10);
     }
 
     /**
