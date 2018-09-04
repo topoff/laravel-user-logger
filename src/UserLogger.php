@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Log as Logger;
 use Topoff\LaravelUserLogger\Models\Agent;
+use Topoff\LaravelUserLogger\Models\Debug;
 use Topoff\LaravelUserLogger\Models\Device;
 use Topoff\LaravelUserLogger\Models\Domain;
 use Topoff\LaravelUserLogger\Models\Language;
@@ -234,6 +235,7 @@ class UserLogger
             // Prüfen ob die Session wirklich in der DB vorhanden ist, sollte eigentlich zu 100%
             // todo, später entfernen und direkt über die session id gehen, bessere performance
             $this->session = $this->sessionRepository->find($session->getSessionUuid());
+            $this->session = $this->sessionRepository->updateUser($this->session, Auth::user());
             if (empty($this->session)) \Log::warning(get_class($this) . '->' . __FUNCTION__ . ': die session ' . $session->getSessionUuid() . ' wurde nicht in der DB table sessions gefunden.');
         }
 
@@ -245,6 +247,9 @@ class UserLogger
                 $this->device = $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes());
                 $this->agent = $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes());
             } catch (NoResultFoundException $e) {
+                if (config('user-logger.debug') === true) {
+                    Debug::create(['kind' => 'user-agent', 'value' => $this->request->userAgent()]);
+                }
                 $this->device = NULL; //$this->deviceRepository->findOrCreateNotDetected();
                 $this->agent = NULL; //$this->agentRepository->findOrCreateNotDetected();
             }
@@ -254,6 +259,9 @@ class UserLogger
             if (!empty($languageParser)) {
                 $this->language = $this->languageRepository->findOrCreate($languageParser->getLanguageAttributes());
             } else {
+                if (config('user-logger.debug') === true) {
+                    Debug::create(['kind' => 'language', 'value' => $this->request->header('accept-language')]);
+                }
                 $this->language = NULL;
             }
 
@@ -283,6 +291,11 @@ class UserLogger
         if (!empty($refererResult->domain)) {
             $domain = $this->getOrCreateDomain($refererResult->domain);
             $referer = $this->refererRepository->findOrCreate($domain, $refererResult);
+        } else {
+            if (config('user-logger.debug') === true) {
+                Debug::create(['kind' => 'url', 'value' => $this->request->fullUrl()]);
+                if (!empty($this->request->headers->get('referer'))) Debug::create(['kind' => 'referer', 'value' => $this->request->headers->get('referer')]);
+            }
         }
 
         return $referer ?? NULL;

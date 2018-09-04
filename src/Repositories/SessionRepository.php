@@ -55,11 +55,7 @@ class SessionRepository
             'is_robot'    => $isRobot,
         ]);
 
-        if (empty($session->user_id) && isset($user)) {
-            $session->updated_at = Carbon::now();
-            $session->user_id = $user->id;
-            $session->save();
-        }
+        $this->updateUser($session, $user);
 
         return $session;
     }
@@ -88,5 +84,24 @@ class SessionRepository
     public function find(string $uuid): ?Session
     {
         return Session::find($uuid);
+    }
+
+    /**
+     * Updates the user of the session, if not present yet
+     *
+     * @param Session $session
+     * @param User    $user
+     *
+     * @return Session
+     */
+    public function updateUser(Session $session, User $user = null): Session
+    {
+        if (empty($session->user_id) && isset($user)) {
+            $session->updated_at = Carbon::now();
+            $session->user_id = $user->id;
+            $session->save();
+        }
+
+        return $session;
     }
 }

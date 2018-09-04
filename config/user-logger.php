@@ -45,4 +45,8 @@ return [
      */
     'log_ip'              => true,
 
+    /*
+     * debug not parsable Agents, Referers, etc. in debugs table
+     */
+    'debug'               => true,
 ];
