@@ -75,4 +75,9 @@ class RefererResult
      * @var string
      */
     public $gclid = '';
+
+    /**
+     * @var bool
+     */
+    public $domain_intern = false;
 }

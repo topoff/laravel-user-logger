@@ -2,6 +2,7 @@
 
 namespace Topoff\LaravelUserLogger\Parsers;
 
+use Snowplow\RefererParser\Medium;
 use Snowplow\RefererParser\Parser;
 use Snowplow\RefererParser\Referer;
 
@@ -33,7 +34,7 @@ class RefererParser
     public function __construct(string $refererUrl = NULL, string $pageUrl = NULL)
     {
         if ($refererUrl) {
-            $parser = new Parser();
+            $parser = new Parser(null, config('user-logger.internal_domains'));
             $this->referer = $parser->parse($refererUrl, $pageUrl);
         }
 
@@ -49,9 +50,9 @@ class RefererParser
     {
         $refererResult = new RefererResult();
 
+        $refererResult->url = $this->refererUrl;
+        $refererResult->domain = parse_url($this->refererUrl, PHP_URL_HOST);
         if (isset($this->referer) && $this->referer->isKnown() && $this->referer->isValid()) {
-            $refererResult->url = $this->refererUrl;
-            $refererResult->domain = parse_url($this->refererUrl, PHP_URL_HOST);
             $refererResult->source = $this->getSource();
             $refererResult->medium = $this->getMedium();
             $refererResult->campaign = '';
@@ -62,6 +63,7 @@ class RefererParser
             $refererResult->adposition = '';
             $refererResult->network = '';
             $refererResult->gclid = '';
+            $refererResult->domain_intern = $this->referer->getMedium() === Medium::INTERNAL;
         }
 
         return $refererResult;
@@ -73,7 +75,7 @@ class RefererParser
     protected function getSource(): string
     {
         if ($this->referer && $this->referer->isKnown()) {
-            return $this->referer->getSource();
+            return $this->referer->getSource() ?? '';
         } else {
             return '';
         }
@@ -85,7 +87,7 @@ class RefererParser
     protected function getMedium(): string
     {
         if ($this->referer && $this->referer->isKnown()) {
-            return $this->referer->getMedium();
+            return $this->referer->getMedium() ?? '';
         } else {
             return '';
         }
@@ -97,7 +99,7 @@ class RefererParser
     protected function getKeywords(): string
     {
         if ($this->referer && $this->referer->isKnown()) {
-            return $this->referer->getSearchTerm();
+            return $this->referer->getSearchTerm() ?? '';
         } else {
             return '';
         }

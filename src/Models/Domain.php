@@ -39,6 +39,15 @@ class Domain extends Model
     ];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'local' => 'boolean',
+    ];
+
+    /**
      * Can have many Logs
      *
      * @return HasMany

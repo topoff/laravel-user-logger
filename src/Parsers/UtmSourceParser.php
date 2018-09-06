@@ -2,8 +2,6 @@
 
 namespace Topoff\LaravelUserLogger\Parsers;
 
-use Illuminate\Http\Request;
-
 /**
  * Class UtmSourceParser
  *
@@ -12,9 +10,9 @@ use Illuminate\Http\Request;
 class UtmSourceParser
 {
     /**
-     * @var Request
+     * @var string
      */
-    protected $request;
+    protected $url;
 
     /**
      * @var array
@@ -24,11 +22,12 @@ class UtmSourceParser
     /**
      * UtmSourceParser constructor.
      *
-     * @param Request $request
+     * @param string $url full url or query string with ? in the beginning
      */
-    public function __construct(Request $request)
+    public function __construct(string $url)
     {
-        $this->request = $request;
+        $this->url = $url;
+        parse_str(parse_url($url, PHP_URL_QUERY), $this->attributes);
     }
 
     /**
@@ -40,17 +39,17 @@ class UtmSourceParser
     public function getResult(): ?RefererResult
     {
         if ($this->hasUtmSource()) {
-            switch($this->request->get('utm_source')) {
+            switch ($this->attributes['utm_source']) {
                 case 'google':
-                    $source = new UtmSourceGoogle($this->request);
+                    $source = new UtmSourceGoogle($this->url);
                     break;
 
                 case 'bing':
-                    $source = new UtmSourceBing($this->request);
+                    $source = new UtmSourceBing($this->url);
                     break;
 
                 default:
-                    $source = new UtmSourceDefault($this->request);
+                    $source = new UtmSourceDefault($this->url);
                     break;
             }
 
@@ -67,7 +66,7 @@ class UtmSourceParser
      */
     public function hasUtmSource(): bool
     {
-        return !empty($this->request->get('utm_source'));
+        return !empty($this->attributes['utm_source']);
     }
 
 }

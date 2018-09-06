@@ -18,6 +18,7 @@ use Topoff\LaravelUserLogger\Models\Referer;
 use Topoff\LaravelUserLogger\Models\Session;
 use Topoff\LaravelUserLogger\Parsers\LanguageParser;
 use Topoff\LaravelUserLogger\Parsers\RefererParser;
+use Topoff\LaravelUserLogger\Parsers\UrlPathParser;
 use Topoff\LaravelUserLogger\Parsers\UserAgentParser;
 use Topoff\LaravelUserLogger\Parsers\UtmSourceParser;
 use Topoff\LaravelUserLogger\Repositories\AgentRepository;
@@ -273,23 +274,48 @@ class UserLogger
     }
 
     /**
-     * Get Referer, utm_source parameter wins over client referer
+     * Get Referer, in this order
+     *
+     * 1 - from url: utm_source -ok
+     * 2 - from referer: with referer-parser -ok
+     * 3 - from referer: utm_source
+     * 4 - from url: atlg
+     * 5 - from referer: url & is local domain
+     * 6 - NULL
      *
      * @return null|Referer
      */
     protected function getOrCreateReferer(): ?Referer
     {
         $refererUrl = $this->request->headers->get('referer');
-        $utmParser = new UtmSourceParser($this->request);
-        if ($utmParser->hasUtmSource() === true) {
-            $refererResult = $utmParser->getResult();
-        } else {
-            $refererParser = new RefererParser($refererUrl, $this->request->url());
+
+        # 1 - from url: utm_source -ok
+        $utmUrlParser = new UtmSourceParser($this->request->fullUrl());
+        $refererResult = $utmUrlParser->getResult();
+
+        # 2 - from referer: with referer-parser -ok
+        if ((empty($refererResult) || empty($refererResult->source)) && !empty($refererUrl)) {
+            $refererParser = new RefererParser($refererUrl);
             $refererResult = $refererParser->getResult();
+        }
+        # 3 - from referer: utm_source
+        if ((empty($refererResult) || empty($refererResult->source)) && !empty($refererUrl)) {
+            $utmRefParser = new UtmSourceParser($refererUrl);
+            $refererResult = $utmRefParser->getResult();
+        }
+        # 4 - from referer: local domain
+        if (empty($refererResult) || empty($refererResult->source)) {
+            $refererParser = new RefererParser($refererUrl, $this->request->fullUrl());
+            $refererResult = $refererParser->getResult();
+        }
+        # 5 - from url: atlg
+        if (empty($refererResult) || empty($refererResult->source)) {
+            $urlPathParser = new UrlPathParser($this->request->fullUrl(), config('user-logger.internal_domains'));
+            $refererResult = $urlPathParser->getResult();
         }
 
         if (!empty($refererResult->domain)) {
-            $domain = $this->getOrCreateDomain($refererResult->domain);
+            $domain = $this->getOrCreateDomain($refererResult->domain, $refererResult->domain_intern);
             $referer = $this->refererRepository->findOrCreate($domain, $refererResult);
         } else {
             if (config('user-logger.debug') === true) {
@@ -303,12 +329,13 @@ class UserLogger
 
     /**
      * @param string $name
+     * @param bool   $local
      *
      * @return Domain
      */
-    protected function getOrCreateDomain(string $name): Domain
+    protected function getOrCreateDomain(string $name, bool $local): Domain
     {
-        return $this->domainRepository->findOrCreate(['name' => $name, 'local' => false]);
+        return $this->domainRepository->findOrCreate(['name' => $name, 'local' => $local]);
     }
 
     /**

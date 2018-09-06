@@ -6,9 +6,19 @@ class UtmSourceDefault extends AbstractUtmSource
 {
 
     /**
+     * Which class parsed the result
+     *
      * @return string
      */
-    protected function getMatchtype(): string
+    protected function getClass(): string
+    {
+        return self::class;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getDevice(): string
     {
         return '';
     }
@@ -16,7 +26,7 @@ class UtmSourceDefault extends AbstractUtmSource
     /**
      * @return string
      */
-    protected function getDevice(): string
+    protected function getMatchtype(): string
     {
         return '';
     }

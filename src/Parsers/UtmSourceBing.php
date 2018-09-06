@@ -2,8 +2,6 @@
 
 namespace Topoff\LaravelUserLogger\Parsers;
 
-use Illuminate\Http\Request;
-
 /**
  * Class UtmSourceGoogle
  *
@@ -35,11 +33,37 @@ class UtmSourceBing extends AbstractUtmSource
     /**
      * UtmSourceGoogle constructor.
      *
-     * @param Request $request
+     * @param string $url
      */
-    public function __construct(Request $request)
+    public function __construct(string $url)
     {
-        parent::__construct($request);
+        parent::__construct($url);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAdgroupId(): string
+    {
+        return $this->attributes['utm_content'] ?? '';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCampaignId(): string
+    {
+        return $this->attributes['utm_campaign'] ?? '';
+    }
+
+    /**
+     * Which class parsed the result
+     *
+     * @return string
+     */
+    protected function getClass(): string
+    {
+        return self::class;
     }
 
     /**
@@ -49,11 +73,19 @@ class UtmSourceBing extends AbstractUtmSource
      */
     protected function getDevice(): string
     {
-        if (array_key_exists($this->request->get('device'), $this->devices)) {
-            return $this->devices[$this->request->get('device')];
+        if (array_key_exists('device', $this->devices)) {
+            return $this->devices[$this->attributes['device']];
         } else {
             return '';
         }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getKeywords(): string
+    {
+        return $this->attributes['utm_term'] ?? '';
     }
 
     /**
@@ -63,8 +95,8 @@ class UtmSourceBing extends AbstractUtmSource
      */
     protected function getMatchtype(): string
     {
-        if (array_key_exists($this->request->get('matchtype'), $this->matchtypes)) {
-            return $this->matchtypes[$this->request->get('matchtype')];
+        if (array_key_exists('matchtype', $this->matchtypes)) {
+            return $this->matchtypes[$this->attributes['matchtype']];
         } else {
             return '';
         }
@@ -77,35 +109,11 @@ class UtmSourceBing extends AbstractUtmSource
      */
     protected function getNetwork(): string
     {
-        if (array_key_exists($this->request->get('network'), $this->networks)) {
-            return $this->networks[$this->request->get('network')];
+        if (array_key_exists('network', $this->networks)) {
+            return $this->networks[$this->attributes['network']];
         } else {
             return '';
         }
-    }
-
-    /**
-     * @return string
-     */
-    protected function getAdgroupId(): string
-    {
-        return $this->request->get('utm_content') ?? '';
-    }
-
-    /**
-     * @return string
-     */
-    protected function getKeywords(): string
-    {
-        return $this->request->get('utm_term') ?? '';
-    }
-
-    /**
-     * @return string
-     */
-    protected function getCampaignId(): string
-    {
-        return $this->request->get('utm_campaign') ?? '';
     }
 
 }

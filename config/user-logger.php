@@ -41,6 +41,16 @@ return [
     'session_name'        => 'user-logger-session',
 
     /*
+     * internal domains, with / without www does matter
+     */
+    'internal_domains'    => [],
+
+    /*
+     * Mark referer as mail, if there is a special keyword in the url path
+     */
+    'path_is_mail'        => [],
+
+    /*
      * log ip -> its always hashed
      */
     'log_ip'              => true,

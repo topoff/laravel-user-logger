@@ -2,8 +2,6 @@
 
 namespace Topoff\LaravelUserLogger\Parsers;
 
-use Illuminate\Http\Request;
-
 /**
  * Class AbstractUtmSource
  *
@@ -14,18 +12,24 @@ use Illuminate\Http\Request;
 abstract class AbstractUtmSource
 {
     /**
-     * @var Request
+     * @var array
      */
-    protected $request;
+    protected $attributes;
+
+    /**
+     * @var string
+     */
+    protected $url;
 
     /**
      * UtmSourceGoogle constructor.
      *
-     * @param Request $request
+     * @param string $url
      */
-    public function __construct(Request $request)
+    public function __construct(string $url)
     {
-        $this->request = $request;
+        $this->url = $url;
+        parse_str(parse_url($url, PHP_URL_QUERY), $this->attributes);
     }
 
     /**
@@ -36,8 +40,8 @@ abstract class AbstractUtmSource
     public function getResult(): RefererResult
     {
         $refererResult = new RefererResult();
-        $refererResult->parser = self::class;
-        $refererResult->url = $this->request->fullUrl();
+        $refererResult->parser = $this->getClass();
+        $refererResult->url = $this->url;
         $refererResult->domain = $this->getUtmSource();
         $refererResult->source = $this->getUtmSource();
         $refererResult->medium = 'paid';
@@ -54,21 +58,11 @@ abstract class AbstractUtmSource
     }
 
     /**
-     * Is there a utm_source parameter?
-     *
-     * @return bool
-     */
-    public function hasUtmSource(): bool
-    {
-        return !empty($this->request->get('utm_source'));
-    }
-
-    /**
      * @return string
      */
     protected function getUtmSource(): string
     {
-        return $this->request->get('utm_source') ?? '';
+        return $this->attributes['utm_source'] ?? '';
     }
 
     /**
@@ -76,7 +70,7 @@ abstract class AbstractUtmSource
      */
     protected function getCampaignId(): string
     {
-        return $this->request->get('campaignid') ?? '';
+        return $this->attributes['campaignid'] ?? '';
     }
 
     /**
@@ -84,7 +78,7 @@ abstract class AbstractUtmSource
      */
     protected function getAdgroupId(): string
     {
-        return $this->request->get('adgroupid') ?? '';
+        return $this->attributes['adgroupid'] ?? '';
     }
 
     /**
@@ -102,7 +96,7 @@ abstract class AbstractUtmSource
      */
     protected function getKeywords(): string
     {
-        return $this->request->get('keyword') ?? '';
+        return $this->attributes['keyword'] ?? '';
     }
 
     /**
@@ -110,7 +104,7 @@ abstract class AbstractUtmSource
      */
     protected function getAdposition(): string
     {
-        return $this->request->get('adposition') ?? '';
+        return $this->attributes['adposition'] ?? '';
     }
 
     /**
@@ -123,6 +117,18 @@ abstract class AbstractUtmSource
      */
     protected function getGclid(): string
     {
-        return $this->request->get('gclid') ?? '';
+        return $this->attributes['gclid'] ?? '';
     }
+
+    /**
+     * Is there a utm_source parameter?
+     *
+     * @return bool
+     */
+    public function hasUtmSource(): bool
+    {
+        return !empty($this->attributes['utm_source']);
+    }
+
+    abstract protected function getClass(): string;
 }
