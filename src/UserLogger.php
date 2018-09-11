@@ -317,7 +317,7 @@ class UserLogger
             $refererParser = new RefererParser($refererUrl, $this->request->fullUrl());
             $refererResult = $refererParser->getResult();
         }
-        # 5 - from url: atlg
+        # 5 - from url: atlg - mail
         if (empty($refererResult) || empty($refererResult->source)) {
             $urlPathParser = new UrlPathParser($this->request->fullUrl(), config('user-logger.internal_domains'));
             $refererResult = $urlPathParser->getResult();

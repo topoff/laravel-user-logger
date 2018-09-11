@@ -43,7 +43,7 @@ class UrlPathParser
      */
     public function getResult(): ?RefererResult
     {
-        if ($this->getSource() !== 'mail'){
+        if ($this->urlContainsAutologin()) {
             $host = parse_url($this->url, PHP_URL_HOST);
 
             $refererResult = new RefererResult();
@@ -51,7 +51,7 @@ class UrlPathParser
             $refererResult->url = $this->url;
             $refererResult->domain = $host;
             $refererResult->source = $this->getSource();
-            $refererResult->medium = $this->getSource();
+            $refererResult->medium = $this->getMedium();
             $refererResult->campaign = '';
             $refererResult->adgroup = '';
             $refererResult->matchtype = '';
@@ -63,15 +63,36 @@ class UrlPathParser
             $refererResult->domain_intern = in_array($host, $this->internalHosts);
 
             return $refererResult;
-
         } else {
-            // Wenn es nicht mail source ist, dann soll die URL nicht als referer gerechnet werden
+            // If it's not mail source, than the URL shouldn't be used as referer
+            // otherwise all request would be loggt as local
             return NULL;
         }
     }
 
+    /**
+     * Check if the url contains a string from config which reveals autologin url
+     *
+     * @return bool
+     */
+    private function urlContainsAutologin(): bool
+    {
+        return (str_contains($this->url, config('user-logger.path_is_mail')));
+    }
+
+    /**
+     * @return null|string
+     */
     private function getSource(): ?string
     {
-        return (str_contains($this->url, config('user-logger.path_is_mail'))) ? 'mail' : NULL;
+        return $this->urlContainsAutologin() ? 'email' : NULL;
+    }
+
+    /**
+     * @return null|string
+     */
+    private function getMedium(): ?string
+    {
+        return $this->urlContainsAutologin() ? 'autologin' : NULL;
     }
 }
