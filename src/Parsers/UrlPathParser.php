@@ -41,32 +41,37 @@ class UrlPathParser
      *
      * @return RefererResult
      */
-    public function getResult(): RefererResult
+    public function getResult(): ?RefererResult
     {
-        $host = parse_url($this->url, PHP_URL_HOST);
+        if ($this->getSource() !== 'mail'){
+            $host = parse_url($this->url, PHP_URL_HOST);
 
-        $refererResult = new RefererResult();
-        $refererResult->parser = self::class;
-        $refererResult->url = $this->url;
-        $refererResult->domain = $host;
-        $refererResult->source = $this->getSource();
-        $refererResult->medium = $this->getSource();
-        $refererResult->campaign = '';
-        $refererResult->adgroup = '';
-        $refererResult->matchtype = '';
-        $refererResult->device = '';
-        $refererResult->keywords = '';
-        $refererResult->adposition = '';
-        $refererResult->network = '';
-        $refererResult->gclid = '';
-        $refererResult->domain_intern = in_array($host, $this->internalHosts);
+            $refererResult = new RefererResult();
+            $refererResult->parser = self::class;
+            $refererResult->url = $this->url;
+            $refererResult->domain = $host;
+            $refererResult->source = $this->getSource();
+            $refererResult->medium = $this->getSource();
+            $refererResult->campaign = '';
+            $refererResult->adgroup = '';
+            $refererResult->matchtype = '';
+            $refererResult->device = '';
+            $refererResult->keywords = '';
+            $refererResult->adposition = '';
+            $refererResult->network = '';
+            $refererResult->gclid = '';
+            $refererResult->domain_intern = in_array($host, $this->internalHosts);
 
-        return $refererResult;
+            return $refererResult;
+
+        } else {
+            // Wenn es nicht mail source ist, dann soll die URL nicht als referer gerechnet werden
+            return NULL;
+        }
     }
 
-    private function getSource(): string
+    private function getSource(): ?string
     {
-
-        return (str_contains($this->url, config('user-logger.path_is_mail'))) ? 'mail' : '';
+        return (str_contains($this->url, config('user-logger.path_is_mail'))) ? 'mail' : NULL;
     }
 }

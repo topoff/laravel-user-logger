@@ -29,7 +29,7 @@ class RefererRepository
 
         return Referer::firstOrCreate([
                                           'url'        => $refererResult->url,
-                                          'domain_id'     => $domain->id,
+                                          'domain_id'  => $domain->id,
                                           'source'     => $refererResult->source,
                                           'medium'     => $refererResult->medium,
                                           'keywords'   => $refererResult->keywords,

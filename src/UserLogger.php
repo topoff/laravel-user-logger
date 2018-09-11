@@ -251,7 +251,7 @@ class UserLogger
                 $this->device = $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes());
                 $this->agent = $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes());
             } catch (NoResultFoundException $e) {
-                if (config('user-logger.debug') === true) {
+                if (config('user-logger.debug') === true && !empty($this->request->userAgent())) {
                     Debug::create(['kind' => 'user-agent', 'value' => $this->request->userAgent()]);
                 }
                 $this->device = NULL; //$this->deviceRepository->findOrCreateNotDetected();
