@@ -2,7 +2,7 @@
 
 use Topoff\LaravelUserLogger\Support\Migration;
 
-class SessionsAddSuspicious extends Migration
+class MailCleanup extends Migration
 {
     /**
      * Run the migrations.
