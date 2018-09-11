@@ -85,7 +85,7 @@ class UrlPathParser
      */
     private function getSource(): ?string
     {
-        return $this->urlContainsAutologin() ? 'email' : NULL;
+        return $this->urlContainsAutologin() ? 'autologin' : NULL;
     }
 
     /**
@@ -93,6 +93,6 @@ class UrlPathParser
      */
     private function getMedium(): ?string
     {
-        return $this->urlContainsAutologin() ? 'autologin' : NULL;
+        return $this->urlContainsAutologin() ? 'email' : NULL;
     }
 }
