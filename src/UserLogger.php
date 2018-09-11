@@ -236,7 +236,7 @@ class UserLogger
             // Prüfen ob die Session wirklich in der DB vorhanden ist, sollte eigentlich zu 100%
             // todo, später entfernen und direkt über die session id gehen, bessere performance
             $this->session = $this->sessionRepository->find($session->getSessionUuid());
-            if (!empty($this->session)){
+            if (!empty($this->session)) {
                 $this->session = $this->sessionRepository->updateUser($this->session, Auth::user());
             } else {
                 \Log::warning(get_class($this) . '->' . __FUNCTION__ . ': die session ' . $session->getSessionUuid() . ' wurde nicht in der DB table sessions gefunden.');
@@ -269,8 +269,14 @@ class UserLogger
                 $this->language = NULL;
             }
 
+            if (empty($this->agent) && empty($this->device)) {
+                $suspicious = true;
+            } else {
+                $suspicious = false;
+            }
+
             // Session
-            return $this->sessionRepository->findOrCreate($session->getSessionUuid(), Auth::user(), $this->device, $this->agent, $this->referer, $this->language, $this->request->ip(), $this->device['is_robot']);
+            return $this->sessionRepository->findOrCreate($session->getSessionUuid(), Auth::user(), $this->device, $this->agent, $this->referer, $this->language, $this->request->ip(), $suspicious, $this->device['is_robot']);
         } else {
             return $this->session;
         }

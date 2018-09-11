@@ -28,6 +28,7 @@ class SessionRepository
      * @param Referer|null  $referer
      * @param Language|null $language
      * @param string|null   $clientIp
+     * @param bool          $suspicious
      * @param bool          $isRobot
      *
      * @return Session
@@ -39,6 +40,7 @@ class SessionRepository
                                  Referer $referer = NULL,
                                  Language $language = NULL,
                                  string $clientIp = NULL,
+                                 bool $suspicious = false,
                                  ?bool $isRobot = false): Session
     {
         if (config('user-logger.log_ip') !== true) {
@@ -46,13 +48,14 @@ class SessionRepository
         }
 
         $session = Session::firstOrCreate(['id' => $uuid], [
-            'user_id'     => $user->id ?? NULL,
-            'device_id'   => $device->id ?? NULL,
-            'agent_id'    => $agent->id ?? NULL,
-            'referer_id'  => $referer->id ?? NULL,
-            'language_id' => $language->id ?? NULL,
-            'client_ip'   => !empty($clientIp) ? $this->hashIp($clientIp) : NULL,
-            'is_robot'    => $isRobot,
+            'user_id'      => $user->id ?? NULL,
+            'device_id'    => $device->id ?? NULL,
+            'agent_id'     => $agent->id ?? NULL,
+            'referer_id'   => $referer->id ?? NULL,
+            'language_id'  => $language->id ?? NULL,
+            'client_ip'    => !empty($clientIp) ? $this->hashIp($clientIp) : NULL,
+            'is_suspicous' => $suspicious,
+            'is_robot'     => $isRobot,
         ]);
 
         $this->updateUser($session, $user);
@@ -75,6 +78,25 @@ class SessionRepository
     }
 
     /**
+     * Updates the user of the session, if not present yet
+     *
+     * @param Session $session
+     * @param User    $user
+     *
+     * @return Session
+     */
+    public function updateUser(Session $session, User $user = NULL): Session
+    {
+        if (empty($session->user_id) && isset($user)) {
+            $session->updated_at = Carbon::now();
+            $session->user_id = $user->id;
+            $session->save();
+        }
+
+        return $session;
+    }
+
+    /**
      * Get an existing session
      *
      * @param string $uuid
@@ -84,24 +106,5 @@ class SessionRepository
     public function find(string $uuid): ?Session
     {
         return Session::find($uuid);
-    }
-
-    /**
-     * Updates the user of the session, if not present yet
-     *
-     * @param Session $session
-     * @param User    $user
-     *
-     * @return Session
-     */
-    public function updateUser(Session $session, User $user = null): Session
-    {
-        if (empty($session->user_id) && isset($user)) {
-            $session->updated_at = Carbon::now();
-            $session->user_id = $user->id;
-            $session->save();
-        }
-
-        return $session;
     }
 }
