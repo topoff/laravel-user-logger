@@ -376,7 +376,7 @@ class UserLogger
      */
     protected function getOrCreateExperimentLog(Session $session): ExperimentLog
     {
-        $this->experimentLog = $this->experimentLogRepository->firstOrCreate(['client_ip' => $session->client_ip, 'session_id' => $session->id], ['experiment' => $this->getRandomExperimentName()]);
+        $this->experimentLog = $this->experimentLogRepository->firstOrCreate(['client_ip' => $session->client_ip], ['experiment' => $this->getRandomExperimentName()]);
 
         return $this->experimentLog;
     }
@@ -568,6 +568,9 @@ class UserLogger
      */
     public function isExperiment(string $experimentName): bool
     {
+        // Crawlers, immer erstes Experiment angeben, wird nicht geloggt
+        if (empty($this->experimentLog)) return config('user-logger.experiments')[0] === $experimentName;
+
         return $this->experimentLog->experiment === $experimentName;
     }
 }

@@ -17,7 +17,6 @@ class CreateExperimentLogsTable extends Migration
             $table->smallIncrements('id');
 
             $table->string('client_ip', 32)->index();
-            $table->uuid('session_id', 16)->index();
             $table->string('experiment', 16)->index();
 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

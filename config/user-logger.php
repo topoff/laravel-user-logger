@@ -67,6 +67,7 @@ return [
 
     /*
      * active experiments - max 16 chars
+     * crawlers will always run as in the first experiment, but will not be logged
      */
     'experiments' => [
         'a',
