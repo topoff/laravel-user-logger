@@ -47,7 +47,7 @@ class InjectUserLogger
     {
         if (config('app.debug')) {
             // Error will be displayed
-            if ($this->userLogger->isEnabled() && !$this->inExceptArray($request)) {
+            if ($this->userLogger->isEnabled() && !$this->inExceptArray($request) && !in_array($request->ip(), config('user-logger.ignore_ips'))) {
                 $this->userLogger->boot();
             }
 
@@ -57,7 +57,7 @@ class InjectUserLogger
             // BUT - regardless use it:
             // this does not log the error, but suppresses it completely
             try {
-                if ($this->userLogger->isEnabled() && !$this->inExceptArray($request)) {
+                if ($this->userLogger->isEnabled() && !$this->inExceptArray($request) && !in_array($request->ip(), config('user-logger.ignore_ips'))) {
                     $this->userLogger->boot();
                 }
             } catch (Exception $e) {

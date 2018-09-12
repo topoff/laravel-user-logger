@@ -51,6 +51,11 @@ return [
     'path_is_mail'        => [],
 
     /*
+     * Ignore Ips
+     */
+    'ignore_ips'          => ['72.55.136.152'],
+
+    /*
      * log ip -> its always hashed
      */
     'log_ip'              => true,
