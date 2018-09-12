@@ -48,14 +48,14 @@ class SessionRepository
         }
 
         $session = Session::firstOrCreate(['id' => $uuid], [
-            'user_id'      => $user->id ?? NULL,
-            'device_id'    => $device->id ?? NULL,
-            'agent_id'     => $agent->id ?? NULL,
-            'referer_id'   => $referer->id ?? NULL,
-            'language_id'  => $language->id ?? NULL,
-            'client_ip'    => !empty($clientIp) ? $this->hashIp($clientIp) : NULL,
-            'is_suspicous' => $suspicious,
-            'is_robot'     => $isRobot,
+            'user_id'       => $user->id ?? NULL,
+            'device_id'     => $device->id ?? NULL,
+            'agent_id'      => $agent->id ?? NULL,
+            'referer_id'    => $referer->id ?? NULL,
+            'language_id'   => $language->id ?? NULL,
+            'client_ip'     => !empty($clientIp) ? $this->hashIp($clientIp) : NULL,
+            'is_suspicious' => $suspicious,
+            'is_robot'      => $isRobot,
         ]);
 
         $this->updateUser($session, $user);
