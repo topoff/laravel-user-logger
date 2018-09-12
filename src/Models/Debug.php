@@ -4,6 +4,11 @@ namespace Topoff\LaravelUserLogger\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Debug
+ *
+ * @package Topoff\LaravelUserLogger\Models
+ */
 class Debug extends Model
 {
     /**

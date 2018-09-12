@@ -7,6 +7,7 @@ use Topoff\LaravelUserLogger\Middleware\InjectUserLogger;
 use Topoff\LaravelUserLogger\Repositories\AgentRepository;
 use Topoff\LaravelUserLogger\Repositories\DeviceRepository;
 use Topoff\LaravelUserLogger\Repositories\DomainRepository;
+use Topoff\LaravelUserLogger\Repositories\ExperimentLogRepository;
 use Topoff\LaravelUserLogger\Repositories\LanguageRepository;
 use Topoff\LaravelUserLogger\Repositories\LogRepository;
 use Topoff\LaravelUserLogger\Repositories\RefererRepository;
@@ -48,7 +49,7 @@ class UserLoggerServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/user-logger.php', 'user-logger');
 
         $this->app->singleton(UserLogger::class, function ($app) {
-            return new UserLogger($app, new AgentRepository(), new DeviceRepository(), new DomainRepository(), new LanguageRepository(), new LogRepository(), new UriRepository(), new RefererRepository(), new SessionRepository(), $app['request']);
+            return new UserLogger($app, new AgentRepository(), new DeviceRepository(), new DomainRepository(), new LanguageRepository(), new LogRepository(), new UriRepository(), new RefererRepository(), new SessionRepository(), new ExperimentLogRepository(), $app['request']);
         });
 
         $this->app->alias(UserLogger::class, 'userLogger');

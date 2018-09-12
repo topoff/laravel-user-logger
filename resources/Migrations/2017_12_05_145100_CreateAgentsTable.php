@@ -17,7 +17,7 @@ class CreateAgentsTable extends Migration
         Schema::connection($this->connection)->create('agents', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->string('name', 255)->nullable()->index(); // Better a duplicated name in the db than an error.. -> so no unique key
+            $table->string('name', 350)->nullable()->index(); // Better a duplicated name in the db than an error.. -> so no unique key
             $table->string('browser', 255)->nullable()->index();
             $table->string('browser_version', 255)->nullable()->index();
 

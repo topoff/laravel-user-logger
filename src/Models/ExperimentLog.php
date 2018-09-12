@@ -3,14 +3,14 @@
 namespace Topoff\LaravelUserLogger\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Class Device
+ * Class Experiment
  *
  * @package Topoff\LaravelUserLogger\Models
  */
-class Device extends Model
+class ExperimentLog extends Model
 {
     /**
      * Indicates if the model should be timestamped.
@@ -31,7 +31,7 @@ class Device extends Model
      *
      * @var string
      */
-    protected $table = 'devices';
+    protected $table = 'experimentlogs';
 
     /**
      * The attributes that are guarded from mass assignment.
@@ -45,18 +45,16 @@ class Device extends Model
      *
      * @var array
      */
-    protected $casts = [
-        'is_mobile' => 'boolean',
-        'is_robot'  => 'boolean',
-    ];
+    protected $casts = [];
 
     /**
-     * Can have many Sessions
+     * Belongs to one session
      *
-     * @return HasMany
+     * @return BelongsTo
      */
-    public function sessions(): HasMany
+    public function sessions(): BelongsTo
     {
-        return $this->hasMany(Session::class);
+        return $this->belongsTo(Session::class);
     }
+
 }

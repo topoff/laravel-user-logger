@@ -12,6 +12,7 @@ use Topoff\LaravelUserLogger\Models\Agent;
 use Topoff\LaravelUserLogger\Models\Debug;
 use Topoff\LaravelUserLogger\Models\Device;
 use Topoff\LaravelUserLogger\Models\Domain;
+use Topoff\LaravelUserLogger\Models\ExperimentLog;
 use Topoff\LaravelUserLogger\Models\Language;
 use Topoff\LaravelUserLogger\Models\Log;
 use Topoff\LaravelUserLogger\Models\Referer;
@@ -24,6 +25,7 @@ use Topoff\LaravelUserLogger\Parsers\UtmSourceParser;
 use Topoff\LaravelUserLogger\Repositories\AgentRepository;
 use Topoff\LaravelUserLogger\Repositories\DeviceRepository;
 use Topoff\LaravelUserLogger\Repositories\DomainRepository;
+use Topoff\LaravelUserLogger\Repositories\ExperimentLogRepository;
 use Topoff\LaravelUserLogger\Repositories\LanguageRepository;
 use Topoff\LaravelUserLogger\Repositories\LogRepository;
 use Topoff\LaravelUserLogger\Repositories\RefererRepository;
@@ -109,6 +111,11 @@ class UserLogger
     protected $logRepository;
 
     /**
+     * @var ExperimentLogRepository
+     */
+    protected $experimentLogRepository;
+
+    /**
      * Log
      *
      * @var Log
@@ -136,18 +143,24 @@ class UserLogger
     protected $referer;
 
     /**
+     * @var ExperimentLog
+     */
+    protected $experimentLog;
+
+    /**
      * UserLogger constructor.
      *
-     * @param Application        $app
-     * @param AgentRepository    $agentRepository
-     * @param DeviceRepository   $deviceRepository
-     * @param DomainRepository   $domainRepository
-     * @param LanguageRepository $languageRepository
-     * @param LogRepository      $logRepository
-     * @param UriRepository      $uriRepository
-     * @param RefererRepository  $refererRepository
-     * @param SessionRepository  $sessionRepository
-     * @param Request            $request
+     * @param Application             $app
+     * @param AgentRepository         $agentRepository
+     * @param DeviceRepository        $deviceRepository
+     * @param DomainRepository        $domainRepository
+     * @param LanguageRepository      $languageRepository
+     * @param LogRepository           $logRepository
+     * @param UriRepository           $uriRepository
+     * @param RefererRepository       $refererRepository
+     * @param SessionRepository       $sessionRepository
+     * @param ExperimentLogRepository $experimentLogRepository
+     * @param Request                 $request
      */
     public function __construct(Application $app,
                                 AgentRepository $agentRepository,
@@ -158,6 +171,7 @@ class UserLogger
                                 UriRepository $uriRepository,
                                 RefererRepository $refererRepository,
                                 SessionRepository $sessionRepository,
+                                ExperimentLogRepository $experimentLogRepository,
                                 Request $request)
     {
         $this->app = $app;
@@ -170,6 +184,7 @@ class UserLogger
         $this->refererRepository = $refererRepository;
         $this->sessionRepository = $sessionRepository;
         $this->logRepository = $logRepository;
+        $this->experimentLogRepository = $experimentLogRepository;
     }
 
     /**
@@ -218,8 +233,14 @@ class UserLogger
         // Domain
         $this->domain = $this->domainRepository->findOrCreate(['name' => $this->request->getHost(), 'local' => true]);
 
+        // Session
+        $this->session = $this->getOrCreateSession();
+
+        // Experiment
+        if (config('user-logger.use_experiments')) $this->experimentLog = $this->getOrCreateExperimentLog($this->session);
+
         // Log
-        return $this->logRepository->create($this->getOrCreateSession(), $this->domain, $uri, $event);
+        return $this->logRepository->create($this->session, $this->domain, $uri, $event);
     }
 
     /**
@@ -346,6 +367,32 @@ class UserLogger
     protected function getOrCreateDomain(string $name, bool $local): Domain
     {
         return $this->domainRepository->findOrCreate(['name' => $name, 'local' => $local]);
+    }
+
+    /**
+     * @param Session $session
+     *
+     * @return ExperimentLog
+     */
+    protected function getOrCreateExperimentLog(Session $session): ExperimentLog
+    {
+        $this->experimentLog = $this->experimentLogRepository->firstOrCreate(['client_ip' => $session->client_ip, 'session_id' => $session->id], ['experiment' => $this->getRandomExperimentName()]);
+
+        return $this->experimentLog;
+    }
+
+    /**
+     * Gets a Random Element from the Experiments from the config
+     *
+     * @return null|string
+     */
+    private Function getRandomExperimentName(): ?string
+    {
+        if (empty(config('user-logger.experiments'))) {
+            return NULL;
+        }
+
+        return config('user-logger.experiments')[array_rand(config('user-logger.experiments'), 1)];
     }
 
     /**
@@ -500,5 +547,27 @@ class UserLogger
     public function getCurrentDomain(): ?Domain
     {
         return $this->domain;
+    }
+
+    /**
+     * Get the ExperimentLog of the current Request
+     *
+     * @return null|ExperimentLog
+     */
+    public function getCurrentExperimentLog(): ?ExperimentLog
+    {
+        return $this->experimentLog;
+    }
+
+    /**
+     * Check if the current Request is running in the asked $experimentName
+     *
+     * @param string $experimentName
+     *
+     * @return bool
+     */
+    public function isExperiment(string $experimentName): bool
+    {
+        return $this->experimentLog->experiment === $experimentName;
     }
 }

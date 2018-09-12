@@ -60,6 +60,20 @@ return [
      */
     'log_ip'              => true,
 
+        /*
+     * use A/B Testing experiments
+     */
+    'use_experiments' => true,
+
+    /*
+     * active experiments - max 16 chars
+     */
+    'experiments' => [
+        'a',
+        'b',
+        'c'
+    ],
+
     /*
      * debug not parsable Agents, Referers, etc. in debugs table
      */

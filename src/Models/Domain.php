@@ -5,6 +5,11 @@ namespace Topoff\LaravelUserLogger\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Class Domain
+ *
+ * @package Topoff\LaravelUserLogger\Models
+ */
 class Domain extends Model
 {
     /**
