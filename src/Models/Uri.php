@@ -34,13 +34,11 @@ class Uri extends Model
     protected $table = 'uris';
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are guarded from mass assignment.
      *
      * @var array
      */
-    protected $fillable = [
-        'uri',
-    ];
+    protected $guarded = [];
 
     /**
      * Can have many Logs

@@ -35,14 +35,19 @@ class Agent extends Model
     protected $table = 'agents';
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are guarded from mass assignment.
      *
      * @var array
      */
-    protected $fillable = [
-        'name',
-        'browser',
-        'browser_version',
+    protected $guarded = [];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_robot' => 'boolean',
     ];
 
     /**

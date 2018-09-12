@@ -29,16 +29,11 @@ class Log extends Model
     protected $table = 'logs';
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are guarded from mass assignment.
      *
      * @var array
      */
-    protected $fillable = [
-        'session_id',
-        'domain_id',
-        'uri_id',
-        'event',
-    ];
+    protected $guarded = [];
 
     /**
      * Belongs to one Session

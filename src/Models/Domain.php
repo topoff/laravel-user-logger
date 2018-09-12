@@ -29,14 +29,11 @@ class Domain extends Model
     protected $table = 'domains';
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are guarded from mass assignment.
      *
      * @var array
      */
-    protected $fillable = [
-        'name',
-        'local',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be cast to native types.

@@ -29,18 +29,11 @@ class Device extends Model
     protected $table = 'devices';
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are guarded from mass assignment.
      *
      * @var array
      */
-    protected $fillable = [
-        'kind',
-        'model',
-        'platform',
-        'platform_version',
-        'is_mobile',
-        'is_robot',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be cast to native types.

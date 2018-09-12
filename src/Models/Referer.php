@@ -30,24 +30,11 @@ class Referer extends Model
     protected $table = 'referers';
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are guarded from mass assignment.
      *
      * @var array
      */
-    protected $fillable = [
-        'domain_id',
-        'url',
-        'host',
-        'medium',
-        'source',
-        'keywords',
-        'campaign',
-        'adgroup',
-        'matchtype',
-        'device',
-        'adposition',
-        'network',
-    ];
+    protected $guarded = [];
 
     /**
      * Can have many Sessions

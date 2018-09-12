@@ -28,12 +28,9 @@ class Debug extends Model
     protected $table = 'debugs';
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are guarded from mass assignment.
      *
      * @var array
      */
-    protected $fillable = [
-        'kind',
-        'value',
-    ];
+    protected $guarded = [];
 }

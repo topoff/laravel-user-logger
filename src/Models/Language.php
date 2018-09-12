@@ -29,14 +29,11 @@ class Language extends Model
     protected $table = 'languages';
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are guarded from mass assignment.
      *
      * @var array
      */
-    protected $fillable = [
-        'preference',
-        'range',
-    ];
+    protected $guarded = [];
 
     /**
      * Can have many Sessions

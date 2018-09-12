@@ -269,14 +269,15 @@ class UserLogger
                 $this->language = NULL;
             }
 
-            if (empty($this->agent) && empty($this->device)) {
-                $suspicious = true;
-            } else {
-                $suspicious = false;
-            }
+            // If the agent and the device couldn't be parsed, mark as suspicious
+            $suspicious = empty($this->agent) && empty($this->device);
+
+            // Agents can be set manually in the agents table as robots and this will overwrite the is_robot detection from
+            // the UserAgentParser Result.
+            $isRobot = (isset($this->agent) && $this->agent->is_robot) || $this->device['is_robot'];
 
             // Session
-            return $this->sessionRepository->findOrCreate($session->getSessionUuid(), Auth::user(), $this->device, $this->agent, $this->referer, $this->language, $this->request->ip(), $suspicious, $this->device['is_robot']);
+            return $this->sessionRepository->findOrCreate($session->getSessionUuid(), Auth::user(), $this->device, $this->agent, $this->referer, $this->language, $this->request->ip(), $suspicious, $isRobot);
         } else {
             return $this->session;
         }

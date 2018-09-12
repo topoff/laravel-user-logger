@@ -42,20 +42,20 @@ class Session extends Model
     protected $table = 'sessions';
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are guarded from mass assignment.
      *
      * @var array
      */
-    protected $fillable = [
-        'id',
-        'user_id',
-        'device_id',
-        'agent_id',
-        'referer_id',
-        'cookie_id',
-        'language_id',
-        'client_ip',
-        'is_robot',
+    protected $guarded = [];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_robot'      => 'boolean',
+        'is_suspicious' => 'boolean',
     ];
 
     /**
