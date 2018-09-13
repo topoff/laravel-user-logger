@@ -3,6 +3,8 @@
 namespace Topoff\LaravelUserLogger;
 
 use Illuminate\Routing\Router;
+use Topoff\LaravelUserLogger\Console\Commands\Flush;
+use Topoff\LaravelUserLogger\Console\Commands\HashIp;
 use Topoff\LaravelUserLogger\Middleware\InjectUserLogger;
 use Topoff\LaravelUserLogger\Repositories\AgentRepository;
 use Topoff\LaravelUserLogger\Repositories\DeviceRepository;
@@ -28,6 +30,13 @@ class UserLoggerServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../resources/Migrations/');
 
         $this->registerMiddleware(InjectUserLogger::class);
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                                Flush::class,
+                                HashIp::class,
+                            ]);
+        }
     }
 
     /**
