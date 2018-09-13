@@ -18,7 +18,7 @@ class CreateReferersTable extends Migration
                 $table->bigIncrements('id');
 
                 $table->bigInteger('domain_id')->unsigned();
-                $table->string('url')->unique()->index();
+                $table->text('url')->nullable();
                 $table->string('medium', 20)->nullable()->index();
                 $table->string('source', 30)->nullable()->index();
                 $table->string('keywords')->nullable()->index();
@@ -33,6 +33,8 @@ class CreateReferersTable extends Migration
 
                 $table->foreign('domain_id')->references('id')->on('domains');
             });
+
+            DB::connection($this->connection)->raw('alter table `referers` add index `tests_url_index`(url(255))');
         } catch (Exception $e){
             dd($e);
         }
