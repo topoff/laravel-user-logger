@@ -1,15 +1,11 @@
 # UserAgentParser
 
-[![Build Status](https://travis-ci.org/topoff/laravel-user-logger.svg?branch=master)](https://travis-ci.org/topoff/laravel-user-logger)
-[![Code Coverage](https://scrutinizer-ci.com/g/topoff/laravel-user-logger/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/topoff/laravel-user-logger/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/topoff/laravel-user-logger/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/topoff/laravel-user-logger/?branch=master)
-
 [![Latest Stable Version](https://poser.pugx.org/topoff/laravel-user-logger/v/stable)](https://packagist.org/packages/topoff/laravel-user-logger)
 [![Latest Unstable Version](https://poser.pugx.org/topoff/laravel-user-logger/v/unstable)](https://packagist.org/packages/topoff/laravel-user-logger) 
 [![License](https://poser.pugx.org/topoff/laravel-user-logger/license)](https://packagist.org/packages/topoff/laravel-user-logger)
 [![Total Downloads](https://poser.pugx.org/topoff/laravel-user-logger/downloads)](https://packagist.org/packages/topoff/laravel-user-logger) 
 
-This is a Simple user logger for laravel.
+This is a Simple user logger and A/B Testing Tool for laravel.
 
 ## Requirements  
 
@@ -26,7 +22,7 @@ composer require topoff/laravel-user-logger
 
 ## Getting started
 
-You can change the configuration with
+You can publish & change the configuration with this command:
 
 ```
 php artisan vendor:publish
@@ -51,7 +47,32 @@ You need to create a connection namend user-logger in your config/database.php
             'engine' => null,
         ],
 ```
+## Experiences
+
+To start with experiences, A/B testing, set use_experiments in the config file to true and define at least two experiments, per example a,b. 
+
+
+```php
+/*
+    * use A/B Testing experiments
+    */
+    'use_experiments'     => true,
+
+    /*
+     * active experiments - max 16 chars
+     * crawlers will always run as in the first experiment, but will not be logged
+     */
+    'experiments'         => [
+        'a',
+        'b',
+    ],
+```
+To start e new experience, flush the old data with
+```
+php artisan user-logger:flush
+```
+
 
 ## Update
 
-This package uses https://github.com/snowplow-referer-parser/referer-parser. There you find information to update the list of known referers.
+This package uses https://github.com/snowplow-referer-parser/referer-parser. There you find information to update the list of known referers, which should sequently be done, manually.

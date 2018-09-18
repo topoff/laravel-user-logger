@@ -60,19 +60,18 @@ return [
      */
     'log_ip'              => true,
 
-        /*
-     * use A/B Testing experiments
-     */
-    'use_experiments' => true,
+    /*
+    * use A/B Testing experiments
+    */
+    'use_experiments'     => false,
 
     /*
      * active experiments - max 16 chars
      * crawlers will always run as in the first experiment, but will not be logged
      */
-    'experiments' => [
+    'experiments'         => [
         'a',
         'b',
-        'c'
     ],
 
     /*
