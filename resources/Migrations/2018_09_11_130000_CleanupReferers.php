@@ -11,7 +11,7 @@ class CleanupReferers extends Migration
      */
     public function up()
     {
-        DB::connection($this->connection)->update("UPDATE touserlog.referers SET medium = null, source = null WHERE medium = '' AND source = ''");
+        //
     }
 
     /**
@@ -21,6 +21,6 @@ class CleanupReferers extends Migration
      */
     public function down()
     {
-        DB::connection($this->connection)->update("UPDATE touserlog.referers SET medium = '', source = '' WHERE medium IS NULL AND source IS NULL");
+        //
     }
 }

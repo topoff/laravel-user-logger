@@ -20,6 +20,7 @@ class CreateAgentsTable extends Migration
             $table->text('name')->nullable(); // Better a duplicated name in the db than an error.. -> so no unique key
             $table->string('browser', 255)->nullable()->index();
             $table->string('browser_version', 255)->nullable()->index();
+            $table->boolean('is_robot')->default(false)->after('browser_version');
 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
