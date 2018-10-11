@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Topoff\LaravelUserLogger\Support\Migration;
 
-class CreateDevicesTable extends Migration
+class CreateULDevicesTable extends Migration
 {
     /**
      * Run the migrations.

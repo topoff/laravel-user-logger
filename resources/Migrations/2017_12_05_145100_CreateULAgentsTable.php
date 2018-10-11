@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Topoff\LaravelUserLogger\Support\Migration;
 
 
-class CreateAgentsTable extends Migration
+class CreateULAgentsTable extends Migration
 {
     /**
      * Run the migrations.

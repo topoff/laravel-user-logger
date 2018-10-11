@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Topoff\LaravelUserLogger\Support\Migration;
 
-class CreateUrisTable extends Migration
+class CreateULDomainsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateUrisTable extends Migration
      */
     public function up()
     {
-        Schema::connection($this->connection)->create('uris', function (Blueprint $table) {
+        Schema::connection($this->connection)->create('domains', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->string('uri')->unique()->index();
+            $table->string('name')->unique()->index();
+            $table->boolean('local')->default(false);
 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
@@ -29,6 +30,6 @@ class CreateUrisTable extends Migration
      */
     public function down()
     {
-        Schema::connection($this->connection)->dropIfExists('uris');
+        Schema::connection($this->connection)->dropIfExists('domains');
     }
 }

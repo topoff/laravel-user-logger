@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Topoff\LaravelUserLogger\Support\Migration;
 
-class CreateDomainsTable extends Migration
+class CreateULLanguagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateDomainsTable extends Migration
      */
     public function up()
     {
-        Schema::connection($this->connection)->create('domains', function (Blueprint $table) {
+        Schema::connection($this->connection)->create('languages', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->string('name')->unique()->index();
-            $table->boolean('local')->default(false);
+            $table->string('preference', 30)->nullable()->index();
+            $table->string('range')->nullable();
+            $table->unique(['preference', 'range']);
 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
@@ -30,6 +31,6 @@ class CreateDomainsTable extends Migration
      */
     public function down()
     {
-        Schema::connection($this->connection)->dropIfExists('domains');
+        Schema::connection($this->connection)->dropIfExists('languages');
     }
 }

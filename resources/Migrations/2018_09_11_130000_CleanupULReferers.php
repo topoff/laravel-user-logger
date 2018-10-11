@@ -2,7 +2,7 @@
 
 use Topoff\LaravelUserLogger\Support\Migration;
 
-class CleanupReferers extends Migration
+class CleanupULReferers extends Migration
 {
     /**
      * Run the migrations.

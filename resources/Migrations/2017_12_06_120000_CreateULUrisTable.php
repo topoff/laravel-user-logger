@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Topoff\LaravelUserLogger\Support\Migration;
 
-class CreateLanguagesTable extends Migration
+class CreateULUrisTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateLanguagesTable extends Migration
      */
     public function up()
     {
-        Schema::connection($this->connection)->create('languages', function (Blueprint $table) {
+        Schema::connection($this->connection)->create('uris', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->string('preference', 30)->nullable()->index();
-            $table->string('range')->nullable();
-            $table->unique(['preference', 'range']);
+            $table->string('uri')->unique()->index();
 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
@@ -31,6 +29,6 @@ class CreateLanguagesTable extends Migration
      */
     public function down()
     {
-        Schema::connection($this->connection)->dropIfExists('languages');
+        Schema::connection($this->connection)->dropIfExists('uris');
     }
 }

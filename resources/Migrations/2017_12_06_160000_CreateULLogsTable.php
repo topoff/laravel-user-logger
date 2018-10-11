@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Topoff\LaravelUserLogger\Support\Migration;
 
-class CreateLogsTable extends Migration
+class CreateULLogsTable extends Migration
 {
     /**
      * Run the migrations.
