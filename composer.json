@@ -43,7 +43,7 @@
         "Topoff\\LaravelUserLogger\\UserLoggerServiceProvider"
       ],
       "aliases": {
-        "Tracker": "Topoff\\LaravelUserLogger\\Facade"
+        "UserLogger": "Topoff\\LaravelUserLogger\\Facade"
       }
     }
   },

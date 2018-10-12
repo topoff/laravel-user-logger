@@ -62,7 +62,7 @@ class InjectUserLogger
                 }
             } catch (Exception $e) {
                 // will mostly not be called
-                Log::warning('Error in topoff/tracker: ' . $e->getMessage(), $e->getTrace());
+                Log::warning('Error in topoff/laravel-user-logger: ' . $e->getMessage(), $e->getTrace());
             } finally {
                 return $next($request);
             }
