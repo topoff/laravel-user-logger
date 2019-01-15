@@ -33,6 +33,7 @@ use Topoff\LaravelUserLogger\Repositories\SessionRepository;
 use Topoff\LaravelUserLogger\Repositories\UriRepository;
 use Topoff\LaravelUserLogger\Support\SessionHelper;
 use UserAgentParser\Exception\NoResultFoundException;
+use UserAgentParser\Exception\PackageNotLoadedException;
 
 /**
  * Class UserLogger
@@ -190,7 +191,6 @@ class UserLogger
     /**
      * Boot the UserLogger
      *
-     * @throws \UserAgentParser\Exception\PackageNotLoadedException
      */
     public function boot()
     {
@@ -222,8 +222,6 @@ class UserLogger
      * @param string|null $event
      *
      * @return Log
-     * @throws \UserAgentParser\Exception\PackageNotLoadedException
-     * @throws Exception
      */
     protected function createLog(string $event = NULL): Log
     {
@@ -234,7 +232,13 @@ class UserLogger
         $this->domain = $this->domainRepository->findOrCreate(['name' => $this->request->getHost(), 'local' => true]);
 
         // Session
-        $this->session = $this->getOrCreateSession();
+        try {
+            $this->session = $this->getOrCreateSession();
+        } catch (Exception $e) {
+            if (config('user-logger.debug') === true && !empty($this->request->userAgent())) {
+                Debug::create(['kind' => 'user-agent', 'value' => 'Error in getOrCreateSession: ' . $e->getMessage()]);
+            }
+        }
 
         // Experiment
         if (config('user-logger.use_experiments')) $this->experimentLog = $this->getOrCreateExperimentLog($this->session);
@@ -247,7 +251,6 @@ class UserLogger
      * Get or Create The Session Record of the Request
      *
      * @return Session
-     * @throws \UserAgentParser\Exception\PackageNotLoadedException
      * @throws Exception
      */
     protected function getOrCreateSession(): Session
@@ -274,6 +277,12 @@ class UserLogger
             } catch (NoResultFoundException $e) {
                 if (config('user-logger.debug') === true && !empty($this->request->userAgent())) {
                     Debug::create(['kind' => 'user-agent', 'value' => $this->request->userAgent()]);
+                }
+                $this->device = NULL; //$this->deviceRepository->findOrCreateNotDetected();
+                $this->agent = NULL; //$this->agentRepository->findOrCreateNotDetected();
+            } catch (PackageNotLoadedException $e) {
+                if (config('user-logger.debug') === true && !empty($this->request->userAgent())) {
+                    Debug::create(['kind' => 'user-agent', 'value' => 'PackageNotLoadedException' . $e->getMessage()]);
                 }
                 $this->device = NULL; //$this->deviceRepository->findOrCreateNotDetected();
                 $this->agent = NULL; //$this->agentRepository->findOrCreateNotDetected();
@@ -396,7 +405,7 @@ class UserLogger
     }
 
     /**
-     * Update an existing Log with an Event or create a new Log
+     * Update an existing Log with an Event or create a new Log with an Event
      *
      * @param string      $event
      *
@@ -404,7 +413,6 @@ class UserLogger
      * @param string|null $entityId
      *
      * @return Log
-     * @throws \UserAgentParser\Exception\PackageNotLoadedException
      */
     public function setEvent(string $event, string $entityType = NULL, string $entityId = NULL): ?Log
     {
@@ -434,6 +442,28 @@ class UserLogger
         }
 
         return $this->enabled;
+    }
+
+    /**
+     * Update an existing Log with a Comment or create a new Log with a Comment
+     *
+     * @param string $comment
+     *
+     * @return Log|null
+     */
+    public function setComment(string $comment): ?Log
+    {
+        if ($this->isEnabled()) {
+            if (!$this->log) {
+                $this->log = $this->createLog();
+            }
+
+            if ($this->log) {
+                return $this->logRepository->updateWithComment($this->log, $comment);
+            }
+        } else {
+            return NULL;
+        }
     }
 
     /**

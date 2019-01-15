@@ -32,7 +32,6 @@ class LogRepository
     /**
      * @param Log         $log
      * @param string      $event
-     *
      * @param string|null $entityType
      * @param int|null    $entityId
      *
@@ -44,7 +43,21 @@ class LogRepository
         $log->entity_type = $entityType;
         $log->entity_id = $entityId;
         $log->save();
-        
+
+        return $log;
+    }
+
+    /**
+     * @param Log    $log
+     * @param string $comment
+     *
+     * @return Log
+     */
+    public function updateWithComment(Log $log, string $comment): Log
+    {
+        $log->comment = $comment;
+        $log->save();
+
         return $log;
     }
 }
