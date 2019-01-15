@@ -454,10 +454,7 @@ class UserLogger
     public function setComment(string $comment): ?Log
     {
         if ($this->isEnabled()) {
-            if (!$this->log) {
-                $this->log = $this->createLog();
-            }
-
+            // If there is no log present, don't do anything. Could be a robot when robot is disabled are something like this.
             if ($this->log) {
                 return $this->logRepository->updateWithComment($this->log, $comment);
             }
