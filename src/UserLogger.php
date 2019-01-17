@@ -385,7 +385,7 @@ class UserLogger
      */
     protected function getOrCreateExperimentLog(Session $session): ExperimentLog
     {
-        $this->experimentLog = $this->experimentLogRepository->firstOrCreate(['client_ip' => $session->client_ip], ['experiment' => $this->getRandomExperimentName()]);
+        $this->experimentLog = $this->experimentLogRepository->firstOrCreate(['session_id' => $session->id], ['experiment' => $this->getRandomExperimentName()]);
 
         return $this->experimentLog;
     }
