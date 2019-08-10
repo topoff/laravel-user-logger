@@ -13,15 +13,17 @@ class CreateULLanguagesTable extends Migration
      */
     public function up()
     {
-        Schema::connection($this->connection)->create('languages', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        if (!Schema::connection($this->connection)->hasTable('languages')) {
+            Schema::connection($this->connection)->create('languages', function (Blueprint $table) {
+                $table->bigIncrements('id');
 
-            $table->string('preference', 30)->nullable()->index();
-            $table->string('range')->nullable();
-            $table->unique(['preference', 'range']);
+                $table->string('preference', 30)->nullable()->index();
+                $table->string('range')->nullable();
+                $table->unique(['preference', 'range']);
 
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-        });
+                $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            });
+        }
     }
 
     /**

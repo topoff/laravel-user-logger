@@ -13,14 +13,16 @@ class CreateULDomainsTable extends Migration
      */
     public function up()
     {
-        Schema::connection($this->connection)->create('domains', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        if (!Schema::connection($this->connection)->hasTable('domains')) {
+            Schema::connection($this->connection)->create('domains', function (Blueprint $table) {
+                $table->bigIncrements('id');
 
-            $table->string('name')->unique()->index();
-            $table->boolean('local')->default(false);
+                $table->string('name')->unique()->index();
+                $table->boolean('local')->default(false);
 
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-        });
+                $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            });
+        }
     }
 
     /**

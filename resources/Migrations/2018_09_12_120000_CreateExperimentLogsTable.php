@@ -13,14 +13,16 @@ class CreateExperimentLogsTable extends Migration
      */
     public function up()
     {
-        Schema::connection($this->connection)->create('experimentlogs', function (Blueprint $table) {
-            $table->smallIncrements('id');
+        if (!Schema::connection($this->connection)->hasTable('experimentlogs')) {
+            Schema::connection($this->connection)->create('experimentlogs', function (Blueprint $table) {
+                $table->smallIncrements('id');
 
-            $table->string('client_ip', 32)->index();
-            $table->string('experiment', 20)->index();
+                $table->string('client_ip', 32)->index();
+                $table->string('experiment', 20)->index();
 
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-        });
+                $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            });
+        }
     }
 
     /**

@@ -13,13 +13,15 @@ class CreateULUrisTable extends Migration
      */
     public function up()
     {
-        Schema::connection($this->connection)->create('uris', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        if (!Schema::connection($this->connection)->hasTable('uris')) {
+            Schema::connection($this->connection)->create('uris', function (Blueprint $table) {
+                $table->bigIncrements('id');
 
-            $table->string('uri')->unique()->index();
+                $table->string('uri')->unique()->index();
 
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-        });
+                $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            });
+        }
     }
 
     /**

@@ -13,14 +13,16 @@ class CreateULDebugsTable extends Migration
      */
     public function up()
     {
-        Schema::connection($this->connection)->create('debugs', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        if (!Schema::connection($this->connection)->hasTable('debugs')) {
+            Schema::connection($this->connection)->create('debugs', function (Blueprint $table) {
+                $table->bigIncrements('id');
 
-            $table->string('kind', 20);
-            $table->text('value')->nullable();
+                $table->string('kind', 20);
+                $table->text('value')->nullable();
 
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-        });
+                $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            });
+        }
     }
 
     /**
