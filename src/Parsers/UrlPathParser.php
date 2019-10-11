@@ -2,6 +2,8 @@
 
 namespace Topoff\LaravelUserLogger\Parsers;
 
+use Str;
+
 /**
  * Class UtmSourceParser
  *
@@ -77,7 +79,7 @@ class UrlPathParser
      */
     private function urlContainsAutologin(): bool
     {
-        return (str_contains($this->url, config('user-logger.path_is_mail')));
+        return (Str::contains($this->url, config('user-logger.path_is_mail')));
     }
 
     /**
