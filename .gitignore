@@ -1,5 +1,6 @@
 # Project Specific
 composer.lock
+vendor
 
 
 # Following: Created by https://www.gitignore.io/api/jetbrains
