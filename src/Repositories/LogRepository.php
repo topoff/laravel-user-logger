@@ -37,7 +37,7 @@ class LogRepository
      *
      * @return Log
      */
-    public function updateWithEvent(Log $log, string $event, string $entityType = NULL, int $entityId = NULL): Log
+    public function updateWithEvent(Log $log, string $event, string $entityType = NULL, string $entityId = NULL): Log
     {
         $log->event = $event;
         $log->entity_type = $entityType;
