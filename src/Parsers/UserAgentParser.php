@@ -46,7 +46,7 @@ class UserAgentParser
     {
         $chain = new Provider\Chain([
                                         new Provider\JenssegersAgent(), // Ist viel schneller, ca. 15ms
-                                        new Provider\PiwikDeviceDetector(), // braucht ca. 600ms
+                                        new Provider\MatomoDeviceDetector(), // braucht ca. 600ms
                                     ]);
 
         /* @var $result \UserAgentParser\Model\UserAgent */
