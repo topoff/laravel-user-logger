@@ -26,7 +26,7 @@
         "illuminate/hashing": "^7.0||^8.0",
         "illuminate/log": "^7.0||^8.0",
         "ua-parser/uap-php": "^3.9",
-        "snowplow/referer-parser": "dev-master#r2017-06",
+        "snowplow/referer-parser": "~0.2",
         "topoff/user-agent-parser": "^v5.0.0"
     },
     "require-dev": {
