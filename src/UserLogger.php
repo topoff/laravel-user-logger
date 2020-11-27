@@ -225,14 +225,14 @@ class UserLogger
      */
     protected function createLog(string $event = NULL): ?Log
     {
-        // URI -> decoded path liefert ohne variablen
-        $uri = $this->uriRepository->findOrCreate(['uri' => $this->request->decodedPath()]);
-
-        // Domain
-        $this->domain = $this->domainRepository->findOrCreate(['name' => $this->request->getHost(), 'local' => true]);
-
-        // Session
         try {
+            // URI -> decoded path liefert ohne variablen
+            $uri = $this->uriRepository->findOrCreate(['uri' => $this->request->decodedPath()]);
+
+            // Domain
+            $this->domain = $this->domainRepository->findOrCreate(['name' => $this->request->getHost(), 'local' => true]);
+
+            // Session
             $this->session = $this->getOrCreateSession();
 
             // Experiment
