@@ -219,11 +219,11 @@ class UserLogger
     /**
      * Create the Log of the Request
      *
-     * @param string|null $event
+     * @param  string|null  $event
      *
-     * @return Log
+     * @return \Topoff\LaravelUserLogger\Models\Log|null
      */
-    protected function createLog(string $event = NULL): Log
+    protected function createLog(string $event = NULL): ?Log
     {
         // URI -> decoded path liefert ohne variablen
         $uri = $this->uriRepository->findOrCreate(['uri' => $this->request->decodedPath()]);
@@ -234,17 +234,19 @@ class UserLogger
         // Session
         try {
             $this->session = $this->getOrCreateSession();
+
+            // Experiment
+            if (config('user-logger.use_experiments')) $this->experimentLog = $this->getOrCreateExperimentLog($this->session);
+
+            // Log
+            return $this->logRepository->create($this->session, $this->domain, $uri, $event);
         } catch (Exception $e) {
             if (config('user-logger.debug') === true && !empty($this->request->userAgent())) {
                 Debug::create(['kind' => 'user-agent', 'value' => 'Error in getOrCreateSession: ' . $e->getMessage()]);
             }
         }
 
-        // Experiment
-        if (config('user-logger.use_experiments')) $this->experimentLog = $this->getOrCreateExperimentLog($this->session);
-
-        // Log
-        return $this->logRepository->create($this->session, $this->domain, $uri, $event);
+        return NULL;
     }
 
     /**
