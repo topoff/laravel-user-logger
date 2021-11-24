@@ -14,10 +14,10 @@
         }
     ],
     "require": {
-        "php": ">=7.3",
+        "php": "^7.4|^8.0",
         "jaybizzle/crawler-detect": "^1.2",
         "jenssegers/agent": "^2.6",
-        "matomo/device-detector": "^4.0",
+        "matomo/device-detector": "^5.0",
         "illuminate/support": "^7.0||^8.0",
         "illuminate/database": "^7.0||^8.0",
         "illuminate/filesystem": "^7.0||^8.0",
@@ -27,7 +27,7 @@
         "illuminate/log": "^7.0||^8.0",
         "ua-parser/uap-php": "^3.9",
         "snowplow/referer-parser": "~0.2",
-        "topoff/user-agent-parser": "^v5.0.0"
+        "topoff/user-agent-parser": "^v6.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.5",
@@ -36,11 +36,6 @@
     "autoload": {
         "psr-4": {
             "Topoff\\LaravelUserLogger\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Topoff\\LaravelUserLogger\\Test\\": "tests"
         }
     },
     "config": {
