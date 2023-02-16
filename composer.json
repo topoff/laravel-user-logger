@@ -27,7 +27,7 @@
         "illuminate/log": "^8.0|^9.0|^10.0",
         "ua-parser/uap-php": "^3.9",
         "snowplow/referer-parser": "~0.2",
-        "topoff/user-agent-parser": "^v6.0",
+        "topoff/user-agent-parser": "^v6.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.5",
