@@ -43,125 +43,56 @@ use UserAgentParser\Exception\PackageNotLoadedException;
 class UserLogger
 {
     /**
-     * @var Domain
-     */
-    protected $domain;
-
-    /**
      * The Laravel application instance.
      *
      * @var \Illuminate\Foundation\Application
      */
-    protected $app;
+    protected Application $app;
 
-    /**
-     * Enabled
-     *
-     * @var bool
-     */
-    protected $enabled;
+    protected ?bool $enabled = null;
 
-    /**
-     * @var DeviceRepository
-     */
-    protected $deviceRepository;
+    protected ?Agent $agent;
 
-    /**
-     * @var Agent
-     */
-    protected $agent;
+    protected ?Domain $domain;
 
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected Request $request;
 
-    /**
-     * @var UriRepository
-     */
-    protected $uriRepository;
+    protected DeviceRepository $deviceRepository;
 
-    /**
-     * @var AgentRepository
-     */
-    protected $agentRepository;
+    protected UriRepository $uriRepository;
+    protected AgentRepository $agentRepository;
+    protected LanguageRepository $languageRepository;
+    protected DomainRepository $domainRepository;
+    protected RefererRepository $refererRepository;
+    protected SessionRepository $sessionRepository;
+    protected LogRepository $logRepository;
+    protected ExperimentLogRepository $experimentLogRepository;
 
-    /**
-     * @var LanguageRepository
-     */
-    protected $languageRepository;
+    protected ?Log $log;
 
-    /**
-     * @var DomainRepository
-     */
-    protected $domainRepository;
+    protected ?Session $session;
 
-    /**
-     * @var RefererRepository
-     */
-    protected $refererRepository;
+    protected ?Device $device;
+    protected ?Language $language;
 
-    /**
-     * @var SessionRepository
-     */
-    protected $sessionRepository;
+    protected ?Referer $referer;
 
-    /**
-     * @var LogRepository
-     */
-    protected $logRepository;
-
-    /**
-     * @var ExperimentLogRepository
-     */
-    protected $experimentLogRepository;
-
-    /**
-     * Log
-     *
-     * @var Log
-     */
-    protected $log;
-
-    /**
-     * @var Session
-     */
-    protected $session;
-
-    /**
-     * @var Device
-     */
-    protected $device;
-
-    /**
-     * @var Language
-     */
-    protected $language;
-
-    /**
-     * @var Referer
-     */
-    protected $referer;
-
-    /**
-     * @var ExperimentLog
-     */
-    protected $experimentLog;
+    protected ?ExperimentLog $experimentLog;
 
     /**
      * UserLogger constructor.
      *
-     * @param Application             $app
-     * @param AgentRepository         $agentRepository
-     * @param DeviceRepository        $deviceRepository
-     * @param DomainRepository        $domainRepository
-     * @param LanguageRepository      $languageRepository
-     * @param LogRepository           $logRepository
-     * @param UriRepository           $uriRepository
-     * @param RefererRepository       $refererRepository
-     * @param SessionRepository       $sessionRepository
+     * @param Application $app
+     * @param AgentRepository $agentRepository
+     * @param DeviceRepository $deviceRepository
+     * @param DomainRepository $domainRepository
+     * @param LanguageRepository $languageRepository
+     * @param LogRepository $logRepository
+     * @param UriRepository $uriRepository
+     * @param RefererRepository $refererRepository
+     * @param SessionRepository $sessionRepository
      * @param ExperimentLogRepository $experimentLogRepository
-     * @param Request                 $request
+     * @param Request $request
      */
     public function __construct(Application $app,
                                 AgentRepository $agentRepository,
@@ -188,10 +119,6 @@ class UserLogger
         $this->experimentLogRepository = $experimentLogRepository;
     }
 
-    /**
-     * Boot the UserLogger
-     *
-     */
     public function boot()
     {
         if (config('app.debug')) {
@@ -218,10 +145,6 @@ class UserLogger
 
     /**
      * Create the Log of the Request
-     *
-     * @param  string|null  $event
-     *
-     * @return \Topoff\LaravelUserLogger\Models\Log|null
      */
     protected function createLog(string $event = NULL): ?Log
     {
@@ -252,7 +175,6 @@ class UserLogger
     /**
      * Get or Create The Session Record of the Request
      *
-     * @return Session
      * @throws Exception
      */
     protected function getOrCreateSession(): Session
@@ -324,8 +246,6 @@ class UserLogger
      * 4 - from url: atlg
      * 5 - from referer: url & is local domain
      * 6 - NULL
-     *
-     * @return null|Referer
      */
     protected function getOrCreateReferer(): ?Referer
     {
@@ -369,12 +289,6 @@ class UserLogger
         return $referer ?? NULL;
     }
 
-    /**
-     * @param string $name
-     * @param bool   $local
-     *
-     * @return Domain
-     */
     protected function getOrCreateDomain(string $name, bool $local): Domain
     {
         return $this->domainRepository->findOrCreate(['name' => $name, 'local' => $local]);
@@ -394,8 +308,6 @@ class UserLogger
 
     /**
      * Gets a Random Element from the Experiments from the config
-     *
-     * @return null|string
      */
     private Function getRandomExperimentName(): ?string
     {
@@ -408,13 +320,6 @@ class UserLogger
 
     /**
      * Update an existing Log with an Event or create a new Log with an Event
-     *
-     * @param string      $event
-     *
-     * @param string|null $entityType
-     * @param string|null $entityId
-     *
-     * @return Log
      */
     public function setEvent(string $event, string $entityType = NULL, string $entityId = NULL): ?Log
     {
@@ -430,10 +335,27 @@ class UserLogger
     }
 
     /**
-     * Check if the UserLogger is enabled
-     *
-     * @return boolean
+     * Create an Event if the UserLogger is in only-event mode
      */
+    public function setEventWithSessionId(string $sessionId, string $event, string $entityType = NULL, string $entityId = NULL): ?Log
+    {
+        if ($this->isDisabled()) {
+            return NULL;
+        }
+
+        $this->session = $this->sessionRepository->find($sessionId);
+
+        if ($this->session) {
+            $lastLog = $this->session->logs()->orderBy('created_at', 'desc')->first();
+            return $this->logRepository->createMinimal($this->session, $lastLog?->domain_id, null, $event, $entityType, $entityId);
+        }
+    }
+
+    public function isDisabled(): bool
+    {
+        return !$this->isEnabled();
+    }
+
     public function isEnabled(): bool
     {
         if ($this->enabled === NULL) {

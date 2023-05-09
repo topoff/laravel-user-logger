@@ -23,6 +23,8 @@ class InjectUserLogger
      */
     protected $except = [];
 
+
+
     /**
      * Create a new middleware instance.
      *
@@ -48,7 +50,9 @@ class InjectUserLogger
         if (config('app.debug')) {
             // Error will be displayed
             if ($this->userLogger->isEnabled() && !$this->inExceptArray($request) && !in_array($request->ip(), config('user-logger.ignore_ips'))) {
-                $this->userLogger->boot();
+                if (config('user-logger.only-events') === false){
+                    $this->userLogger->boot();
+                }
             }
 
             return $next($request);
@@ -58,7 +62,9 @@ class InjectUserLogger
             // this does not log the error, but suppresses it completely
             try {
                 if ($this->userLogger->isEnabled() && !$this->inExceptArray($request) && !in_array($request->ip(), config('user-logger.ignore_ips'))) {
-                    $this->userLogger->boot();
+                    if (config('user-logger.only-events') === false) {
+                        $this->userLogger->boot();
+                    }
                 }
             } catch (Exception $e) {
                 // will mostly not be called

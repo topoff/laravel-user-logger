@@ -14,29 +14,19 @@ use Topoff\LaravelUserLogger\Models\Uri;
  */
 class LogRepository
 {
-    /**
-     * Finds an existing Log (Request) or creates a new DB Record
-     *
-     * @param Session $session
-     * @param Domain  $domain
-     * @param Uri     $uri
-     * @param string  $event
-     *
-     * @return Log
-     */
-    public function create(Session $session, Domain $domain, Uri $uri, string $event = NULL): Log
+    public function create(Session $session, Domain $domain, ?Uri $uri = null, string $event = NULL): Log
     {
-        return Log::create(['session_id' => $session->id, 'domain_id' => $domain->id, 'uri_id' => $uri->id, 'event' => $event]);
+        return Log::create(['session_id' => $session->id, 'domain_id' => $domain->id, 'uri_id' => $uri?->id, 'event' => $event]);
     }
 
     /**
-     * @param Log         $log
-     * @param string      $event
-     * @param string|null $entityType
-     * @param int|null    $entityId
-     *
-     * @return Log
+     * Creates a minimal log entry, for conversion events in backend
      */
+    public function createMinimal(Session $session, int $domainId, int $uriId = null, string $event = NULL, string $entityType = NULL, string $entityId = NULL): Log
+    {
+        return Log::create(['session_id' => $session->id, 'domain_id' => $domainId, 'uri_id' => $uriId, 'event' => $event, 'entity_type' => $entityType, 'entity_id' => $entityId]);
+    }
+
     public function updateWithEvent(Log $log, string $event, string $entityType = NULL, string $entityId = NULL): Log
     {
         $log->event = $event;
@@ -47,12 +37,6 @@ class LogRepository
         return $log;
     }
 
-    /**
-     * @param Log    $log
-     * @param string $comment
-     *
-     * @return Log
-     */
     public function updateWithComment(Log $log, string $comment): Log
     {
         $log->comment = $comment;

@@ -15,6 +15,11 @@ return [
     'enabled'             => env('USER_LOGGER_ENABLED', false),
 
     /*
+     * Log only Events
+     */
+    'only-events'             => env('USER_LOGGER_ONLY_EVENTS', false),
+
+    /*
      * Log robots?
      */
     'log_robots'          => false,
@@ -23,9 +28,13 @@ return [
      * Which uri names are not trackable?
      */
     'do_not_track_routes' => [
+        'telescope*',
         'debugbar*',
         'debugbar.*',
         '_debugbar*',
+        'log-viewer*',
+        'nova*',
+        'admin*',
         '*.jpg',
         '*.jpeg',
         '*.js',
@@ -53,7 +62,7 @@ return [
     /*
      * Ignore Ips
      */
-    'ignore_ips'          => ['72.55.136.152'],
+    'ignore_ips'          => [],
 
     /*
      * log ip -> its always hashed

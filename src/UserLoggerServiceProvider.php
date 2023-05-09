@@ -23,9 +23,7 @@ class UserLoggerServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function boot()
     {
-        $this->publishes([
-                             __DIR__ . '/../config/user-logger.php' => config_path('user-logger.php'),
-                         ], 'config');
+        $this->publishes([__DIR__ . '/../config/user-logger.php' => config_path('user-logger.php'),], 'config');
 
         $this->loadMigrationsFrom(__DIR__ . '/../resources/Migrations/');
 
@@ -33,18 +31,16 @@ class UserLoggerServiceProvider extends \Illuminate\Support\ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
-                                Flush::class,
-                                HashIp::class,
-                            ]);
+                Flush::class,
+                HashIp::class,
+            ]);
         }
     }
 
     /**
      * Register the Middleware
-     *
-     * @param  string $middleware
      */
-    protected function registerMiddleware($middleware)
+    protected function registerMiddleware(string $middleware): void
     {
         $router = $this->app->make(Router::class);
         $router->pushMiddlewareToGroup('web', $middleware);
@@ -53,7 +49,7 @@ class UserLoggerServiceProvider extends \Illuminate\Support\ServiceProvider
     /**
      * Register the application services.
      */
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/user-logger.php', 'user-logger');
 
