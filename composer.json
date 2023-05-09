@@ -17,7 +17,7 @@
         "php": "^8.0",
         "jaybizzle/crawler-detect": "^1.2",
         "jenssegers/agent": "^2.6",
-        "matomo/device-detector": "^5.0",
+        "matomo/device-detector": "^6.0",
         "illuminate/support": "*",
         "illuminate/database": "*",
         "illuminate/filesystem": "*",
@@ -28,6 +28,9 @@
         "ua-parser/uap-php": "^3.9",
         "snowplow/referer-parser": "~0.2",
         "topoff/user-agent-parser": "^v6.0"
+    },
+    "_comments": {
+        "snowplow/referer-parser": "Does not use semver and the newest version dev-master#2023-03-15-203816 does not get the php version. But the files seem to be ok, it uses the data/referers.json file from the repo."
     },
     "require-dev": {
         "phpunit/phpunit": "^8.5",
