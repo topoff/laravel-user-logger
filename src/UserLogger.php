@@ -7,7 +7,6 @@ use Exception;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
-use Log as Logger;
 use Topoff\LaravelUserLogger\Models\Agent;
 use Topoff\LaravelUserLogger\Models\Debug;
 use Topoff\LaravelUserLogger\Models\Device;
@@ -34,6 +33,7 @@ use Topoff\LaravelUserLogger\Repositories\UriRepository;
 use Topoff\LaravelUserLogger\Support\SessionHelper;
 use UserAgentParser\Exception\NoResultFoundException;
 use UserAgentParser\Exception\PackageNotLoadedException;
+use \Illuminate\Support\Facades\Log as LaravelLogger;
 
 /**
  * Class UserLogger
@@ -122,7 +122,7 @@ class UserLogger
     public function boot()
     {
         if (config('app.debug')) {
-            // Display Error
+            // Display Error if app.debug is true
             $crawlerDetect = new CrawlerDetect;
             if (config('user-logger.log_robots') || !$crawlerDetect->isCrawler()) {
                 $this->log = $this->createLog();
@@ -130,7 +130,7 @@ class UserLogger
         } else {
             // try - catch in middleware not working as expected: https://github.com/laravel/framework/issues/14573
             // Intentional used twice, in InjectUserLogger Middleware -> completely suppresses errors in this package
-            // and here: does log some of them..
+            // and here: does log some of them.
             try {
                 $crawlerDetect = new CrawlerDetect;
                 if (config('user-logger.log_robots') || !$crawlerDetect->isCrawler()) {
@@ -138,7 +138,7 @@ class UserLogger
                 }
             } catch (Exception $e) {
                 // Sometimes reached..
-                Logger::warning('Error in topoff/user-logger: ' . $e->getMessage(), $e->getTrace());
+                LaravelLogger::warning('Error in topoff/user-logger: ' . $e->getMessage(), $e->getTrace());
             }
         }
     }
@@ -180,14 +180,15 @@ class UserLogger
     protected function getOrCreateSession(): Session
     {
         $session = new SessionHelper($this->request);
+
         if ($session->isExistingSession()) {
             // Prüfen ob die Session wirklich in der DB vorhanden ist, sollte eigentlich zu 100%
-            // todo, später entfernen und direkt über die session id gehen, bessere performance
             $this->session = $this->sessionRepository->find($session->getSessionUuid());
+
             if (!empty($this->session)) {
                 $this->session = $this->sessionRepository->updateUser($this->session, Auth::user());
             } else {
-                \Log::warning(get_class($this) . '->' . __FUNCTION__ . ': die session ' . $session->getSessionUuid() . ' wurde nicht in der DB table sessions gefunden.');
+                LaravelLogger::warning(get_class($this) . '->' . __FUNCTION__ . ': die session ' . $session->getSessionUuid() . ' wurde nicht in der DB table sessions gefunden.');
             }
         }
 
@@ -232,9 +233,9 @@ class UserLogger
 
             // Session
             return $this->sessionRepository->findOrCreate($session->getSessionUuid(), Auth::user(), $this->device, $this->agent, $this->referer, $this->language, $this->request->ip(), $suspicious, $isRobot);
-        } else {
-            return $this->session;
         }
+
+        return $this->session;
     }
 
     /**

@@ -2,9 +2,8 @@
 
 use Closure;
 use Exception;
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
-use Log;
+use \Illuminate\Support\Facades\Log as LaravelLogger;
 use Topoff\LaravelUserLogger\UserLogger;
 
 class InjectUserLogger
@@ -22,8 +21,6 @@ class InjectUserLogger
      * @var array
      */
     protected $except = [];
-
-
 
     /**
      * Create a new middleware instance.
@@ -68,7 +65,7 @@ class InjectUserLogger
                 }
             } catch (Exception $e) {
                 // will mostly not be called
-                Log::warning('Error in topoff/laravel-user-logger: ' . $e->getMessage(), $e->getTrace());
+                LaravelLogger::warning('Error in topoff/laravel-user-logger: ' . $e->getMessage(), $e->getTrace());
             } finally {
                 return $next($request);
             }

@@ -20,18 +20,6 @@ class SessionRepository
     /**
      * Get or Create a session
      * If there was no user in the session but now there is one, it gets updated.
-     *
-     * @param string        $uuid
-     * @param User|null     $user
-     * @param Device|null   $device
-     * @param Agent|null    $agent
-     * @param Referer|null  $referer
-     * @param Language|null $language
-     * @param string|null   $clientIp
-     * @param bool          $suspicious
-     * @param bool          $isRobot
-     *
-     * @return Session
      */
     public function findOrCreate(string $uuid,
                                  User $user = NULL,
@@ -66,10 +54,6 @@ class SessionRepository
     /**
      * Hash the ip and change it a bit that it don't fits with lookup tables
      * a little bit security through obscurity
-     *
-     * @param string $clientIp
-     *
-     * @return string
      */
     private function hashIp(string $clientIp): string
     {
@@ -79,11 +63,6 @@ class SessionRepository
 
     /**
      * Updates the user of the session, if not present yet
-     *
-     * @param Session $session
-     * @param User    $user
-     *
-     * @return Session
      */
     public function updateUser(Session $session, User $user = NULL): Session
     {
@@ -98,10 +77,6 @@ class SessionRepository
 
     /**
      * Get an existing session
-     *
-     * @param string $uuid
-     *
-     * @return null|Session
      */
     public function find(string $uuid): ?Session
     {
