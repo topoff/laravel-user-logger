@@ -41,7 +41,7 @@ class LanguageParser
     /**
      * Get accept languages.
      */
-    private function parseLanguages(): void
+    protected function parseLanguages(): void
     {
         $acceptLanguage = $this->request->header('accept-language');
 

@@ -40,9 +40,6 @@ class SessionHelper
 
     /**
      * Get current Session UUID
-     *
-     * @return string
-     * @throws \Exception
      */
     public function getSessionUuid(): string
     {

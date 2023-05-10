@@ -58,6 +58,26 @@ class Session extends Model
         'is_suspicious' => 'boolean',
     ];
 
+    public function isRobot() : bool
+    {
+        return $this->is_robot;
+    }
+
+    public function isNoRobot() : bool
+    {
+        return ! $this->is_robot;
+    }
+
+    public function isSuspicious() : bool
+    {
+        return $this->is_suspicious;
+    }
+
+    public function isNotSuspicious() : bool
+    {
+        return ! $this->is_suspicious;
+    }
+
     /**
      * Can have many Logs
      *

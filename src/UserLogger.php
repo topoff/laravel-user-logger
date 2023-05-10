@@ -2,10 +2,12 @@
 
 namespace Topoff\LaravelUserLogger;
 
-use Auth;
 use Exception;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log as LaravelLogger;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Topoff\LaravelUserLogger\Models\Agent;
 use Topoff\LaravelUserLogger\Models\Debug;
@@ -33,7 +35,6 @@ use Topoff\LaravelUserLogger\Repositories\UriRepository;
 use Topoff\LaravelUserLogger\Support\SessionHelper;
 use UserAgentParser\Exception\NoResultFoundException;
 use UserAgentParser\Exception\PackageNotLoadedException;
-use \Illuminate\Support\Facades\Log as LaravelLogger;
 
 /**
  * Class UserLogger
@@ -44,21 +45,13 @@ class UserLogger
 {
     /**
      * The Laravel application instance.
-     *
-     * @var \Illuminate\Foundation\Application
      */
     protected Application $app;
-
     protected ?bool $enabled = null;
-
     protected ?Agent $agent = null;
-
     protected ?Domain $domain = null;
-
     protected Request $request;
-
     protected DeviceRepository $deviceRepository;
-
     protected UriRepository $uriRepository;
     protected AgentRepository $agentRepository;
     protected LanguageRepository $languageRepository;
@@ -67,33 +60,14 @@ class UserLogger
     protected SessionRepository $sessionRepository;
     protected LogRepository $logRepository;
     protected ExperimentLogRepository $experimentLogRepository;
-
     protected ?Log $log = null;
-
     protected ?Session $session = null;
-
     protected ?Device $device = null;
     protected ?Language $language = null;
-
     protected ?Referer $referer = null;
-
     protected ?ExperimentLog $experimentLog;
+    protected array $blacklistUris = [];
 
-    /**
-     * UserLogger constructor.
-     *
-     * @param Application $app
-     * @param AgentRepository $agentRepository
-     * @param DeviceRepository $deviceRepository
-     * @param DomainRepository $domainRepository
-     * @param LanguageRepository $languageRepository
-     * @param LogRepository $logRepository
-     * @param UriRepository $uriRepository
-     * @param RefererRepository $refererRepository
-     * @param SessionRepository $sessionRepository
-     * @param ExperimentLogRepository $experimentLogRepository
-     * @param Request $request
-     */
     public function __construct(Application $app,
                                 AgentRepository $agentRepository,
                                 DeviceRepository $deviceRepository,
@@ -117,14 +91,16 @@ class UserLogger
         $this->sessionRepository = $sessionRepository;
         $this->logRepository = $logRepository;
         $this->experimentLogRepository = $experimentLogRepository;
+
+        $this->blacklistUris = Cache::rememberForever('user-logger.blacklist_routes', static fn() => config('user-logger.blacklist_routes') ?: []);
     }
 
-    public function boot()
+    public function boot() : void
     {
         if (config('app.debug')) {
             // Display Error if app.debug is true
             $crawlerDetect = new CrawlerDetect;
-            if (config('user-logger.log_robots') || !$crawlerDetect->isCrawler()) {
+            if (config('user-logger.log_robots') || ! $crawlerDetect->isCrawler()) {
                 $this->log = $this->createLog();
             }
         } else {
@@ -158,18 +134,36 @@ class UserLogger
             // Session
             $this->session = $this->getOrCreateSession();
 
+            // Check if the uri is blacklisted, if so, set the session to robot and suspicious
+            if (($this->session->isNoRobot() || $this->session->isNotSuspicious()) && $this->isInBlacklistedUriArray($this->request)) {
+                $this->sessionRepository->setRobotAndSuspicious($this->session);
+            }
+
             // Experiment
             if (config('user-logger.use_experiments')) $this->experimentLog = $this->getOrCreateExperimentLog($this->session);
 
             // Log
             return $this->logRepository->create($this->session, $this->domain, $uri, $event);
         } catch (Exception $e) {
-            if (config('user-logger.debug') === true && !empty($this->request->userAgent())) {
-                Debug::create(['kind' => 'user-agent', 'value' => 'Error in getOrCreateSession: ' . $e->getMessage()]);
+            if (config('user-logger.debug') === true && ! empty($this->request->userAgent())) {
+                Debug::create(['kind' => 'user-agent', 'value' => 'Error in getOrCreateSession: '.$e->getMessage()]);
             }
         }
 
-        return NULL;
+        return null;
+    }
+
+    protected function setSessionFromRequest(SessionHelper $sessionHelper) : void
+    {
+        if ($sessionHelper->isExistingSession()) {
+            $this->session = $this->sessionRepository->find($sessionHelper->getSessionUuid());
+
+            if ( ! empty($this->session)) {
+                $this->session = $this->sessionRepository->updateUser($this->session, Auth::user());
+            } else {
+                LaravelLogger::warning(get_class($this).'->'.__FUNCTION__.': die sessionHelper '.$sessionHelper->getSessionUuid().' wurde nicht in der DB table sessions gefunden.');
+            }
+        }
     }
 
     /**
@@ -177,22 +171,14 @@ class UserLogger
      *
      * @throws Exception
      */
-    protected function getOrCreateSession(): Session
+    protected function getOrCreateSession() : Session
     {
-        $session = new SessionHelper($this->request);
-
-        if ($session->isExistingSession()) {
-            // Prüfen ob die Session wirklich in der DB vorhanden ist, sollte eigentlich zu 100%
-            $this->session = $this->sessionRepository->find($session->getSessionUuid());
-
-            if (!empty($this->session)) {
-                $this->session = $this->sessionRepository->updateUser($this->session, Auth::user());
-            } else {
-                LaravelLogger::warning(get_class($this) . '->' . __FUNCTION__ . ': die session ' . $session->getSessionUuid() . ' wurde nicht in der DB table sessions gefunden.');
-            }
+        if ($this->session === null) {
+            $sessionHelper = new SessionHelper($this->request);
+            $this->setSessionFromRequest($sessionHelper);
         }
 
-        if (empty($this->session)) {
+        if ($this->session === null) {
             $this->referer = $this->getOrCreateReferer();
 
             try {
@@ -215,24 +201,29 @@ class UserLogger
 
             // Language
             $languageParser = new LanguageParser($this->request);
-            if (!empty($languageParser)) {
+            if ( $languageParser->getLanguageAttributes() !== null) {
                 $this->language = $this->languageRepository->findOrCreate($languageParser->getLanguageAttributes());
             } else {
                 if (config('user-logger.debug') === true) {
                     Debug::create(['kind' => 'language', 'value' => $this->request->header('accept-language')]);
                 }
-                $this->language = NULL;
+                $this->language = null;
             }
 
-            // If the agent and the device couldn't be parsed, mark as suspicious
-            $suspicious = empty($this->agent) && empty($this->device);
+            if ($this->isInBlacklistedUriArray($this->request)) {
+                $suspicious = true;
+                $isRobot = true;
+            } else {
+                // If the agent and the device couldn't be parsed, mark as suspicious
+                $suspicious = empty($this->agent) && empty($this->device);
 
-            // Agents can be set manually in the agents table as robots and this will overwrite the is_robot detection from
-            // the UserAgentParser Result.
-            $isRobot = (isset($this->agent) && $this->agent->is_robot) || $this->device['is_robot'];
+                // Agents can be set manually in the agents table as robots and this will overwrite the is_robot detection from
+                // the UserAgentParser Result.
+                $isRobot = (isset($this->agent) && $this->agent->is_robot) || $this->device['is_robot'];
+            }
 
             // Session
-            return $this->sessionRepository->findOrCreate($session->getSessionUuid(), Auth::user(), $this->device, $this->agent, $this->referer, $this->language, $this->request->ip(), $suspicious, $isRobot);
+            return $this->sessionRepository->findOrCreate($sessionHelper->getSessionUuid(), Auth::user(), $this->device, $this->agent, $this->referer, $this->language, $this->request->ip(), $suspicious, $isRobot);
         }
 
         return $this->session;
@@ -516,11 +507,29 @@ class UserLogger
      *
      * @return bool
      */
-    public function isExperiment(string $experimentName): bool
+    public function isExperiment(string $experimentName) : bool
     {
         // Crawlers, immer erstes Experiment angeben, wird nicht geloggt
         if (empty($this->experimentLog)) return config('user-logger.experiments')[0] === $experimentName;
 
         return $this->experimentLog->experiment === $experimentName;
+    }
+
+    /**
+     * Determine if the request has a URI that should be ignored.
+     */
+    protected function isInBlacklistedUriArray(Request $request) : bool
+    {
+        foreach ($this->blacklistUris as $blacklistUri) {
+            if ($blacklistUri !== '/') {
+                $blacklistUri = trim($blacklistUri, '/');
+            }
+
+            if ($request->is($blacklistUri)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

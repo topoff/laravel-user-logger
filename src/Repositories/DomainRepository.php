@@ -2,16 +2,13 @@
 
 namespace Topoff\LaravelUserLogger\Repositories;
 
+use Illuminate\Support\Facades\Cache;
 use Topoff\LaravelUserLogger\Models\Domain;
 
 class DomainRepository
 {
     /**
      * Finds an existing Domain or creates a new DB Record
-     *
-     * @param array $attributes
-     *
-     * @return Domain
      */
     public function findOrCreate(Array $attributes): Domain
     {
@@ -19,6 +16,6 @@ class DomainRepository
             $attributes['name'] = 'unknown';
         }
 
-        return Domain::firstOrCreate($attributes);
+        return Cache::rememberForever("userlogger:domain:{$attributes['name']}:{$attributes['local']}", static fn() => Domain::firstOrCreate($attributes));
     }
 }
