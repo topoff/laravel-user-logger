@@ -51,9 +51,9 @@ class UserLogger
 
     protected ?bool $enabled = null;
 
-    protected ?Agent $agent;
+    protected ?Agent $agent = null;
 
-    protected ?Domain $domain;
+    protected ?Domain $domain = null;
 
     protected Request $request;
 
@@ -68,14 +68,14 @@ class UserLogger
     protected LogRepository $logRepository;
     protected ExperimentLogRepository $experimentLogRepository;
 
-    protected ?Log $log;
+    protected ?Log $log = null;
 
-    protected ?Session $session;
+    protected ?Session $session = null;
 
-    protected ?Device $device;
-    protected ?Language $language;
+    protected ?Device $device = null;
+    protected ?Language $language = null;
 
-    protected ?Referer $referer;
+    protected ?Referer $referer = null;
 
     protected ?ExperimentLog $experimentLog;
 
