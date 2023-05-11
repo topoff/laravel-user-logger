@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log as LaravelLogger;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
+use Ramsey\Uuid\Uuid;
 use Topoff\LaravelUserLogger\Models\Agent;
 use Topoff\LaravelUserLogger\Models\Debug;
 use Topoff\LaravelUserLogger\Models\Device;
@@ -329,18 +330,17 @@ class UserLogger
     /**
      * Create an Event if the UserLogger is in only-event mode
      */
-    public function setEventWithSessionId(string $sessionId, string $event, string $entityType = NULL, string $entityId = NULL): ?Log
+    public function setEventWithSessionId(string $sessionId = null, string $event = null, string $entityType = null, string $entityId = null) : ?Log
     {
         if ($this->isDisabled()) {
-            return NULL;
+            return null;
         }
 
-        $this->session = $this->sessionRepository->find($sessionId);
+        $sessionId = $sessionId ?? Uuid::uuid7()->toString();
+        $this->session = $this->sessionRepository->findOrCreate($sessionId);
+        $lastLog = $this->session->logs()->orderBy('created_at', 'desc')->first();
 
-        if ($this->session) {
-            $lastLog = $this->session->logs()->orderBy('created_at', 'desc')->first();
-            return $this->logRepository->createMinimal($this->session, $lastLog?->domain_id, null, $event, $entityType, $entityId);
-        }
+        return $this->logRepository->createMinimal($this->session, $lastLog?->domain_id, null, $event, $entityType, $entityId);
     }
 
     public function isDisabled(): bool

@@ -54,7 +54,7 @@ class SessionHelper
      */
     private function createSessionUuid(): string
     {
-        $uuid = Uuid::uuid1()->toString();
+        $uuid = Uuid::uuid7()->toString();
         $this->request->session()->put($this->sessionName, $uuid);
 
         return $uuid;

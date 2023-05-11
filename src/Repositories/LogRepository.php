@@ -22,7 +22,7 @@ class LogRepository
     /**
      * Creates a minimal log entry, for conversion events in backend
      */
-    public function createMinimal(Session $session, int $domainId, int $uriId = null, string $event = NULL, string $entityType = NULL, string $entityId = NULL): Log
+    public function createMinimal(Session $session, ?int $domainId = null, ?int $uriId = null, ?string $event = NULL, ?string $entityType = NULL, ?string $entityId = NULL): Log
     {
         return Log::create(['session_id' => $session->id, 'domain_id' => $domainId, 'uri_id' => $uriId, 'event' => $event, 'entity_type' => $entityType, 'entity_id' => $entityId]);
     }
