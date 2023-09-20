@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log as LaravelLogger;
+use Throwable;
 use Topoff\LaravelUserLogger\UserLogger;
 
 class InjectUserLogger
@@ -54,9 +55,9 @@ class InjectUserLogger
         // this does not log the error, but suppresses it completely
         try {
             $this->bootUserLogger($request);
-        } catch (Exception $e) {
+        } catch (Throwable $th) {
             // will mostly not be called
-            LaravelLogger::warning('Error in topoff/laravel-user-logger: ' . $e->getMessage(), $e->getTrace());
+            LaravelLogger::warning('Error in topoff/laravel-user-logger: ' . $th->getMessage(), $th->getTrace());
         } finally {
             return $next($request);
         }
