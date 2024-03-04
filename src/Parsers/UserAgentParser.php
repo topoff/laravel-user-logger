@@ -3,6 +3,7 @@
 namespace Topoff\LaravelUserLogger\Parsers;
 
 use Illuminate\Http\Request;
+use UserAgentParser\Model\UserAgent;
 use UserAgentParser\Provider;
 
 /**
@@ -15,12 +16,12 @@ class UserAgentParser
     /**
      * @var \UserAgentParser\Model\UserAgent
      */
-    protected $parseResult;
+    protected UserAgent $parseResult;
 
     /**
      * @var Request
      */
-    protected $request;
+    protected Request $request;
 
     /**
      * UserAgentParser constructor.
@@ -40,10 +41,15 @@ class UserAgentParser
      * chained parsing until one provider detects the agent
      *
      * @throws \UserAgentParser\Exception\NoResultFoundException
-     * @throws \UserAgentParser\Exception\PackageNotLoadedException
      */
-    protected function parse()
+    protected function parse(): void
     {
+        if ($this->request->userAgent() === NULL) {
+            $this->parseResult = new UserAgent();
+
+            return;
+        }
+
         $chain = new Provider\Chain([
                                         new Provider\JenssegersAgent(), // Ist viel schneller, ca. 15ms
                                         new Provider\MatomoDeviceDetector(), // braucht ca. 600ms
@@ -97,7 +103,7 @@ class UserAgentParser
     /**
      * nginx function to add the missing function getallheaders()
      */
-    private function addFunctionGetAllHeaders()
+    private function addFunctionGetAllHeaders(): void
     {
         if (!function_exists('getallheaders')) {
             function getallheaders()

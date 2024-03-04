@@ -9,7 +9,7 @@ This is a Simple user logger and A/B Testing Tool for laravel.
 
 ## Requirements  
 
-Needs Laravel 5.6
+Needs Laravel 8
 
 
 ## Installation

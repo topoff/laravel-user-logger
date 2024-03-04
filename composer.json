@@ -10,14 +10,14 @@
     "authors": [
         {
             "name": "ndberg",
-            "email": "a@bergerweb.ch"
+            "email": "code@bergerweb.ch"
         }
     ],
     "require": {
         "php": "^8.0",
         "jaybizzle/crawler-detect": "^1.2",
         "jenssegers/agent": "^2.6",
-        "matomo/device-detector": "^6.0",
+        "matomo/device-detector": "^6.3.0",
         "illuminate/support": "*",
         "illuminate/database": "*",
         "illuminate/filesystem": "*",
@@ -33,8 +33,8 @@
         "snowplow/referer-parser": "Does not use semver and the newest version dev-master#2023-03-15-203816 does not get the php version. But the files seem to be ok, it uses the data/referers.json file from the repo."
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5",
-        "friendsofphp/php-cs-fixer": "^2.0"
+        "phpunit/phpunit": "^10.0",
+        "friendsofphp/php-cs-fixer": "^3.14"
     },
     "autoload": {
         "psr-4": {
