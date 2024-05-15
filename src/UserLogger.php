@@ -39,8 +39,6 @@ use UserAgentParser\Exception\PackageNotLoadedException;
 
 /**
  * Class UserLogger
- *
- * @package Topoff\LaravelUserLogger
  */
 class UserLogger
 {
@@ -114,7 +112,7 @@ class UserLogger
                     $this->log = $this->createLog();
                 }
             } catch (Exception $e) {
-                // Sometimes reached..
+                // Sometimes reached
                 LaravelLogger::warning('Error in topoff/user-logger: ' . $e->getMessage(), $e->getTrace());
             }
         }
@@ -123,7 +121,7 @@ class UserLogger
     /**
      * Create the Log of the Request
      */
-    protected function createLog(string $event = NULL): ?Log
+    protected function createLog(?string $event = null, ?string $entityType = null, ?string $entityId = null): ?Log
     {
         try {
             // URI -> decoded path liefert ohne variablen
@@ -144,10 +142,10 @@ class UserLogger
             if (config('user-logger.use_experiments')) $this->experimentLog = $this->getOrCreateExperimentLog($this->session);
 
             // Log
-            return $this->logRepository->create($this->session, $this->domain, $uri, $event);
+            return $this->logRepository->create($this->session, $this->domain, $uri, $event, $entityType, $entityId);
         } catch (Exception $e) {
             if (config('user-logger.debug') === true && ! empty($this->request->userAgent())) {
-                Debug::create(['kind' => 'user-agent', 'value' => 'Error in getOrCreateSession: '.$e->getMessage()]);
+                Debug::create(['kind' => 'user-agent', 'value' => 'Error in getOrCreateSession: '.$e->getMessage().' in '.$e->getFile().' on line '.$e->getLine().' - Trace: '.$e->getTraceAsString()]);
             }
         }
 
@@ -220,7 +218,7 @@ class UserLogger
 
                 // Agents can be set manually in the agents table as robots and this will overwrite the is_robot detection from
                 // the UserAgentParser Result.
-                $isRobot = (isset($this->agent) && $this->agent->is_robot) || $this->device['is_robot'];
+                $isRobot = (isset($this->agent) && $this->agent->is_robot) || (isset($this->device) && $this->device['is_robot']);
             }
 
             // Session
