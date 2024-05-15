@@ -4,8 +4,6 @@ namespace Topoff\LaravelUserLogger\Parsers;
 
 /**
  * Class UtmSourceGoogle
- *
- * @package Topoff\LaravelUserLogger\Parsers
  */
 class UtmSourceBing extends AbstractUtmSource
 {
@@ -32,25 +30,17 @@ class UtmSourceBing extends AbstractUtmSource
 
     /**
      * UtmSourceGoogle constructor.
-     *
-     * @param string $url
      */
     public function __construct(string $url)
     {
         parent::__construct($url);
     }
 
-    /**
-     * @return string
-     */
     protected function getAdgroupId(): string
     {
         return $this->attributes['utm_content'] ?? '';
     }
 
-    /**
-     * @return string
-     */
     protected function getCampaignId(): string
     {
         return $this->attributes['utm_campaign'] ?? '';
@@ -58,8 +48,6 @@ class UtmSourceBing extends AbstractUtmSource
 
     /**
      * Which class parsed the result
-     *
-     * @return string
      */
     protected function getClass(): string
     {
@@ -68,8 +56,6 @@ class UtmSourceBing extends AbstractUtmSource
 
     /**
      * Translates the device
-     *
-     * @return string
      */
     protected function getDevice(): string
     {
@@ -80,9 +66,6 @@ class UtmSourceBing extends AbstractUtmSource
         }
     }
 
-    /**
-     * @return string
-     */
     protected function getKeywords(): string
     {
         return $this->attributes['utm_term'] ?? '';
@@ -90,8 +73,6 @@ class UtmSourceBing extends AbstractUtmSource
 
     /**
      * Translates the matchtype
-     *
-     * @return string
      */
     protected function getMatchtype(): string
     {
@@ -104,8 +85,6 @@ class UtmSourceBing extends AbstractUtmSource
 
     /**
      * Translates the network
-     *
-     * @return string
      */
     protected function getNetwork(): string
     {
@@ -115,5 +94,4 @@ class UtmSourceBing extends AbstractUtmSource
             return '';
         }
     }
-
 }

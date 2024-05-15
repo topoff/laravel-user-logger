@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Device
- *
- * @package Topoff\LaravelUserLogger\Models
  */
 class Device extends Model
 {
@@ -47,13 +45,11 @@ class Device extends Model
      */
     protected $casts = [
         'is_mobile' => 'boolean',
-        'is_robot'  => 'boolean',
+        'is_robot' => 'boolean',
     ];
 
     /**
      * Can have many Sessions
-     *
-     * @return HasMany
      */
     public function sessions(): HasMany
     {

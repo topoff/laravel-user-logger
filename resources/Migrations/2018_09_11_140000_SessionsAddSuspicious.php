@@ -13,12 +13,12 @@ class SessionsAddSuspicious extends Migration
      */
     public function up()
     {
-        if(!Schema::connection($this->connection)->hasColumn('sessions', 'is_suspicious')){
+        if (! Schema::connection($this->connection)->hasColumn('sessions', 'is_suspicious')) {
             Schema::connection($this->connection)->table('sessions', function (Blueprint $table) {
                 $table->boolean('is_suspicious')->default(false)->after('is_robot');
             });
 
-            DB::connection($this->connection)->update("UPDATE sessions SET is_suspicious = TRUE WHERE is_robot IS NULL");
+            DB::connection($this->connection)->update('UPDATE sessions SET is_suspicious = TRUE WHERE is_robot IS NULL');
         }
     }
 
@@ -29,7 +29,7 @@ class SessionsAddSuspicious extends Migration
      */
     public function down()
     {
-        if(!Schema::connection($this->connection)->hasColumn('sessions', 'is_suspicious')){
+        if (! Schema::connection($this->connection)->hasColumn('sessions', 'is_suspicious')) {
             Schema::connection($this->connection)->table('sessions', function (Blueprint $table) {
                 $table->dropColumn('is_suspicious');
             });

@@ -6,8 +6,6 @@ use Illuminate\Http\Request;
 
 /**
  * Class LanguageParser
- *
- * @package Topoff\LaravelUserLogger\Parsers
  */
 class LanguageParser
 {
@@ -28,8 +26,6 @@ class LanguageParser
 
     /**
      * LanguageParser constructor.
-     *
-     * @param Request $request
      */
     public function __construct(Request $request)
     {
@@ -68,18 +64,16 @@ class LanguageParser
 
     /**
      * Delivers the language attributes from the agent of the current request
-     *
-     * @return array|null
      */
     public function getLanguageAttributes(): ?array
     {
         try {
             return [
                 'preference' => $this->defaultLanguage,
-                'range'      => $this->acceptedLanguages,
+                'range' => $this->acceptedLanguages,
             ];
         } catch (\Exception $e) {
-            return NULL;
+            return null;
         }
     }
 }

@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class Log
- *
- * @package Topoff\LaravelUserLogger\Models
  */
 class Log extends Model
 {
@@ -42,8 +40,6 @@ class Log extends Model
 
     /**
      * Belongs to one Session
-     *
-     * @return BelongsTo
      */
     public function session(): BelongsTo
     {
@@ -52,8 +48,6 @@ class Log extends Model
 
     /**
      * Belongs to one URI
-     *
-     * @return BelongsTo
      */
     public function uri(): BelongsTo
     {
@@ -62,8 +56,6 @@ class Log extends Model
 
     /**
      * Belongs to one Domain
-     *
-     * @return BelongsTo
      */
     public function domain(): BelongsTo
     {

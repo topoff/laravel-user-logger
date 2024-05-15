@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class Experiment
- *
- * @package Topoff\LaravelUserLogger\Models
  */
 class ExperimentLog extends Model
 {
@@ -49,12 +47,9 @@ class ExperimentLog extends Model
 
     /**
      * Belongs to one session
-     *
-     * @return BelongsTo
      */
     public function sessions(): BelongsTo
     {
         return $this->belongsTo(Session::class);
     }
-
 }

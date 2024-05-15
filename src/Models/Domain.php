@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Domain
- *
- * @package Topoff\LaravelUserLogger\Models
  */
 class Domain extends Model
 {
@@ -51,8 +49,6 @@ class Domain extends Model
 
     /**
      * Can have many Logs
-     *
-     * @return HasMany
      */
     public function logs(): HasMany
     {

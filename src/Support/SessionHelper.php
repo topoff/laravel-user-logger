@@ -7,8 +7,6 @@ use Ramsey\Uuid\Uuid;
 
 /**
  * Class Session
- *
- * @package Topoff\LaravelUserLogger\Support
  */
 class SessionHelper
 {
@@ -28,8 +26,6 @@ class SessionHelper
 
     /**
      * Session constructor.
-     *
-     * @param Request $request
      */
     public function __construct(Request $request)
     {
@@ -49,7 +45,6 @@ class SessionHelper
     /**
      * Create new Session UUID
      *
-     * @return string
      * @throws \Exception
      */
     private function createSessionUuid(): string
@@ -62,8 +57,6 @@ class SessionHelper
 
     /**
      * Is it an existing session?
-     *
-     * @return bool
      */
     public function isExistingSession(): bool
     {

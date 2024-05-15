@@ -10,12 +10,12 @@ class DomainRepository
     /**
      * Finds an existing Domain or creates a new DB Record
      */
-    public function findOrCreate(Array $attributes): Domain
+    public function findOrCreate(array $attributes): Domain
     {
         if (empty($attributes['name'])) {
             $attributes['name'] = 'unknown';
         }
 
-        return Cache::rememberForever("userlogger:domain:{$attributes['name']}:{$attributes['local']}", static fn() => Domain::firstOrCreate($attributes));
+        return Cache::rememberForever("userlogger:domain:{$attributes['name']}:{$attributes['local']}", static fn () => Domain::firstOrCreate($attributes));
     }
 }

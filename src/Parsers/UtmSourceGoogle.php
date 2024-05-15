@@ -4,8 +4,6 @@ namespace Topoff\LaravelUserLogger\Parsers;
 
 /**
  * Class UtmSourceGoogle
- *
- * @package Topoff\LaravelUserLogger\Parsers
  */
 class UtmSourceGoogle extends AbstractUtmSource
 {
@@ -32,8 +30,6 @@ class UtmSourceGoogle extends AbstractUtmSource
 
     /**
      * UtmSourceGoogle constructor.
-     *
-     * @param string $url
      */
     public function __construct(string $url)
     {
@@ -42,8 +38,6 @@ class UtmSourceGoogle extends AbstractUtmSource
 
     /**
      * Translates the device
-     *
-     * @return string
      */
     protected function getDevice(): string
     {
@@ -56,8 +50,6 @@ class UtmSourceGoogle extends AbstractUtmSource
 
     /**
      * Translates the matchtype
-     *
-     * @return string
      */
     protected function getMatchtype(): string
     {
@@ -70,8 +62,6 @@ class UtmSourceGoogle extends AbstractUtmSource
 
     /**
      * Translates the network
-     *
-     * @return string
      */
     protected function getNetwork(): string
     {
@@ -84,8 +74,6 @@ class UtmSourceGoogle extends AbstractUtmSource
 
     /**
      * Which class parsed the result
-     *
-     * @return string
      */
     protected function getClass(): string
     {

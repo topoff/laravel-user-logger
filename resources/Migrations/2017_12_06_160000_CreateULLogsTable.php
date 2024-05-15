@@ -13,7 +13,7 @@ class CreateULLogsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::connection($this->connection)->hasTable('logs')) {
+        if (! Schema::connection($this->connection)->hasTable('logs')) {
             Schema::connection($this->connection)->create('logs', function (Blueprint $table) {
                 $table->bigIncrements('id');
 

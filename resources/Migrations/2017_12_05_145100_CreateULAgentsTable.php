@@ -4,7 +4,6 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Topoff\LaravelUserLogger\Support\Migration;
 
-
 class CreateULAgentsTable extends Migration
 {
     /**
@@ -14,7 +13,7 @@ class CreateULAgentsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::connection($this->connection)->hasTable('agents')) {
+        if (! Schema::connection($this->connection)->hasTable('agents')) {
             Schema::connection($this->connection)->create('agents', function (Blueprint $table) {
                 $table->bigIncrements('id');
 

@@ -6,8 +6,6 @@ namespace Topoff\LaravelUserLogger\Parsers;
  * Class RefererResult
  *
  * Referer Result, which has to be delivered from Referer or UTM Source
- *
- * @package Topoff\LaravelUserLogger\Parsers
  */
 class RefererResult
 {

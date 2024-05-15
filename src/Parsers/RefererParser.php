@@ -8,8 +8,6 @@ use Snowplow\RefererParser\Referer;
 
 /**
  * Class RefererParser
- *
- * @package Topoff\LaravelUserLogger\Parsers
  */
 class RefererParser
 {
@@ -27,11 +25,8 @@ class RefererParser
 
     /**
      * RefererParser constructor.
-     *
-     * @param string      $refererUrl
-     * @param string|null $pageUrl
      */
-    public function __construct(string $refererUrl = NULL, string $pageUrl = NULL)
+    public function __construct(?string $refererUrl = null, ?string $pageUrl = null)
     {
         if ($refererUrl) {
             $parser = new Parser(null, config('user-logger.internal_domains'));
@@ -43,8 +38,6 @@ class RefererParser
 
     /**
      * Delivers the Attributes of the Referer
-     *
-     * @return null|RefererResult
      */
     public function getResult(): ?RefererResult
     {
@@ -69,9 +62,6 @@ class RefererParser
         return $refererResult;
     }
 
-    /**
-     * @return string
-     */
     protected function getSource(): string
     {
         if ($this->referer && $this->referer->isKnown()) {
@@ -81,9 +71,6 @@ class RefererParser
         }
     }
 
-    /**
-     * @return string
-     */
     protected function getMedium(): string
     {
         if ($this->referer && $this->referer->isKnown()) {
@@ -93,9 +80,6 @@ class RefererParser
         }
     }
 
-    /**
-     * @return string
-     */
     protected function getKeywords(): string
     {
         if ($this->referer && $this->referer->isKnown()) {

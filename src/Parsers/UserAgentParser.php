@@ -8,25 +8,16 @@ use UserAgentParser\Provider;
 
 /**
  * Class MultiUserAgentParser
- *
- * @package Topoff\LaravelUserLogger\Parsers
  */
 class UserAgentParser
 {
-    /**
-     * @var \UserAgentParser\Model\UserAgent
-     */
     protected UserAgent $parseResult;
 
-    /**
-     * @var Request
-     */
     protected Request $request;
 
     /**
      * UserAgentParser constructor.
      *
-     * @param Request $request
      *
      * @throws \UserAgentParser\Exception\NoResultFoundException
      * @throws \UserAgentParser\Exception\PackageNotLoadedException
@@ -44,16 +35,16 @@ class UserAgentParser
      */
     protected function parse(): void
     {
-        if ($this->request->userAgent() === NULL) {
+        if ($this->request->userAgent() === null) {
             $this->parseResult = new UserAgent();
 
             return;
         }
 
         $chain = new Provider\Chain([
-                                        new Provider\JenssegersAgent(), // Ist viel schneller, ca. 15ms
-                                        new Provider\MatomoDeviceDetector(), // braucht ca. 600ms
-                                    ]);
+            new Provider\JenssegersAgent(), // Ist viel schneller, ca. 15ms
+            new Provider\MatomoDeviceDetector(), // braucht ca. 600ms
+        ]);
 
         /* @var $result \UserAgentParser\Model\UserAgent */
         $this->parseResult = $chain->parse($this->request->userAgent(), $this->request->headers->all());
@@ -61,26 +52,22 @@ class UserAgentParser
 
     /**
      * Delivers the agent attributes from the agent of the current request
-     *
-     * @return array|null
      */
     public function getAgentAttributes(): ?array
     {
         try {
             return [
-                'name'            => $this->request->userAgent(),
-                'browser'         => $this->parseResult->getBrowser()->getName(),
+                'name' => $this->request->userAgent(),
+                'browser' => $this->parseResult->getBrowser()->getName(),
                 'browser_version' => $this->parseResult->getBrowser()->getVersion()->getComplete(),
             ];
         } catch (\Exception $e) {
-            return NULL;
+            return null;
         }
     }
 
     /**
      * Delivers the device attributes from the agent of the current request
-     *
-     * @return array|null
      */
     public function getDeviceAttributes(): ?array
     {
@@ -88,15 +75,15 @@ class UserAgentParser
             $device = $this->parseResult->getDevice();
 
             return [
-                'kind'             => mb_strtolower($device->getType()),
-                'model'            => mb_strtolower($device->getModel()),
-                'platform'         => mb_strtolower($this->parseResult->getOperatingSystem()->getName()),
+                'kind' => mb_strtolower($device->getType()),
+                'model' => mb_strtolower($device->getModel()),
+                'platform' => mb_strtolower($this->parseResult->getOperatingSystem()->getName()),
                 'platform_version' => mb_strtolower($this->parseResult->getOperatingSystem()->getVersion()->getComplete()),
-                'is_mobile'        => $this->parseResult->isMobile(),
-                'is_robot'         => $this->parseResult->isBot(),
+                'is_mobile' => $this->parseResult->isMobile(),
+                'is_robot' => $this->parseResult->isBot(),
             ];
         } catch (\Exception $e) {
-            return NULL;
+            return null;
         }
     }
 
@@ -105,7 +92,7 @@ class UserAgentParser
      */
     private function addFunctionGetAllHeaders(): void
     {
-        if (!function_exists('getallheaders')) {
+        if (! function_exists('getallheaders')) {
             function getallheaders()
             {
                 $headers = [];

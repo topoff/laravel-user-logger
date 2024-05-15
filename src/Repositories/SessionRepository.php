@@ -18,17 +18,17 @@ class SessionRepository
      * If there was no user in the session but now there is one, it gets updated.
      */
     public function findOrCreate(string $uuid,
-                                 User $user = NULL,
-                                 Device $device = NULL,
-                                 Agent $agent = NULL,
-                                 Referer $referer = NULL,
-                                 Language $language = NULL,
-                                 string $clientIp = NULL,
-                                 bool $suspicious = false,
-                                 ?bool $isRobot = false): Session
+        ?User $user = null,
+        ?Device $device = null,
+        ?Agent $agent = null,
+        ?Referer $referer = null,
+        ?Language $language = null,
+        ?string $clientIp = null,
+        bool $suspicious = false,
+        ?bool $isRobot = false): Session
     {
         if (config('user-logger.log_ip') !== true) {
-            $clientIp = NULL;
+            $clientIp = null;
         }
 
         $session = Session::firstOrCreate(['id' => $uuid], [
@@ -47,7 +47,7 @@ class SessionRepository
         return $session;
     }
 
-    public function setRobotAndSuspicious(Session $session) : Session
+    public function setRobotAndSuspicious(Session $session): Session
     {
         $session->is_robot = true;
         $session->is_suspicious = true;
@@ -60,7 +60,7 @@ class SessionRepository
      * Hash the ip and change it a bit that it don't fits with lookup tables
      * a little bit security through obscurity
      */
-    protected function hashIp(string $clientIp) : string
+    protected function hashIp(string $clientIp): string
     {
         $clientIp = md5($clientIp);
 
@@ -70,7 +70,7 @@ class SessionRepository
     /**
      * Updates the user of the session, if not present yet
      */
-    public function updateUser(Session $session, User $user = NULL): Session
+    public function updateUser(Session $session, ?User $user = null): Session
     {
         if (empty($session->user_id) && isset($user)) {
             $session->updated_at = Carbon::now();
@@ -86,6 +86,6 @@ class SessionRepository
      */
     public function find(string $uuid): ?Session
     {
-        return Cache::remember("Session_{$uuid}", 3600, fn() => Session::find($uuid));
+        return Cache::remember("Session_{$uuid}", 3600, fn () => Session::find($uuid));
     }
 }

@@ -6,8 +6,6 @@ namespace Topoff\LaravelUserLogger\Parsers;
  * Class AbstractUtmSource
  *
  * Abstract Class for all possible UTM Sources.
- *
- * @package Topoff\LaravelUserLogger\Parsers
  */
 abstract class AbstractUtmSource
 {
@@ -23,8 +21,6 @@ abstract class AbstractUtmSource
 
     /**
      * UtmSourceGoogle constructor.
-     *
-     * @param string $url
      */
     public function __construct(string $url)
     {
@@ -34,8 +30,6 @@ abstract class AbstractUtmSource
 
     /**
      * Parse
-     *
-     * @return RefererResult
      */
     public function getResult(): RefererResult
     {
@@ -57,64 +51,37 @@ abstract class AbstractUtmSource
         return $refererResult;
     }
 
-    /**
-     * @return string
-     */
     protected function getUtmSource(): string
     {
         return $this->attributes['utm_source'] ?? '';
     }
 
-    /**
-     * @return string
-     */
     protected function getCampaignId(): string
     {
         return $this->attributes['campaignid'] ?? '';
     }
 
-    /**
-     * @return string
-     */
     protected function getAdgroupId(): string
     {
         return $this->attributes['adgroupid'] ?? '';
     }
 
-    /**
-     * @return string
-     */
-    protected abstract function getMatchtype(): string;
+    abstract protected function getMatchtype(): string;
 
-    /**
-     * @return string
-     */
-    protected abstract function getDevice(): string;
+    abstract protected function getDevice(): string;
 
-    /**
-     * @return string
-     */
     protected function getKeywords(): string
     {
         return $this->attributes['keyword'] ?? '';
     }
 
-    /**
-     * @return string
-     */
     protected function getAdposition(): string
     {
         return $this->attributes['adposition'] ?? '';
     }
 
-    /**
-     * @return string
-     */
-    protected abstract function getNetwork(): string;
+    abstract protected function getNetwork(): string;
 
-    /**
-     * @return string
-     */
     protected function getGclid(): string
     {
         return $this->attributes['gclid'] ?? '';
@@ -122,12 +89,10 @@ abstract class AbstractUtmSource
 
     /**
      * Is there a utm_source parameter?
-     *
-     * @return bool
      */
     public function hasUtmSource(): bool
     {
-        return !empty($this->attributes['utm_source']);
+        return ! empty($this->attributes['utm_source']);
     }
 
     abstract protected function getClass(): string;

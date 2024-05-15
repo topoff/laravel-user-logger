@@ -8,12 +8,8 @@ class LanguageRepository
 {
     /**
      * Finds an existing Language or creates a new DB Record
-     *
-     * @param array $attributes
-     *
-     * @return Language
      */
-    public function findOrCreate(Array $attributes): Language
+    public function findOrCreate(array $attributes): Language
     {
         return Language::firstOrCreate($attributes);
     }

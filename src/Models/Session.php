@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Session
- *
- * @package Topoff\LaravelUserLogger\Models
  */
 class Session extends Model
 {
@@ -54,34 +52,32 @@ class Session extends Model
      * @var array
      */
     protected $casts = [
-        'is_robot'      => 'boolean',
+        'is_robot' => 'boolean',
         'is_suspicious' => 'boolean',
     ];
 
-    public function isRobot() : bool
+    public function isRobot(): bool
     {
         return $this->is_robot;
     }
 
-    public function isNoRobot() : bool
+    public function isNoRobot(): bool
     {
         return ! $this->is_robot;
     }
 
-    public function isSuspicious() : bool
+    public function isSuspicious(): bool
     {
         return $this->is_suspicious;
     }
 
-    public function isNotSuspicious() : bool
+    public function isNotSuspicious(): bool
     {
         return ! $this->is_suspicious;
     }
 
     /**
      * Can have many Logs
-     *
-     * @return HasMany
      */
     public function logs(): HasMany
     {
@@ -90,8 +86,6 @@ class Session extends Model
 
     /**
      * Belongs to one Device
-     *
-     * @return BelongsTo
      */
     public function device(): BelongsTo
     {
@@ -100,8 +94,6 @@ class Session extends Model
 
     /**
      * Belongs to one Agent
-     *
-     * @return BelongsTo
      */
     public function agent(): BelongsTo
     {
@@ -110,8 +102,6 @@ class Session extends Model
 
     /**
      * Belongs to one Domain
-     *
-     * @return BelongsTo
      */
     public function referer(): BelongsTo
     {
@@ -120,8 +110,6 @@ class Session extends Model
 
     /**
      * Belongs to one Domain
-     *
-     * @return BelongsTo
      */
     public function language(): BelongsTo
     {

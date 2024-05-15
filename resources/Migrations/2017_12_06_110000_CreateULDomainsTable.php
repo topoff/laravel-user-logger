@@ -13,7 +13,7 @@ class CreateULDomainsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::connection($this->connection)->hasTable('domains')) {
+        if (! Schema::connection($this->connection)->hasTable('domains')) {
             Schema::connection($this->connection)->create('domains', function (Blueprint $table) {
                 $table->bigIncrements('id');
 

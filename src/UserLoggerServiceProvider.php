@@ -23,9 +23,9 @@ class UserLoggerServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function boot()
     {
-        $this->publishes([__DIR__ . '/../config/user-logger.php' => config_path('user-logger.php'),], 'config');
+        $this->publishes([__DIR__.'/../config/user-logger.php' => config_path('user-logger.php')], 'config');
 
-        $this->loadMigrationsFrom(__DIR__ . '/../resources/Migrations/');
+        $this->loadMigrationsFrom(__DIR__.'/../resources/Migrations/');
 
         $this->registerMiddleware(InjectUserLogger::class);
 
@@ -51,7 +51,7 @@ class UserLoggerServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/user-logger.php', 'user-logger');
+        $this->mergeConfigFrom(__DIR__.'/../config/user-logger.php', 'user-logger');
 
         $this->app->singleton(UserLogger::class, function ($app) {
             return new UserLogger($app, new AgentRepository(), new DeviceRepository(), new DomainRepository(), new LanguageRepository(), new LogRepository(), new UriRepository(), new RefererRepository(), new SessionRepository(), new ExperimentLogRepository(), $app['request']);

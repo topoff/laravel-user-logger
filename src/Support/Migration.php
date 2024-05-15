@@ -16,6 +16,6 @@ class Migration extends IlluminateMigration
      */
     public function __construct()
     {
-        $this->connection =  'user-logger';
+        $this->connection = 'user-logger';
     }
 }

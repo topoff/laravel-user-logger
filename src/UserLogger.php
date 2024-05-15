@@ -46,38 +46,58 @@ class UserLogger
      * The Laravel application instance.
      */
     protected Application $app;
+
     protected ?bool $enabled = null;
+
     protected ?Agent $agent = null;
+
     protected ?Domain $domain = null;
+
     protected Request $request;
+
     protected DeviceRepository $deviceRepository;
+
     protected UriRepository $uriRepository;
+
     protected AgentRepository $agentRepository;
+
     protected LanguageRepository $languageRepository;
+
     protected DomainRepository $domainRepository;
+
     protected RefererRepository $refererRepository;
+
     protected SessionRepository $sessionRepository;
+
     protected LogRepository $logRepository;
+
     protected ExperimentLogRepository $experimentLogRepository;
+
     protected ?Log $log = null;
+
     protected ?Session $session = null;
+
     protected ?Device $device = null;
+
     protected ?Language $language = null;
+
     protected ?Referer $referer = null;
+
     protected ?ExperimentLog $experimentLog;
+
     protected array $blacklistUris = [];
 
     public function __construct(Application $app,
-                                AgentRepository $agentRepository,
-                                DeviceRepository $deviceRepository,
-                                DomainRepository $domainRepository,
-                                LanguageRepository $languageRepository,
-                                LogRepository $logRepository,
-                                UriRepository $uriRepository,
-                                RefererRepository $refererRepository,
-                                SessionRepository $sessionRepository,
-                                ExperimentLogRepository $experimentLogRepository,
-                                Request $request)
+        AgentRepository $agentRepository,
+        DeviceRepository $deviceRepository,
+        DomainRepository $domainRepository,
+        LanguageRepository $languageRepository,
+        LogRepository $logRepository,
+        UriRepository $uriRepository,
+        RefererRepository $refererRepository,
+        SessionRepository $sessionRepository,
+        ExperimentLogRepository $experimentLogRepository,
+        Request $request)
     {
         $this->app = $app;
         $this->deviceRepository = $deviceRepository;
@@ -91,10 +111,10 @@ class UserLogger
         $this->logRepository = $logRepository;
         $this->experimentLogRepository = $experimentLogRepository;
 
-        $this->blacklistUris = Cache::rememberForever('user-logger.blacklist_routes', static fn() => config('user-logger.blacklist_routes') ?: []);
+        $this->blacklistUris = Cache::rememberForever('user-logger.blacklist_routes', static fn () => config('user-logger.blacklist_routes') ?: []);
     }
 
-    public function boot() : void
+    public function boot(): void
     {
         if (config('app.debug')) {
             // Display Error if app.debug is true
@@ -108,12 +128,12 @@ class UserLogger
             // and here: does log some of them.
             try {
                 $crawlerDetect = new CrawlerDetect;
-                if (config('user-logger.log_robots') || !$crawlerDetect->isCrawler()) {
+                if (config('user-logger.log_robots') || ! $crawlerDetect->isCrawler()) {
                     $this->log = $this->createLog();
                 }
             } catch (Exception $e) {
                 // Sometimes reached
-                LaravelLogger::warning('Error in topoff/user-logger: ' . $e->getMessage(), $e->getTrace());
+                LaravelLogger::warning('Error in topoff/user-logger: '.$e->getMessage(), $e->getTrace());
             }
         }
     }
@@ -139,7 +159,9 @@ class UserLogger
             }
 
             // Experiment
-            if (config('user-logger.use_experiments')) $this->experimentLog = $this->getOrCreateExperimentLog($this->session);
+            if (config('user-logger.use_experiments')) {
+                $this->experimentLog = $this->getOrCreateExperimentLog($this->session);
+            }
 
             // Log
             return $this->logRepository->create($this->session, $this->domain, $uri, $event, $entityType, $entityId);
@@ -152,12 +174,12 @@ class UserLogger
         return null;
     }
 
-    protected function setSessionFromRequest(SessionHelper $sessionHelper) : void
+    protected function setSessionFromRequest(SessionHelper $sessionHelper): void
     {
         if ($sessionHelper->isExistingSession()) {
             $this->session = $this->sessionRepository->find($sessionHelper->getSessionUuid());
 
-            if ( ! empty($this->session)) {
+            if (! empty($this->session)) {
                 $this->session = $this->sessionRepository->updateUser($this->session, Auth::user());
             } else {
                 LaravelLogger::warning(get_class($this).'->'.__FUNCTION__.': die sessionHelper '.$sessionHelper->getSessionUuid().' wurde nicht in der DB table sessions gefunden.');
@@ -170,7 +192,7 @@ class UserLogger
      *
      * @throws Exception
      */
-    protected function getOrCreateSession() : Session
+    protected function getOrCreateSession(): Session
     {
         if ($this->session === null) {
             $sessionHelper = new SessionHelper($this->request);
@@ -185,22 +207,22 @@ class UserLogger
                 $this->device = $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes());
                 $this->agent = $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes());
             } catch (NoResultFoundException $e) {
-                if (config('user-logger.debug') === true && !empty($this->request->userAgent())) {
+                if (config('user-logger.debug') === true && ! empty($this->request->userAgent())) {
                     Debug::create(['kind' => 'user-agent', 'value' => $this->request->userAgent()]);
                 }
-                $this->device = NULL; //$this->deviceRepository->findOrCreateNotDetected();
-                $this->agent = NULL; //$this->agentRepository->findOrCreateNotDetected();
+                $this->device = null; //$this->deviceRepository->findOrCreateNotDetected();
+                $this->agent = null; //$this->agentRepository->findOrCreateNotDetected();
             } catch (PackageNotLoadedException $e) {
-                if (config('user-logger.debug') === true && !empty($this->request->userAgent())) {
-                    Debug::create(['kind' => 'user-agent', 'value' => 'PackageNotLoadedException' . $e->getMessage()]);
+                if (config('user-logger.debug') === true && ! empty($this->request->userAgent())) {
+                    Debug::create(['kind' => 'user-agent', 'value' => 'PackageNotLoadedException'.$e->getMessage()]);
                 }
-                $this->device = NULL; //$this->deviceRepository->findOrCreateNotDetected();
-                $this->agent = NULL; //$this->agentRepository->findOrCreateNotDetected();
+                $this->device = null; //$this->deviceRepository->findOrCreateNotDetected();
+                $this->agent = null; //$this->agentRepository->findOrCreateNotDetected();
             }
 
             // Language
             $languageParser = new LanguageParser($this->request);
-            if ( $languageParser->getLanguageAttributes() !== null) {
+            if ($languageParser->getLanguageAttributes() !== null) {
                 $this->language = $this->languageRepository->findOrCreate($languageParser->getLanguageAttributes());
             } else {
                 if (config('user-logger.debug') === true) {
@@ -242,42 +264,44 @@ class UserLogger
     {
         $refererUrl = $this->request->headers->get('referer');
 
-        # 1 - from url: utm_source -ok
+        // 1 - from url: utm_source -ok
         $utmUrlParser = new UtmSourceParser($this->request->fullUrl());
         $refererResult = $utmUrlParser->getResult();
 
-        # 2 - from referer: with referer-parser -ok
-        if ((empty($refererResult) || empty($refererResult->source)) && !empty($refererUrl)) {
+        // 2 - from referer: with referer-parser -ok
+        if ((empty($refererResult) || empty($refererResult->source)) && ! empty($refererUrl)) {
             $refererParser = new RefererParser($refererUrl);
             $refererResult = $refererParser->getResult();
         }
-        # 3 - from referer: utm_source
-        if ((empty($refererResult) || empty($refererResult->source)) && !empty($refererUrl)) {
+        // 3 - from referer: utm_source
+        if ((empty($refererResult) || empty($refererResult->source)) && ! empty($refererUrl)) {
             $utmRefParser = new UtmSourceParser($refererUrl);
             $refererResult = $utmRefParser->getResult();
         }
-        # 4 - from referer: local domain
+        // 4 - from referer: local domain
         if (empty($refererResult) || empty($refererResult->source)) {
             $refererParser = new RefererParser($refererUrl, $this->request->fullUrl());
             $refererResult = $refererParser->getResult();
         }
-        # 5 - from url: atlg - mail
+        // 5 - from url: atlg - mail
         if (empty($refererResult) || empty($refererResult->source)) {
             $urlPathParser = new UrlPathParser($this->request->fullUrl(), config('user-logger.internal_domains'));
             $refererResult = $urlPathParser->getResult();
         }
 
-        if (!empty($refererResult->domain)) {
+        if (! empty($refererResult->domain)) {
             $domain = $this->getOrCreateDomain($refererResult->domain, $refererResult->domain_intern);
             $referer = $this->refererRepository->findOrCreate($domain, $refererResult);
         } else {
             if (config('user-logger.debug') === true) {
                 Debug::create(['kind' => 'url', 'value' => $this->request->fullUrl()]);
-                if (!empty($this->request->headers->get('referer'))) Debug::create(['kind' => 'referer', 'value' => $this->request->headers->get('referer')]);
+                if (! empty($this->request->headers->get('referer'))) {
+                    Debug::create(['kind' => 'referer', 'value' => $this->request->headers->get('referer')]);
+                }
             }
         }
 
-        return $referer ?? NULL;
+        return $referer ?? null;
     }
 
     protected function getOrCreateDomain(string $name, bool $local): Domain
@@ -285,11 +309,6 @@ class UserLogger
         return $this->domainRepository->findOrCreate(['name' => $name, 'local' => $local]);
     }
 
-    /**
-     * @param Session $session
-     *
-     * @return ExperimentLog
-     */
     protected function getOrCreateExperimentLog(Session $session): ExperimentLog
     {
         $this->experimentLog = $this->experimentLogRepository->firstOrCreate(['session_id' => $session->id], ['experiment' => $this->getRandomExperimentName()]);
@@ -300,10 +319,10 @@ class UserLogger
     /**
      * Gets a Random Element from the Experiments from the config
      */
-    private Function getRandomExperimentName(): ?string
+    private function getRandomExperimentName(): ?string
     {
         if (empty(config('user-logger.experiments'))) {
-            return NULL;
+            return null;
         }
 
         return config('user-logger.experiments')[array_rand(config('user-logger.experiments'), 1)];
@@ -312,7 +331,7 @@ class UserLogger
     /**
      * Update an existing Log with an Event or create a new Log with an Event
      */
-    public function setEvent(string $event, string $entityType = NULL, string $entityId = NULL): ?Log
+    public function setEvent(string $event, ?string $entityType = null, ?string $entityId = null): ?Log
     {
         if ($this->isEnabled()) {
             if ($this->log) {
@@ -321,14 +340,14 @@ class UserLogger
                 return $this->createLog($event);
             }
         } else {
-            return NULL;
+            return null;
         }
     }
 
     /**
      * Create an Event if the UserLogger is in only-event mode
      */
-    public function setEventWithSessionId(string $sessionId = null, string $event = null, string $entityType = null, string $entityId = null) : ?Log
+    public function setEventWithSessionId(?string $sessionId = null, ?string $event = null, ?string $entityType = null, ?string $entityId = null): ?Log
     {
         if ($this->isDisabled()) {
             return null;
@@ -343,16 +362,16 @@ class UserLogger
 
     public function isDisabled(): bool
     {
-        return !$this->isEnabled();
+        return ! $this->isEnabled();
     }
 
     public function isEnabled(): bool
     {
-        if ($this->enabled === NULL) {
+        if ($this->enabled === null) {
             $config = $this->app['config'];
             $configEnabled = $config->get('user-logger.enabled') ?? false;
 
-            $this->enabled = $configEnabled && !$this->app->runningInConsole() && !$this->app->environment('testing');
+            $this->enabled = $configEnabled && ! $this->app->runningInConsole() && ! $this->app->environment('testing');
         }
 
         return $this->enabled;
@@ -360,10 +379,6 @@ class UserLogger
 
     /**
      * Update an existing Log with a Comment or create a new Log with a Comment
-     *
-     * @param string $comment
-     *
-     * @return Log|null
      */
     public function setComment(string $comment): ?Log
     {
@@ -371,14 +386,12 @@ class UserLogger
         if ($this->isEnabled() && $this->log) {
             return $this->logRepository->updateWithComment($this->log, $comment);
         } else {
-            return NULL;
+            return null;
         }
     }
 
     /**
      * Get the Session of the current Request
-     *
-     * @return Session
      */
     public function getCurrentSession(): ?Session
     {
@@ -387,8 +400,6 @@ class UserLogger
 
     /**
      * Get the Log of the current Request
-     *
-     * @return null|Log
      */
     public function getCurrentLog(): ?Log
     {
@@ -397,19 +408,17 @@ class UserLogger
 
     /**
      * Get the device of the current Request
-     *
-     * @return null|Device
      */
     public function getCurrentDevice(): ?Device
     {
         try {
             // because of performance it's just parsed in the first request,
             // so otherwise it has to be taken from the db out of the session
-            if (empty($this->device) && !empty($this->session)) {
+            if (empty($this->device) && ! empty($this->session)) {
                 $this->device = $this->session->device;
             }
         } catch (Exception $e) {
-            $this->device = NULL;
+            $this->device = null;
         }
 
         return $this->device;
@@ -417,19 +426,17 @@ class UserLogger
 
     /**
      * Get the referer of the current Request
-     *
-     * @return null|Referer
      */
     public function getCurrentReferer(): ?Referer
     {
         try {
             // because of performance it's just parsed in the first request,
             // so otherwise it has to be taken from the db out of the session
-            if (empty($this->referer) && !empty($this->session)) {
+            if (empty($this->referer) && ! empty($this->session)) {
                 $this->referer = $this->session->referer;
             }
         } catch (Exception $e) {
-            $this->referer = NULL;
+            $this->referer = null;
         }
 
         return $this->referer;
@@ -440,19 +447,17 @@ class UserLogger
      * Private because it's not set in every request,
      * because of performance improvement, we just
      * parse it if there is no session
-     *
-     * @return null|Language
      */
     public function getCurrentLanguage(): ?Language
     {
         try {
             // because of performance it's just parsed in the first request,
             // so otherwise it has to be taken from the db out of the session
-            if (empty($this->language) && !empty($this->session)) {
+            if (empty($this->language) && ! empty($this->session)) {
                 $this->language = $this->session->language;
             }
         } catch (Exception $e) {
-            $this->language = NULL;
+            $this->language = null;
         }
 
         return $this->language;
@@ -460,19 +465,17 @@ class UserLogger
 
     /**
      * Get the User Agent of the current Request
-     *
-     * @return null|Agent
      */
     public function getCurrentAgent(): ?Agent
     {
         try {
             // because of performance it's just parsed in the first request,
             // so otherwise it has to be taken from the db out of the session
-            if (empty($this->agent) && !empty($this->session)) {
+            if (empty($this->agent) && ! empty($this->session)) {
                 $this->agent = $this->session->agent;
             }
         } catch (Exception $e) {
-            $this->agent = NULL;
+            $this->agent = null;
         }
 
         return $this->agent;
@@ -480,8 +483,6 @@ class UserLogger
 
     /**
      * Get the Domain of the current Request
-     *
-     * @return null|Domain
      */
     public function getCurrentDomain(): ?Domain
     {
@@ -490,8 +491,6 @@ class UserLogger
 
     /**
      * Get the ExperimentLog of the current Request
-     *
-     * @return null|ExperimentLog
      */
     public function getCurrentExperimentLog(): ?ExperimentLog
     {
@@ -500,15 +499,13 @@ class UserLogger
 
     /**
      * Check if the current Request is running in the asked $experimentName
-     *
-     * @param string $experimentName
-     *
-     * @return bool
      */
-    public function isExperiment(string $experimentName) : bool
+    public function isExperiment(string $experimentName): bool
     {
         // Crawlers, immer erstes Experiment angeben, wird nicht geloggt
-        if (empty($this->experimentLog)) return config('user-logger.experiments')[0] === $experimentName;
+        if (empty($this->experimentLog)) {
+            return config('user-logger.experiments')[0] === $experimentName;
+        }
 
         return $this->experimentLog->experiment === $experimentName;
     }
@@ -516,7 +513,7 @@ class UserLogger
     /**
      * Determine if the request has a URI that should be ignored.
      */
-    protected function isInBlacklistedUriArray(Request $request) : bool
+    protected function isInBlacklistedUriArray(Request $request): bool
     {
         foreach ($this->blacklistUris as $blacklistUri) {
             if ($blacklistUri !== '/') {

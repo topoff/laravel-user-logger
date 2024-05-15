@@ -13,7 +13,7 @@ class LogsAddComment extends Migration
      */
     public function up()
     {
-        if(!Schema::connection($this->connection)->hasColumn('logs', 'comment')){
+        if (! Schema::connection($this->connection)->hasColumn('logs', 'comment')) {
             Schema::connection($this->connection)->table('logs', function (Blueprint $table) {
                 $table->string('comment', 50)->nullable()->after('entity_id');
             });
@@ -27,7 +27,7 @@ class LogsAddComment extends Migration
      */
     public function down()
     {
-        if(!Schema::connection($this->connection)->hasColumn('logs', 'comment')){
+        if (! Schema::connection($this->connection)->hasColumn('logs', 'comment')) {
             Schema::connection($this->connection)->table('logs', function (Blueprint $table) {
                 $table->dropColumn('comment');
             });

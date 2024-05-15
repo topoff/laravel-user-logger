@@ -13,7 +13,7 @@ class CreateULSessionsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::connection($this->connection)->hasTable('sessions')) {
+        if (! Schema::connection($this->connection)->hasTable('sessions')) {
             Schema::connection($this->connection)->create('sessions', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->integer('user_id')->unsigned()->nullable();

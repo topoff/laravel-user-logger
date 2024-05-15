@@ -13,7 +13,7 @@ class CreateULDevicesTable extends Migration
      */
     public function up()
     {
-        if (!Schema::connection($this->connection)->hasTable('devices')) {
+        if (! Schema::connection($this->connection)->hasTable('devices')) {
             Schema::connection($this->connection)->create('devices', function (Blueprint $table) {
                 $table->bigIncrements('id');
 

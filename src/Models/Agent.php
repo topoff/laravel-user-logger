@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Agent
- *
- * @package Topoff\LaravelUserLogger\Models
  */
 class Agent extends Model
 {
@@ -51,8 +49,6 @@ class Agent extends Model
 
     /**
      * Can have many Sessions
-     *
-     * @return HasMany
      */
     public function sessions(): HasMany
     {

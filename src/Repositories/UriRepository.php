@@ -9,11 +9,10 @@ class UriRepository
     /**
      * Finds an existing Uri or creates a new DB Record
      *
-     * @param array $attributes
      *
      * @return mixed
      */
-    public function findOrCreate(Array $attributes)
+    public function findOrCreate(array $attributes)
     {
         return Uri::firstOrCreate($attributes);
     }

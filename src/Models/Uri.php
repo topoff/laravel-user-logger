@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Uri
- *
- * @package Topoff\LaravelUserLogger\Models
  */
 class Uri extends Model
 {
@@ -42,8 +40,6 @@ class Uri extends Model
 
     /**
      * Can have many Logs
-     *
-     * @return HasMany
      */
     public function logs(): HasMany
     {

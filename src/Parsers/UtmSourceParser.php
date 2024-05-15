@@ -4,8 +4,6 @@ namespace Topoff\LaravelUserLogger\Parsers;
 
 /**
  * Class UtmSourceParser
- *
- * @package Topoff\LaravelUserLogger\Parsers
  */
 class UtmSourceParser
 {
@@ -22,7 +20,7 @@ class UtmSourceParser
     /**
      * UtmSourceParser constructor.
      *
-     * @param string $url full url or query string with ? in the beginning
+     * @param  string  $url  full url or query string with ? in the beginning
      */
     public function __construct(string $url)
     {
@@ -33,8 +31,6 @@ class UtmSourceParser
     /**
      * Gets the Result from the utm_source parameter, chooses
      * the right Source (google, bing, etc)
-     *
-     * @return null|RefererResult
      */
     public function getResult(): ?RefererResult
     {
@@ -55,18 +51,15 @@ class UtmSourceParser
 
             return $source->getResult();
         } else {
-            return NULL;
+            return null;
         }
     }
 
     /**
      * Is there a utm_source parameter?
-     *
-     * @return bool
      */
     public function hasUtmSource(): bool
     {
-        return !empty($this->attributes['utm_source']);
+        return ! empty($this->attributes['utm_source']);
     }
-
 }

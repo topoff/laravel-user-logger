@@ -13,7 +13,7 @@ class AgentsAddRobot extends Migration
      */
     public function up()
     {
-        if(!Schema::connection($this->connection)->hasColumn('agents', 'is_robot')){
+        if (! Schema::connection($this->connection)->hasColumn('agents', 'is_robot')) {
             Schema::connection($this->connection)->table('agents', function (Blueprint $table) {
                 $table->boolean('is_robot')->default(false)->after('browser_version');
             });
@@ -27,7 +27,7 @@ class AgentsAddRobot extends Migration
      */
     public function down()
     {
-        if(!Schema::connection($this->connection)->hasColumn('agents', 'is_robot')){
+        if (! Schema::connection($this->connection)->hasColumn('agents', 'is_robot')) {
             Schema::connection($this->connection)->table('agents', function (Blueprint $table) {
                 $table->dropColumn('is_robot');
             });

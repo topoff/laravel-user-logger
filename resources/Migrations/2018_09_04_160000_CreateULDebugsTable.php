@@ -13,7 +13,7 @@ class CreateULDebugsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::connection($this->connection)->hasTable('debugs')) {
+        if (! Schema::connection($this->connection)->hasTable('debugs')) {
             Schema::connection($this->connection)->create('debugs', function (Blueprint $table) {
                 $table->bigIncrements('id');
 

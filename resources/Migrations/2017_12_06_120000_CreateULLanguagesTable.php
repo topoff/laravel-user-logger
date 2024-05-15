@@ -13,7 +13,7 @@ class CreateULLanguagesTable extends Migration
      */
     public function up()
     {
-        if (!Schema::connection($this->connection)->hasTable('languages')) {
+        if (! Schema::connection($this->connection)->hasTable('languages')) {
             Schema::connection($this->connection)->create('languages', function (Blueprint $table) {
                 $table->bigIncrements('id');
 

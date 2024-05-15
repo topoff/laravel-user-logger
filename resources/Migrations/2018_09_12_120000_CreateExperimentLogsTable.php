@@ -13,7 +13,7 @@ class CreateExperimentLogsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::connection($this->connection)->hasTable('experimentlogs')) {
+        if (! Schema::connection($this->connection)->hasTable('experimentlogs')) {
             Schema::connection($this->connection)->create('experimentlogs', function (Blueprint $table) {
                 $table->smallIncrements('id');
 

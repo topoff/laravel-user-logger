@@ -28,7 +28,7 @@ return [
      * Which Users should not be tracked?
      */
     'do_not_track_user_ids' => [
-        1, 2
+        1, 2,
     ],
 
     /*
@@ -51,7 +51,7 @@ return [
         '*.map',
         '*.png',
         '*.gif',
-        '.well-known*'
+        '.well-known*',
     ],
 
     /*
@@ -125,28 +125,28 @@ return [
     /*
      * Mark referer as mail, if there is a special keyword in the url path
      */
-    'path_is_mail'        => [],
+    'path_is_mail' => [],
 
     /*
      * Ignore Ips
      */
-    'ignore_ips'          => [],
+    'ignore_ips' => [],
 
     /*
      * log ip -> its always hashed
      */
-    'log_ip'              => true,
+    'log_ip' => true,
 
     /*
     * use A/B Testing experiments
     */
-    'use_experiments'     => false,
+    'use_experiments' => false,
 
     /*
      * active experiments - max 16 chars
      * crawlers will always run as in the first experiment, but will not be logged
      */
-    'experiments'         => [
+    'experiments' => [
         'a',
         'b',
     ],
@@ -154,5 +154,5 @@ return [
     /*
      * debug not parsable Agents, Referers, etc. in debugs table
      */
-    'debug'               => true,
+    'debug' => true,
 ];

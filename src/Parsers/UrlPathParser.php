@@ -6,8 +6,6 @@ use Str;
 
 /**
  * Class UtmSourceParser
- *
- * @package Topoff\LaravelUserLogger\Parsers
  */
 class UrlPathParser
 {
@@ -28,9 +26,6 @@ class UrlPathParser
 
     /**
      * UtmSourceParser constructor.
-     *
-     * @param string $url
-     * @param array  $internalHosts
      */
     public function __construct(string $url, array $internalHosts = [])
     {
@@ -40,8 +35,6 @@ class UrlPathParser
 
     /**
      * Parse
-     *
-     * @return RefererResult
      */
     public function getResult(): ?RefererResult
     {
@@ -68,33 +61,25 @@ class UrlPathParser
         } else {
             // If it's not mail source, than the URL shouldn't be used as referer
             // otherwise all request would be loggt as local
-            return NULL;
+            return null;
         }
     }
 
     /**
      * Check if the url contains a string from config which reveals autologin url
-     *
-     * @return bool
      */
     private function urlContainsAutologin(): bool
     {
-        return (Str::contains($this->url, config('user-logger.path_is_mail')));
+        return Str::contains($this->url, config('user-logger.path_is_mail'));
     }
 
-    /**
-     * @return null|string
-     */
     private function getSource(): ?string
     {
-        return $this->urlContainsAutologin() ? 'autologin' : NULL;
+        return $this->urlContainsAutologin() ? 'autologin' : null;
     }
 
-    /**
-     * @return null|string
-     */
     private function getMedium(): ?string
     {
-        return $this->urlContainsAutologin() ? 'email' : NULL;
+        return $this->urlContainsAutologin() ? 'email' : null;
     }
 }

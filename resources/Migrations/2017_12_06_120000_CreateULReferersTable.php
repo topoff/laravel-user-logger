@@ -14,7 +14,7 @@ class CreateULReferersTable extends Migration
     public function up()
     {
         try {
-            if (!Schema::connection($this->connection)->hasTable('referers')) {
+            if (! Schema::connection($this->connection)->hasTable('referers')) {
                 Schema::connection($this->connection)->create('referers', function (Blueprint $table) {
                     $table->bigIncrements('id');
 
@@ -37,7 +37,7 @@ class CreateULReferersTable extends Migration
 
                 DB::connection($this->connection)->raw('alter table `referers` add index `tests_url_index`(url(255))');
             }
-        } catch (Exception $e){
+        } catch (Exception $e) {
             dd($e);
         }
     }

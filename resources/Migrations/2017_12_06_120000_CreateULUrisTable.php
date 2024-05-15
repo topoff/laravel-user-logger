@@ -13,7 +13,7 @@ class CreateULUrisTable extends Migration
      */
     public function up()
     {
-        if (!Schema::connection($this->connection)->hasTable('uris')) {
+        if (! Schema::connection($this->connection)->hasTable('uris')) {
             Schema::connection($this->connection)->create('uris', function (Blueprint $table) {
                 $table->bigIncrements('id');
 

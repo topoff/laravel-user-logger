@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Referer
- *
- * @package Topoff\LaravelUserLogger\Models
  */
 class Referer extends Model
 {
@@ -43,8 +41,6 @@ class Referer extends Model
 
     /**
      * Can have many Sessions
-     *
-     * @return HasMany
      */
     public function sessions(): HasMany
     {
