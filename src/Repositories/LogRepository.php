@@ -12,9 +12,9 @@ use Topoff\LaravelUserLogger\Models\Uri;
  */
 class LogRepository
 {
-    public function create(Session $session, Domain $domain, ?Uri $uri = null, ?string $event = null): Log
+    public function create(Session $session, Domain $domain, ?Uri $uri = null, ?string $event = null, ?string $entityType = null, ?string $entityId = null): Log
     {
-        return Log::create(['session_id' => $session->id, 'domain_id' => $domain->id, 'uri_id' => $uri?->id, 'event' => $event]);
+        return Log::create(['session_id' => $session->id, 'domain_id' => $domain->id, 'uri_id' => $uri?->id, 'event' => $event, 'entity_type' => $entityType, 'entity_id' => $entityId]);
     }
 
     /**

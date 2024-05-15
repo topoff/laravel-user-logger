@@ -337,7 +337,7 @@ class UserLogger
             if ($this->log) {
                 return $this->logRepository->updateWithEvent($this->log, $event, $entityType, $entityId);
             } else {
-                return $this->createLog($event);
+                return $this->createLog($event, $entityType, $entityId);
             }
         } else {
             return null;
