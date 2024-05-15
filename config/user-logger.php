@@ -35,7 +35,9 @@ return [
      * Which uri names are not trackable?
      */
     'do_not_track_routes' => [
+        'livewire*',
         'telescope*',
+        'pulse*',
         'debugbar*',
         'debugbar.*',
         '_debugbar*',
