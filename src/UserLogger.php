@@ -48,43 +48,24 @@ class UserLogger
     protected Application $app;
 
     protected ?bool $enabled = null;
-
     protected ?Agent $agent = null;
-
     protected ?Domain $domain = null;
-
     protected Request $request;
-
     protected DeviceRepository $deviceRepository;
-
     protected UriRepository $uriRepository;
-
     protected AgentRepository $agentRepository;
-
     protected LanguageRepository $languageRepository;
-
     protected DomainRepository $domainRepository;
-
     protected RefererRepository $refererRepository;
-
     protected SessionRepository $sessionRepository;
-
     protected LogRepository $logRepository;
-
     protected ExperimentLogRepository $experimentLogRepository;
-
     protected ?Log $log = null;
-
     protected ?Session $session = null;
-
     protected ?Device $device = null;
-
     protected ?Language $language = null;
-
     protected ?Referer $referer = null;
-
     protected ?ExperimentLog $experimentLog;
-
     protected array $blacklistUris = [];
 
     public function __construct(Application $app,
@@ -200,7 +181,7 @@ class UserLogger
         }
 
         if ($this->session === null) {
-            $this->referer = $this->getOrCreateReferer();
+            $this->referer ??= $this->getOrCreateReferer();
 
             try {
                 $userAgentParser = new UserAgentParser($this->request);
@@ -326,6 +307,18 @@ class UserLogger
         }
 
         return config('user-logger.experiments')[array_rand(config('user-logger.experiments'), 1)];
+    }
+
+    public function setRefererFromExternalUrl(string $refererUrl): self
+    {
+        if ($this->isEnabled()) {
+            $refererParser = new RefererParser($refererUrl);
+            $refererResult = $refererParser->getResultFromPartnerUrl();
+            $domain = $this->getOrCreateDomain($refererResult->domain, $refererResult->domain_intern);
+            $this->referer = $this->refererRepository->findOrCreate($domain, $refererResult);
+        }
+
+        return $this;
     }
 
     /**

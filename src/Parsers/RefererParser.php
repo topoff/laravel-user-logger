@@ -36,6 +36,27 @@ class RefererParser
         $this->refererUrl = $refererUrl;
     }
 
+    public function getResultFromPartnerUrl(): ?RefererResult
+    {
+        $refererResult = new RefererResult();
+
+        $refererResult->url = $this->refererUrl;
+        $refererResult->domain = $this->refererUrl;
+        $refererResult->source = 'partner';
+        $refererResult->medium = 'paid';
+        $refererResult->campaign = '';
+        $refererResult->adgroup = '';
+        $refererResult->matchtype = '';
+        $refererResult->device = '';
+        $refererResult->keywords = '';
+        $refererResult->adposition = '';
+        $refererResult->network = '';
+        $refererResult->gclid = '';
+        $refererResult->domain_intern = false;
+
+        return $refererResult;
+    }
+
     /**
      * Delivers the Attributes of the Referer
      */
