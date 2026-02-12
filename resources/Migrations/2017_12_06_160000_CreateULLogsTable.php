@@ -22,7 +22,7 @@ class CreateULLogsTable extends Migration
                 $table->string('entity_type', 60)->nullable();
                 $table->string('entity_id', 36)->nullable();
 
-                $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+                $table->timestamp('created_at')->useCurrent();
 
                 $table->foreign('session_id')->references('id')->on('sessions')->onDelete('cascade');
                 $table->foreign('domain_id')->references('id')->on('domains');

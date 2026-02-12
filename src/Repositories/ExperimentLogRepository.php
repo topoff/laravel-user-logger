@@ -8,11 +8,8 @@ class ExperimentLogRepository
 {
     /**
      * Finds an existing Experiment or creates a new DB Record
-     *
-     *
-     * @return mixed
      */
-    public function firstOrCreate(array $attributes, array $delayedAttributes)
+    public function firstOrCreate(array $attributes, array $delayedAttributes): ExperimentLog
     {
         return ExperimentLog::firstOrCreate($attributes, $delayedAttributes);
     }

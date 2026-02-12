@@ -18,7 +18,7 @@ class CreateULDebugsTable extends Migration
                 $table->string('kind', 20);
                 $table->text('value')->nullable();
 
-                $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+                $table->timestamp('created_at')->useCurrent();
             });
         }
     }

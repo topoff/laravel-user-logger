@@ -20,12 +20,10 @@ class ExperimentLog extends Model
 
     protected $guarded = [];
 
-    protected $casts = [];
-
     /**
      * Belongs to one session
      */
-    public function sessions(): BelongsTo
+    public function session(): BelongsTo
     {
         return $this->belongsTo(Session::class);
     }

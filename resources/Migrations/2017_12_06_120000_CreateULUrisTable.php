@@ -17,7 +17,7 @@ class CreateULUrisTable extends Migration
 
                 $table->string('uri')->unique()->index();
 
-                $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+                $table->timestamp('created_at')->useCurrent();
             });
         }
     }

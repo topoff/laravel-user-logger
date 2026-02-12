@@ -23,7 +23,7 @@ class AgentsAddRobot extends Migration
      */
     public function down(): void
     {
-        if (! Schema::connection($this->connection)->hasColumn('agents', 'is_robot')) {
+        if (Schema::connection($this->connection)->hasColumn('agents', 'is_robot')) {
             Schema::connection($this->connection)->table('agents', function (Blueprint $table): void {
                 $table->dropColumn('is_robot');
             });

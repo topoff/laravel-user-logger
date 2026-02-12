@@ -3,7 +3,7 @@
 namespace Topoff\LaravelUserLogger\Parsers;
 
 /**
- * Class UtmSourceGoogle
+ * Class UtmSourceBing
  */
 class UtmSourceBing extends AbstractUtmSource
 {
@@ -35,19 +35,11 @@ class UtmSourceBing extends AbstractUtmSource
     }
 
     /**
-     * Which class parsed the result
-     */
-    protected function getClass(): string
-    {
-        return self::class;
-    }
-
-    /**
      * Translates the device
      */
     protected function getDevice(): string
     {
-        if (array_key_exists('device', $this->devices)) {
+        if (isset($this->attributes['device']) && array_key_exists($this->attributes['device'], $this->devices)) {
             return $this->devices[$this->attributes['device']];
         }
 
@@ -65,7 +57,7 @@ class UtmSourceBing extends AbstractUtmSource
      */
     protected function getMatchtype(): string
     {
-        if (array_key_exists('matchtype', $this->matchtypes)) {
+        if (isset($this->attributes['matchtype']) && array_key_exists($this->attributes['matchtype'], $this->matchtypes)) {
             return $this->matchtypes[$this->attributes['matchtype']];
         }
 
@@ -77,7 +69,7 @@ class UtmSourceBing extends AbstractUtmSource
      */
     protected function getNetwork(): string
     {
-        if (array_key_exists('network', $this->networks)) {
+        if (isset($this->attributes['network']) && array_key_exists($this->attributes['network'], $this->networks)) {
             return $this->networks[$this->attributes['network']];
         }
 

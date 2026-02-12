@@ -8,11 +8,8 @@ class UriRepository
 {
     /**
      * Finds an existing Uri or creates a new DB Record
-     *
-     *
-     * @return mixed
      */
-    public function findOrCreate(array $attributes)
+    public function findOrCreate(array $attributes): Uri
     {
         return Uri::firstOrCreate($attributes);
     }

@@ -13,12 +13,7 @@ class RefererParser
 {
     protected ?string $refererUrl;
 
-    /**
-     * Referer: Result of Parsing
-     *
-     * @var Referer
-     */
-    protected $referer;
+    protected ?Referer $referer = null;
 
     /**
      * RefererParser constructor.
@@ -63,7 +58,7 @@ class RefererParser
 
         $refererResult->url = $this->refererUrl;
         $refererResult->domain = parse_url((string) $this->refererUrl, PHP_URL_HOST);
-        if ($this->referer !== null && $this->referer->isKnown() && $this->referer->isValid()) {
+        if ($this->referer instanceof Referer && $this->referer->isKnown() && $this->referer->isValid()) {
             $refererResult->source = $this->getSource();
             $refererResult->medium = $this->getMedium();
             $refererResult->campaign = '';

@@ -27,9 +27,7 @@ return [
     /*
      * Which Users should not be tracked?
      */
-    'do_not_track_user_ids' => [
-        1, 2,
-    ],
+    'do_not_track_user_ids' => [1, 2],
 
     /*
      * Which uri names are not trackable?
@@ -84,7 +82,6 @@ return [
         '*.jsf',
         '*.jsp',
         '*.lz',
-        '*.rar',
         '*.rar',
         '*.sql',
         '*.sqlite',
@@ -154,5 +151,5 @@ return [
     /*
      * debug not parsable Agents, Referers, etc. in debugs table
      */
-    'debug' => true,
+    'debug' => false,
 ];

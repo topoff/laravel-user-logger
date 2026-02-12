@@ -22,8 +22,8 @@ class CreateULSessionsTable extends Migration
                 $table->string('client_ip', 32)->nullable();
                 $table->boolean('is_robot')->nullable();
 
-                $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-                $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+                $table->timestamp('created_at')->useCurrent();
+                $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 
                 $table->foreign('device_id')->references('id')->on('devices');
                 $table->foreign('agent_id')->references('id')->on('agents');

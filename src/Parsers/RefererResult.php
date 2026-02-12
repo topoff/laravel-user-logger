@@ -9,73 +9,31 @@ namespace Topoff\LaravelUserLogger\Parsers;
  */
 class RefererResult
 {
-    /**
-     * @var string
-     */
-    public $parser = 'RefererResult';
+    public string $parser = 'RefererResult';
 
-    /**
-     * @var string
-     */
-    public $url = 'unknown';
+    public string $url = 'unknown';
 
-    /**
-     * @var string
-     */
-    public $source = '';
+    public string $source = '';
 
-    /**
-     * @var string
-     */
-    public $domain = '';
+    public string $domain = '';
 
-    /**
-     * @var string
-     */
-    public $medium = '';
+    public string $medium = '';
 
-    /**
-     * @var string
-     */
-    public $keywords = '';
+    public string $keywords = '';
 
-    /**
-     * @var string
-     */
-    public $campaign = '';
+    public string $campaign = '';
 
-    /**
-     * @var string
-     */
-    public $adgroup = '';
+    public string $adgroup = '';
 
-    /**
-     * @var string
-     */
-    public $matchtype = '';
+    public string $matchtype = '';
 
-    /**
-     * @var string
-     */
-    public $device = '';
+    public string $device = '';
 
-    /**
-     * @var string
-     */
-    public $adposition = '';
+    public string $adposition = '';
 
-    /**
-     * @var string
-     */
-    public $network = '';
+    public string $network = '';
 
-    /**
-     * @var string
-     */
-    public $gclid = '';
+    public string $gclid = '';
 
-    /**
-     * @var bool
-     */
-    public $domain_intern = false;
+    public bool $domain_intern = false;
 }

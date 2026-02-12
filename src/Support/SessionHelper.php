@@ -10,20 +10,12 @@ use Ramsey\Uuid\Uuid;
  */
 class SessionHelper
 {
-    /**
-     * Session Name from Config
-     *
-     * @var string
-     */
-    protected $sessionName;
+    protected string $sessionName;
 
     /**
      * Session constructor.
      */
-    public function __construct(/**
-     * Request
-     */
-        protected \Illuminate\Http\Request $request)
+    public function __construct(protected Request $request)
     {
         $this->sessionName = config('user-logger.session_name') ?? 'user_logger_session';
     }

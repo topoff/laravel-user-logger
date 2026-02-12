@@ -18,7 +18,7 @@ class CreateExperimentLogsTable extends Migration
                 $table->string('client_ip', 32)->index();
                 $table->string('experiment', 20)->index();
 
-                $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+                $table->timestamp('created_at')->useCurrent();
             });
         }
     }

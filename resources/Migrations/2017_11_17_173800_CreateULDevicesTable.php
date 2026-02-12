@@ -24,7 +24,7 @@ class CreateULDevicesTable extends Migration
 
                 $table->unique(['kind', 'model', 'platform', 'platform_version']);
 
-                $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+                $table->timestamp('created_at')->useCurrent();
             });
         }
     }

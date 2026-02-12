@@ -30,7 +30,7 @@ class InjectUserLogger
      *
      * @return mixed
      */
-    public function handle(\Illuminate\Http\Request $request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         if (Auth::id() && $this->inExceptUserArray(Auth::id())) {
             return $next($request);

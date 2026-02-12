@@ -3,6 +3,7 @@
 namespace Topoff\LaravelUserLogger;
 
 use Illuminate\Routing\Router;
+use Illuminate\Support\ServiceProvider;
 use Topoff\LaravelUserLogger\Console\Commands\Flush;
 use Topoff\LaravelUserLogger\Console\Commands\HashIp;
 use Topoff\LaravelUserLogger\Middleware\InjectUserLogger;
@@ -16,7 +17,7 @@ use Topoff\LaravelUserLogger\Repositories\RefererRepository;
 use Topoff\LaravelUserLogger\Repositories\SessionRepository;
 use Topoff\LaravelUserLogger\Repositories\UriRepository;
 
-class UserLoggerServiceProvider extends \Illuminate\Support\ServiceProvider
+class UserLoggerServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -54,7 +55,19 @@ class UserLoggerServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/user-logger.php', 'user-logger');
 
-        $this->app->singleton(UserLogger::class, fn ($app): \Topoff\LaravelUserLogger\UserLogger => new UserLogger($app, new AgentRepository, new DeviceRepository, new DomainRepository, new LanguageRepository, new LogRepository, new UriRepository, new RefererRepository, new SessionRepository, new ExperimentLogRepository, $app['request']));
+        $this->app->singleton(UserLogger::class, fn ($app): UserLogger => new UserLogger(
+            $app,
+            new AgentRepository,
+            new DeviceRepository,
+            new DomainRepository,
+            new LanguageRepository,
+            new LogRepository,
+            new UriRepository,
+            new RefererRepository,
+            new SessionRepository,
+            new ExperimentLogRepository,
+            $app['request'],
+        ));
 
         $this->app->alias(UserLogger::class, 'userLogger');
     }

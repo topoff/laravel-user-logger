@@ -84,7 +84,7 @@ class Session extends Model
     }
 
     /**
-     * Belongs to one Domain
+     * Belongs to one Referer
      */
     public function referer(): BelongsTo
     {
@@ -92,7 +92,7 @@ class Session extends Model
     }
 
     /**
-     * Belongs to one Domain
+     * Belongs to one Language
      */
     public function language(): BelongsTo
     {

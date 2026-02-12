@@ -19,7 +19,7 @@ class CreateULLanguagesTable extends Migration
                 $table->string('range')->nullable();
                 $table->unique(['preference', 'range']);
 
-                $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+                $table->timestamp('created_at')->useCurrent();
             });
         }
     }

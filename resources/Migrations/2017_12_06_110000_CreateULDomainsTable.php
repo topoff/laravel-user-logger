@@ -18,7 +18,7 @@ class CreateULDomainsTable extends Migration
                 $table->string('name')->unique()->index();
                 $table->boolean('local')->default(false);
 
-                $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+                $table->timestamp('created_at')->useCurrent();
             });
         }
     }

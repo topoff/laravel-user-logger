@@ -16,7 +16,7 @@ class LanguageParser
     /**
      * LanguageParser constructor.
      */
-    public function __construct(protected \Illuminate\Http\Request $request)
+    public function __construct(protected Request $request)
     {
         $this->parseLanguages();
     }

@@ -9,10 +9,7 @@ namespace Topoff\LaravelUserLogger\Parsers;
  */
 abstract class AbstractUtmSource
 {
-    /**
-     * @var array
-     */
-    protected $attributes;
+    protected array $attributes;
 
     /**
      * UtmSourceGoogle constructor.
@@ -28,7 +25,7 @@ abstract class AbstractUtmSource
     public function getResult(): RefererResult
     {
         $refererResult = new RefererResult;
-        $refererResult->parser = $this->getClass();
+        $refererResult->parser = static::class;
         $refererResult->url = $this->url;
         $refererResult->domain = $this->getUtmSource();
         $refererResult->source = $this->getUtmSource();
@@ -88,6 +85,4 @@ abstract class AbstractUtmSource
     {
         return ! empty($this->attributes['utm_source']);
     }
-
-    abstract protected function getClass(): string;
 }

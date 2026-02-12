@@ -2,18 +2,13 @@
 
 namespace Topoff\LaravelUserLogger\Parsers;
 
-use Str;
+use Illuminate\Support\Str;
 
 /**
- * Class UtmSourceParser
+ * Class UrlPathParser
  */
 class UrlPathParser
 {
-    /**
-     * @var array
-     */
-    protected $attributes;
-
     /**
      * UtmSourceParser constructor.
      */

@@ -111,7 +111,7 @@ class UserLogger
     protected function createLog(?string $event = null, ?string $entityType = null, ?string $entityId = null): ?Log
     {
         try {
-            // URI -> decoded path liefert ohne variablen
+            // URI -> decoded path returns without query parameters
             $uri = $this->uriRepository->findOrCreate(['uri' => $this->request->decodedPath()]);
 
             // Domain
@@ -149,7 +149,7 @@ class UserLogger
             if ($this->session instanceof Session) {
                 $this->session = $this->sessionRepository->updateUser($this->session, Auth::user());
             } else {
-                LaravelLogger::warning(static::class.'->'.__FUNCTION__.': die sessionHelper '.$sessionHelper->getSessionUuid().' wurde nicht in der DB table sessions gefunden.');
+                LaravelLogger::warning(static::class.'->'.__FUNCTION__.': the sessionHelper '.$sessionHelper->getSessionUuid().' was not found in the DB table sessions.');
             }
         }
     }
@@ -204,11 +204,11 @@ class UserLogger
                 $isRobot = true;
             } else {
                 // If the agent and the device couldn't be parsed, mark as suspicious
-                $suspicious = ! $this->agent instanceof Agent && ! $this->device instanceof \Topoff\LaravelUserLogger\Models\Device;
+                $suspicious = ! $this->agent instanceof Agent && ! $this->device instanceof Device;
 
                 // Agents can be set manually in the agents table as robots and this will overwrite the is_robot detection from
                 // the UserAgentParser Result.
-                $isRobot = ($this->agent instanceof Agent && $this->agent->is_robot) || ($this->device instanceof \Topoff\LaravelUserLogger\Models\Device && $this->device['is_robot']);
+                $isRobot = ($this->agent instanceof Agent && $this->agent->is_robot) || ($this->device instanceof Device && $this->device['is_robot']);
             }
 
             // Session
@@ -237,22 +237,22 @@ class UserLogger
         $refererResult = $utmUrlParser->getResult();
 
         // 2 - from referer: with referer-parser -ok
-        if ((! $refererResult instanceof RefererResult || empty($refererResult->source)) && ! in_array($refererUrl, [null, '', '0'], true)) {
+        if ((! $refererResult instanceof RefererResult || ($refererResult->source === '' || $refererResult->source === '0')) && ! in_array($refererUrl, [null, '', '0'], true)) {
             $refererParser = new RefererParser($refererUrl);
             $refererResult = $refererParser->getResult();
         }
         // 3 - from referer: utm_source
-        if ((! $refererResult instanceof RefererResult || empty($refererResult->source)) && ! in_array($refererUrl, [null, '', '0'], true)) {
+        if ((! $refererResult instanceof RefererResult || ($refererResult->source === '' || $refererResult->source === '0')) && ! in_array($refererUrl, [null, '', '0'], true)) {
             $utmRefParser = new UtmSourceParser($refererUrl);
             $refererResult = $utmRefParser->getResult();
         }
         // 4 - from referer: local domain
-        if (! $refererResult instanceof RefererResult || empty($refererResult->source)) {
+        if (! $refererResult instanceof RefererResult || ($refererResult->source === '' || $refererResult->source === '0')) {
             $refererParser = new RefererParser($refererUrl, $this->request->fullUrl());
             $refererResult = $refererParser->getResult();
         }
         // 5 - from url: atlg - mail
-        if (! $refererResult instanceof RefererResult || empty($refererResult->source)) {
+        if (! $refererResult instanceof RefererResult || ($refererResult->source === '' || $refererResult->source === '0')) {
             $urlPathParser = new UrlPathParser($this->request->fullUrl(), config('user-logger.internal_domains'));
             $refererResult = $urlPathParser->getResult();
         }
@@ -314,7 +314,7 @@ class UserLogger
         if (! $this->isEnabled()) {
             return null;
         }
-        if ($this->log instanceof \Topoff\LaravelUserLogger\Models\Log) {
+        if ($this->log instanceof Log) {
             return $this->logRepository->updateWithEvent($this->log, $event, $entityType, $entityId);
         }
 
@@ -391,7 +391,7 @@ class UserLogger
         try {
             // because of performance it's just parsed in the first request,
             // so otherwise it has to be taken from the db out of the session
-            if (! $this->device instanceof \Topoff\LaravelUserLogger\Models\Device && $this->session instanceof Session) {
+            if (! $this->device instanceof Device && $this->session instanceof Session) {
                 $this->device = $this->session->device;
             }
         } catch (Exception) {
@@ -409,7 +409,7 @@ class UserLogger
         try {
             // because of performance it's just parsed in the first request,
             // so otherwise it has to be taken from the db out of the session
-            if (! $this->referer instanceof Models\Referer && $this->session instanceof Session) {
+            if (! $this->referer instanceof Referer && $this->session instanceof Session) {
                 $this->referer = $this->session->referer;
             }
         } catch (Exception) {
@@ -479,7 +479,7 @@ class UserLogger
      */
     public function isExperiment(string $experimentName): bool
     {
-        // Crawlers, immer erstes Experiment angeben, wird nicht geloggt
+        // Crawlers always get the first experiment, not logged
         if (! $this->experimentLog instanceof ExperimentLog) {
             return config('user-logger.experiments')[0] === $experimentName;
         }

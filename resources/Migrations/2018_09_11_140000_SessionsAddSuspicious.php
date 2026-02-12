@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Topoff\LaravelUserLogger\Support\Migration;
 
@@ -25,7 +26,7 @@ class SessionsAddSuspicious extends Migration
      */
     public function down(): void
     {
-        if (! Schema::connection($this->connection)->hasColumn('sessions', 'is_suspicious')) {
+        if (Schema::connection($this->connection)->hasColumn('sessions', 'is_suspicious')) {
             Schema::connection($this->connection)->table('sessions', function (Blueprint $table): void {
                 $table->dropColumn('is_suspicious');
             });

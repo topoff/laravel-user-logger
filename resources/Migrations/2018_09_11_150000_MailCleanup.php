@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Topoff\LaravelUserLogger\Support\Migration;
 
 class MailCleanup extends Migration
