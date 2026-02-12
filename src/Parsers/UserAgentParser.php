@@ -13,8 +13,6 @@ class UserAgentParser
 {
     protected UserAgent $parseResult;
 
-    protected Request $request;
-
     /**
      * UserAgentParser constructor.
      *
@@ -22,9 +20,8 @@ class UserAgentParser
      * @throws \UserAgentParser\Exception\NoResultFoundException
      * @throws \UserAgentParser\Exception\PackageNotLoadedException
      */
-    public function __construct(Request $request)
+    public function __construct(protected Request $request)
     {
-        $this->request = $request;
         $this->parse();
     }
 
@@ -36,14 +33,14 @@ class UserAgentParser
     protected function parse(): void
     {
         if ($this->request->userAgent() === null) {
-            $this->parseResult = new UserAgent();
+            $this->parseResult = new UserAgent;
 
             return;
         }
 
         $chain = new Provider\Chain([
-            new Provider\JenssegersAgent(), // Ist viel schneller, ca. 15ms
-            new Provider\MatomoDeviceDetector(), // braucht ca. 600ms
+            new Provider\JenssegersAgent, // Ist viel schneller, ca. 15ms
+            new Provider\MatomoDeviceDetector, // braucht ca. 600ms
         ]);
 
         /* @var $result \UserAgentParser\Model\UserAgent */
@@ -61,7 +58,7 @@ class UserAgentParser
                 'browser' => $this->parseResult->getBrowser()->getName(),
                 'browser_version' => $this->parseResult->getBrowser()->getVersion()->getComplete(),
             ];
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return null;
         }
     }
@@ -82,28 +79,8 @@ class UserAgentParser
                 'is_mobile' => $this->parseResult->isMobile(),
                 'is_robot' => $this->parseResult->isBot(),
             ];
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return null;
-        }
-    }
-
-    /**
-     * nginx function to add the missing function getallheaders()
-     */
-    private function addFunctionGetAllHeaders(): void
-    {
-        if (! function_exists('getallheaders')) {
-            function getallheaders()
-            {
-                $headers = [];
-                foreach ($_SERVER as $name => $value) {
-                    if (substr($name, 0, 5) == 'HTTP_') {
-                        $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
-                    }
-                }
-
-                return $headers;
-            }
         }
     }
 }

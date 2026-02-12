@@ -8,13 +8,11 @@ class CreateULAgentsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::connection($this->connection)->hasTable('agents')) {
-            Schema::connection($this->connection)->create('agents', function (Blueprint $table) {
+            Schema::connection($this->connection)->create('agents', function (Blueprint $table): void {
                 $table->bigIncrements('id');
 
                 $table->text('name')->nullable(); // Better a duplicated name in the db than an error.. -> so no unique key
@@ -31,10 +29,8 @@ class CreateULAgentsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::connection($this->connection)->dropIfExists('agents');
     }

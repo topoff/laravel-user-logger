@@ -42,56 +42,41 @@ use UserAgentParser\Exception\PackageNotLoadedException;
  */
 class UserLogger
 {
-    /**
-     * The Laravel application instance.
-     */
-    protected Application $app;
-
     protected ?bool $enabled = null;
+
     protected ?Agent $agent = null;
+
     protected ?Domain $domain = null;
-    protected Request $request;
-    protected DeviceRepository $deviceRepository;
-    protected UriRepository $uriRepository;
-    protected AgentRepository $agentRepository;
-    protected LanguageRepository $languageRepository;
-    protected DomainRepository $domainRepository;
-    protected RefererRepository $refererRepository;
-    protected SessionRepository $sessionRepository;
-    protected LogRepository $logRepository;
-    protected ExperimentLogRepository $experimentLogRepository;
+
     protected ?Log $log = null;
+
     protected ?Session $session = null;
+
     protected ?Device $device = null;
+
     protected ?Language $language = null;
+
     protected ?Referer $referer = null;
-    protected ?ExperimentLog $experimentLog;
+
+    protected ?ExperimentLog $experimentLog = null;
+
     protected array $blacklistUris = [];
 
-    public function __construct(Application $app,
-        AgentRepository $agentRepository,
-        DeviceRepository $deviceRepository,
-        DomainRepository $domainRepository,
-        LanguageRepository $languageRepository,
-        LogRepository $logRepository,
-        UriRepository $uriRepository,
-        RefererRepository $refererRepository,
-        SessionRepository $sessionRepository,
-        ExperimentLogRepository $experimentLogRepository,
-        Request $request)
+    public function __construct(/**
+     * The Laravel application instance.
+     */
+    protected Application $app,
+        protected AgentRepository $agentRepository,
+        protected DeviceRepository $deviceRepository,
+        protected DomainRepository $domainRepository,
+        protected LanguageRepository $languageRepository,
+        protected LogRepository $logRepository,
+        protected UriRepository $uriRepository,
+        protected RefererRepository $refererRepository,
+        protected SessionRepository $sessionRepository,
+        protected ExperimentLogRepository $experimentLogRepository,
+        protected Request $request)
     {
-        $this->app = $app;
-        $this->deviceRepository = $deviceRepository;
-        $this->request = $request;
-        $this->uriRepository = $uriRepository;
-        $this->agentRepository = $agentRepository;
-        $this->languageRepository = $languageRepository;
-        $this->domainRepository = $domainRepository;
-        $this->refererRepository = $refererRepository;
-        $this->sessionRepository = $sessionRepository;
-        $this->logRepository = $logRepository;
-        $this->experimentLogRepository = $experimentLogRepository;
-
         $this->blacklistUris = Cache::rememberForever('user-logger.blacklist_routes', static fn () => config('user-logger.blacklist_routes') ?: []);
     }
 
@@ -160,10 +145,10 @@ class UserLogger
         if ($sessionHelper->isExistingSession()) {
             $this->session = $this->sessionRepository->find($sessionHelper->getSessionUuid());
 
-            if (! empty($this->session)) {
+            if ($this->session instanceof \Topoff\LaravelUserLogger\Models\Session) {
                 $this->session = $this->sessionRepository->updateUser($this->session, Auth::user());
             } else {
-                LaravelLogger::warning(get_class($this).'->'.__FUNCTION__.': die sessionHelper '.$sessionHelper->getSessionUuid().' wurde nicht in der DB table sessions gefunden.');
+                LaravelLogger::warning(static::class.'->'.__FUNCTION__.': die sessionHelper '.$sessionHelper->getSessionUuid().' wurde nicht in der DB table sessions gefunden.');
             }
         }
     }
@@ -175,30 +160,30 @@ class UserLogger
      */
     protected function getOrCreateSession(): Session
     {
-        if ($this->session === null) {
+        if (!$this->session instanceof \Topoff\LaravelUserLogger\Models\Session) {
             $sessionHelper = new SessionHelper($this->request);
             $this->setSessionFromRequest($sessionHelper);
         }
 
-        if ($this->session === null) {
+        if (!$this->session instanceof \Topoff\LaravelUserLogger\Models\Session) {
             $this->referer ??= $this->getOrCreateReferer();
 
             try {
                 $userAgentParser = new UserAgentParser($this->request);
                 $this->device = $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes());
                 $this->agent = $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes());
-            } catch (NoResultFoundException $e) {
+            } catch (NoResultFoundException) {
                 if (config('user-logger.debug') === true && ! empty($this->request->userAgent())) {
                     Debug::create(['kind' => 'user-agent', 'value' => $this->request->userAgent()]);
                 }
-                $this->device = null; //$this->deviceRepository->findOrCreateNotDetected();
-                $this->agent = null; //$this->agentRepository->findOrCreateNotDetected();
+                $this->device = null; // $this->deviceRepository->findOrCreateNotDetected();
+                $this->agent = null; // $this->agentRepository->findOrCreateNotDetected();
             } catch (PackageNotLoadedException $e) {
                 if (config('user-logger.debug') === true && ! empty($this->request->userAgent())) {
                     Debug::create(['kind' => 'user-agent', 'value' => 'PackageNotLoadedException'.$e->getMessage()]);
                 }
-                $this->device = null; //$this->deviceRepository->findOrCreateNotDetected();
-                $this->agent = null; //$this->agentRepository->findOrCreateNotDetected();
+                $this->device = null; // $this->deviceRepository->findOrCreateNotDetected();
+                $this->agent = null; // $this->agentRepository->findOrCreateNotDetected();
             }
 
             // Language
@@ -217,11 +202,11 @@ class UserLogger
                 $isRobot = true;
             } else {
                 // If the agent and the device couldn't be parsed, mark as suspicious
-                $suspicious = empty($this->agent) && empty($this->device);
+                $suspicious = !$this->agent instanceof \Topoff\LaravelUserLogger\Models\Agent && !$this->device instanceof \Topoff\LaravelUserLogger\Models\Device;
 
                 // Agents can be set manually in the agents table as robots and this will overwrite the is_robot detection from
                 // the UserAgentParser Result.
-                $isRobot = (isset($this->agent) && $this->agent->is_robot) || (isset($this->device) && $this->device['is_robot']);
+                $isRobot = ($this->agent instanceof \Topoff\LaravelUserLogger\Models\Agent && $this->agent->is_robot) || ($this->device instanceof \Topoff\LaravelUserLogger\Models\Device && $this->device['is_robot']);
             }
 
             // Session
@@ -250,22 +235,22 @@ class UserLogger
         $refererResult = $utmUrlParser->getResult();
 
         // 2 - from referer: with referer-parser -ok
-        if ((empty($refererResult) || empty($refererResult->source)) && ! empty($refererUrl)) {
+        if ((!$refererResult instanceof \Topoff\LaravelUserLogger\Parsers\RefererResult || empty($refererResult->source)) && !in_array($refererUrl, [null, '', '0'], true)) {
             $refererParser = new RefererParser($refererUrl);
             $refererResult = $refererParser->getResult();
         }
         // 3 - from referer: utm_source
-        if ((empty($refererResult) || empty($refererResult->source)) && ! empty($refererUrl)) {
+        if ((!$refererResult instanceof \Topoff\LaravelUserLogger\Parsers\RefererResult || empty($refererResult->source)) && !in_array($refererUrl, [null, '', '0'], true)) {
             $utmRefParser = new UtmSourceParser($refererUrl);
             $refererResult = $utmRefParser->getResult();
         }
         // 4 - from referer: local domain
-        if (empty($refererResult) || empty($refererResult->source)) {
+        if (!$refererResult instanceof \Topoff\LaravelUserLogger\Parsers\RefererResult || empty($refererResult->source)) {
             $refererParser = new RefererParser($refererUrl, $this->request->fullUrl());
             $refererResult = $refererParser->getResult();
         }
         // 5 - from url: atlg - mail
-        if (empty($refererResult) || empty($refererResult->source)) {
+        if (!$refererResult instanceof \Topoff\LaravelUserLogger\Parsers\RefererResult || empty($refererResult->source)) {
             $urlPathParser = new UrlPathParser($this->request->fullUrl(), config('user-logger.internal_domains'));
             $refererResult = $urlPathParser->getResult();
         }
@@ -273,12 +258,10 @@ class UserLogger
         if (! empty($refererResult->domain)) {
             $domain = $this->getOrCreateDomain($refererResult->domain, $refererResult->domain_intern);
             $referer = $this->refererRepository->findOrCreate($domain, $refererResult);
-        } else {
-            if (config('user-logger.debug') === true) {
-                Debug::create(['kind' => 'url', 'value' => $this->request->fullUrl()]);
-                if (! empty($this->request->headers->get('referer'))) {
-                    Debug::create(['kind' => 'referer', 'value' => $this->request->headers->get('referer')]);
-                }
+        } elseif (config('user-logger.debug') === true) {
+            Debug::create(['kind' => 'url', 'value' => $this->request->fullUrl()]);
+            if (!in_array($this->request->headers->get('referer'), [null, '', '0'], true)) {
+                Debug::create(['kind' => 'referer', 'value' => $this->request->headers->get('referer')]);
             }
         }
 
@@ -326,15 +309,13 @@ class UserLogger
      */
     public function setEvent(string $event, ?string $entityType = null, ?string $entityId = null): ?Log
     {
-        if ($this->isEnabled()) {
-            if ($this->log) {
-                return $this->logRepository->updateWithEvent($this->log, $event, $entityType, $entityId);
-            } else {
-                return $this->createLog($event, $entityType, $entityId);
-            }
-        } else {
+        if (!$this->isEnabled()) {
             return null;
         }
+        if ($this->log instanceof \Topoff\LaravelUserLogger\Models\Log) {
+            return $this->logRepository->updateWithEvent($this->log, $event, $entityType, $entityId);
+        }
+        return $this->createLog($event, $entityType, $entityId);
     }
 
     /**
@@ -346,7 +327,7 @@ class UserLogger
             return null;
         }
 
-        $sessionId = $sessionId ?? Uuid::uuid7()->toString();
+        $sessionId ??= Uuid::uuid7()->toString();
         $this->session = $this->sessionRepository->findOrCreate($sessionId);
         $lastLog = $this->session->logs()->orderBy('created_at', 'desc')->first();
 
@@ -378,9 +359,8 @@ class UserLogger
         // If there is no log present, don't do anything. Could be a robot when robot is disabled are something like this.
         if ($this->isEnabled() && $this->log) {
             return $this->logRepository->updateWithComment($this->log, $comment);
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -407,10 +387,10 @@ class UserLogger
         try {
             // because of performance it's just parsed in the first request,
             // so otherwise it has to be taken from the db out of the session
-            if (empty($this->device) && ! empty($this->session)) {
+            if (!$this->device instanceof \Topoff\LaravelUserLogger\Models\Device && $this->session instanceof \Topoff\LaravelUserLogger\Models\Session) {
                 $this->device = $this->session->device;
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
             $this->device = null;
         }
 
@@ -425,10 +405,10 @@ class UserLogger
         try {
             // because of performance it's just parsed in the first request,
             // so otherwise it has to be taken from the db out of the session
-            if (empty($this->referer) && ! empty($this->session)) {
+            if (!$this->referer instanceof \Topoff\LaravelUserLogger\Models\Referer && $this->session instanceof \Topoff\LaravelUserLogger\Models\Session) {
                 $this->referer = $this->session->referer;
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
             $this->referer = null;
         }
 
@@ -446,10 +426,10 @@ class UserLogger
         try {
             // because of performance it's just parsed in the first request,
             // so otherwise it has to be taken from the db out of the session
-            if (empty($this->language) && ! empty($this->session)) {
+            if (!$this->language instanceof \Topoff\LaravelUserLogger\Models\Language && $this->session instanceof \Topoff\LaravelUserLogger\Models\Session) {
                 $this->language = $this->session->language;
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
             $this->language = null;
         }
 
@@ -464,10 +444,10 @@ class UserLogger
         try {
             // because of performance it's just parsed in the first request,
             // so otherwise it has to be taken from the db out of the session
-            if (empty($this->agent) && ! empty($this->session)) {
+            if (!$this->agent instanceof \Topoff\LaravelUserLogger\Models\Agent && $this->session instanceof \Topoff\LaravelUserLogger\Models\Session) {
                 $this->agent = $this->session->agent;
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
             $this->agent = null;
         }
 
@@ -496,7 +476,7 @@ class UserLogger
     public function isExperiment(string $experimentName): bool
     {
         // Crawlers, immer erstes Experiment angeben, wird nicht geloggt
-        if (empty($this->experimentLog)) {
+        if (!isset($this->experimentLog) || !$this->experimentLog instanceof \Topoff\LaravelUserLogger\Models\ExperimentLog) {
             return config('user-logger.experiments')[0] === $experimentName;
         }
 

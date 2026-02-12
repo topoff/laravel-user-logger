@@ -33,13 +33,34 @@
         "snowplow/referer-parser": "Does not use semver and the newest version dev-master#2023-03-15-203816 does not get the php version. But the files seem to be ok, it uses the data/referers.json file from the repo."
     },
     "require-dev": {
+        "driftingly/rector-laravel": "dev-main",
+        "larastan/larastan": "3.x-dev",
+        "laravel/boost": "dev-main",
+        "laravel/pint": "dev-main",
+        "orchestra/testbench": "9.x-dev",
         "phpunit/phpunit": "^10.0",
-        "friendsofphp/php-cs-fixer": "^3.14"
+        "rector/rector": "^2.3"
     },
     "autoload": {
         "psr-4": {
             "Topoff\\LaravelUserLogger\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Workbench\\App\\": "workbench/app/"
+        }
+    },
+    "scripts": {
+        "format": "vendor/bin/pint",
+        "analyse": "vendor/bin/phpstan analyse",
+        "lint": [
+            "@php vendor/bin/pint --ansi",
+            "@php vendor/bin/phpstan analyse --verbose --ansi"
+        ],
+        "rector": "vendor/bin/rector",
+        "rector-dry": "vendor/bin/rector --dry-run",
+        "test": "vendor/bin/phpunit"
     },
     "config": {
         "sort-packages": true
@@ -54,5 +75,6 @@
             }
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

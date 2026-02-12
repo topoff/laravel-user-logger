@@ -11,10 +11,7 @@ use Snowplow\RefererParser\Referer;
  */
 class RefererParser
 {
-    /**
-     * @var string
-     */
-    protected $refererUrl;
+    protected ?string $refererUrl;
 
     /**
      * Referer: Result of Parsing
@@ -38,7 +35,7 @@ class RefererParser
 
     public function getResultFromPartnerUrl(): ?RefererResult
     {
-        $refererResult = new RefererResult();
+        $refererResult = new RefererResult;
 
         $refererResult->url = $this->refererUrl;
         $refererResult->domain = $this->refererUrl;
@@ -62,11 +59,11 @@ class RefererParser
      */
     public function getResult(): ?RefererResult
     {
-        $refererResult = new RefererResult();
+        $refererResult = new RefererResult;
 
         $refererResult->url = $this->refererUrl;
         $refererResult->domain = parse_url($this->refererUrl, PHP_URL_HOST);
-        if (isset($this->referer) && $this->referer->isKnown() && $this->referer->isValid()) {
+        if ($this->referer !== null && $this->referer->isKnown() && $this->referer->isValid()) {
             $refererResult->source = $this->getSource();
             $refererResult->medium = $this->getMedium();
             $refererResult->campaign = '';
@@ -87,26 +84,23 @@ class RefererParser
     {
         if ($this->referer && $this->referer->isKnown()) {
             return $this->referer->getSource() ?? '';
-        } else {
-            return '';
         }
+        return '';
     }
 
     protected function getMedium(): string
     {
         if ($this->referer && $this->referer->isKnown()) {
             return $this->referer->getMedium() ?? '';
-        } else {
-            return '';
         }
+        return '';
     }
 
     protected function getKeywords(): string
     {
         if ($this->referer && $this->referer->isKnown()) {
             return $this->referer->getSearchTerm() ?? '';
-        } else {
-            return '';
         }
+        return '';
     }
 }

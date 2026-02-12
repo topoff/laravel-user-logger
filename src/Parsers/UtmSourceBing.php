@@ -9,32 +9,18 @@ class UtmSourceBing extends AbstractUtmSource
 {
     /**
      * Devices translation, keys are the values from google delivered
-     *
-     * @var array
      */
-    private $devices = ['m' => 'mobile', 't' => 'tablet', 'c' => 'desktop'];
+    private array $devices = ['m' => 'mobile', 't' => 'tablet', 'c' => 'desktop'];
 
     /**
      * Matchtypes translation, keys are the values from google delivered
-     *
-     * @var array
      */
-    private $matchtypes = ['e' => 'exact', 'p' => 'phrase', 'b' => 'broad'];
+    private array $matchtypes = ['e' => 'exact', 'p' => 'phrase', 'b' => 'broad'];
 
     /**
      * Networks translation, keys are the values from google delivered
-     *
-     * @var array
      */
-    private $networks = ['o' => 'search', 's' => 'network'];
-
-    /**
-     * UtmSourceGoogle constructor.
-     */
-    public function __construct(string $url)
-    {
-        parent::__construct($url);
-    }
+    private array $networks = ['o' => 'search', 's' => 'network'];
 
     protected function getAdgroupId(): string
     {
@@ -61,9 +47,8 @@ class UtmSourceBing extends AbstractUtmSource
     {
         if (array_key_exists('device', $this->devices)) {
             return $this->devices[$this->attributes['device']];
-        } else {
-            return '';
         }
+        return '';
     }
 
     protected function getKeywords(): string
@@ -78,9 +63,8 @@ class UtmSourceBing extends AbstractUtmSource
     {
         if (array_key_exists('matchtype', $this->matchtypes)) {
             return $this->matchtypes[$this->attributes['matchtype']];
-        } else {
-            return '';
         }
+        return '';
     }
 
     /**
@@ -90,8 +74,7 @@ class UtmSourceBing extends AbstractUtmSource
     {
         if (array_key_exists('network', $this->networks)) {
             return $this->networks[$this->attributes['network']];
-        } else {
-            return '';
         }
+        return '';
     }
 }

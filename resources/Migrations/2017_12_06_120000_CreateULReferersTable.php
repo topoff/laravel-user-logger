@@ -8,14 +8,12 @@ class CreateULReferersTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         try {
             if (! Schema::connection($this->connection)->hasTable('referers')) {
-                Schema::connection($this->connection)->create('referers', function (Blueprint $table) {
+                Schema::connection($this->connection)->create('referers', function (Blueprint $table): void {
                     $table->bigIncrements('id');
 
                     $table->bigInteger('domain_id')->unsigned();
@@ -44,10 +42,8 @@ class CreateULReferersTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::connection($this->connection)->dropIfExists('referers');
     }

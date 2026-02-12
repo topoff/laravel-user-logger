@@ -12,8 +12,6 @@ use Topoff\LaravelUserLogger\UserLogger;
 
 class InjectUserLogger
 {
-    protected UserLogger $userLogger;
-
     protected array $exceptUris = [];
 
     protected array $exceptUsers = [];
@@ -21,9 +19,8 @@ class InjectUserLogger
     /**
      * Create a new middleware instance.
      */
-    public function __construct(UserLogger $userLogger)
+    public function __construct(protected UserLogger $userLogger)
     {
-        $this->userLogger = $userLogger;
         $this->exceptUris = Cache::rememberForever('user-logger.do_not_track_routes', static fn () => config('user-logger.do_not_track_routes') ?: []);
         $this->exceptUsers = Cache::rememberForever('user-logger.do_not_track_user_ids', static fn () => config('user-logger.do_not_track_user_ids') ?: []);
     }
@@ -31,10 +28,9 @@ class InjectUserLogger
     /**
      * Handle an incoming request.
      *
-     * @param  Request  $request
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(\Illuminate\Http\Request $request, Closure $next)
     {
         if (Auth::id() && $this->inExceptUserArray(Auth::id())) {
             return $next($request);
@@ -62,10 +58,8 @@ class InjectUserLogger
 
     public function bootUserLogger(Request $request): void
     {
-        if ($this->userLogger->isEnabled() && ! $this->inExceptUriArray($request) && ! $this->inIgnoreIpsArray($request)) {
-            if (config('user-logger.only-events') === false) {
-                $this->userLogger->boot();
-            }
+        if ($this->userLogger->isEnabled() && ! $this->inExceptUriArray($request) && !$this->inIgnoreIpsArray($request) && config('user-logger.only-events') === false) {
+            $this->userLogger->boot();
         }
     }
 

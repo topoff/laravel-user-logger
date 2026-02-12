@@ -6,10 +6,8 @@ class MailCleanup extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         DB::connection($this->connection)->update("UPDATE referers SET source = 'autologin' WHERE medium = 'mail'");
         DB::connection($this->connection)->update("UPDATE referers SET medium = 'email' WHERE medium = 'mail'");
@@ -17,10 +15,8 @@ class MailCleanup extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         //
     }

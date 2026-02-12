@@ -21,21 +21,9 @@ class HashIp extends Command
     protected $description = 'Hashes an ip to the value saved in the database.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $clientIp = $this->ask('Which ip?');
 

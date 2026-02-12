@@ -8,13 +8,11 @@ class CreateULDevicesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::connection($this->connection)->hasTable('devices')) {
-            Schema::connection($this->connection)->create('devices', function (Blueprint $table) {
+            Schema::connection($this->connection)->create('devices', function (Blueprint $table): void {
                 $table->bigIncrements('id');
 
                 $table->string('kind', 16)->index()->nullable();
@@ -33,10 +31,8 @@ class CreateULDevicesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::connection($this->connection)->dropIfExists('devices');
     }

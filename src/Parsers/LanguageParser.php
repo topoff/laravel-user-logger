@@ -10,11 +10,6 @@ use Illuminate\Http\Request;
 class LanguageParser
 {
     /**
-     * @var Request
-     */
-    protected $request;
-
-    /**
      * @var string
      */
     protected $defaultLanguage;
@@ -27,10 +22,8 @@ class LanguageParser
     /**
      * LanguageParser constructor.
      */
-    public function __construct(Request $request)
+    public function __construct(protected \Illuminate\Http\Request $request)
     {
-        $this->request = $request;
-
         $this->parseLanguages();
     }
 
@@ -55,9 +48,7 @@ class LanguageParser
 
             // Sort languages by priority.
             arsort($languages);
-
-            reset($languages);
-            $this->defaultLanguage = key($languages);
+            $this->defaultLanguage = array_key_first($languages);
             $this->acceptedLanguages = implode(', ', array_keys($languages));
         }
     }
@@ -72,7 +63,7 @@ class LanguageParser
                 'preference' => $this->defaultLanguage,
                 'range' => $this->acceptedLanguages,
             ];
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return null;
         }
     }

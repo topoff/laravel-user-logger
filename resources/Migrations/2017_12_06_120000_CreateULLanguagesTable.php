@@ -8,13 +8,11 @@ class CreateULLanguagesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::connection($this->connection)->hasTable('languages')) {
-            Schema::connection($this->connection)->create('languages', function (Blueprint $table) {
+            Schema::connection($this->connection)->create('languages', function (Blueprint $table): void {
                 $table->bigIncrements('id');
 
                 $table->string('preference', 30)->nullable()->index();
@@ -28,10 +26,8 @@ class CreateULLanguagesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::connection($this->connection)->dropIfExists('languages');
     }

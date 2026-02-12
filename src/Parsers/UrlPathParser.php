@@ -15,22 +15,10 @@ class UrlPathParser
     protected $attributes;
 
     /**
-     * @var string
-     */
-    protected $url;
-
-    /**
-     * @var array
-     */
-    protected $internalHosts;
-
-    /**
      * UtmSourceParser constructor.
      */
-    public function __construct(string $url, array $internalHosts = [])
+    public function __construct(protected string $url, protected array $internalHosts = [])
     {
-        $this->url = $url;
-        $this->internalHosts = $internalHosts;
     }
 
     /**
@@ -41,7 +29,7 @@ class UrlPathParser
         if ($this->urlContainsAutologin()) {
             $host = parse_url($this->url, PHP_URL_HOST);
 
-            $refererResult = new RefererResult();
+            $refererResult = new RefererResult;
             $refererResult->parser = self::class;
             $refererResult->url = $this->url;
             $refererResult->domain = $host;
@@ -58,11 +46,10 @@ class UrlPathParser
             $refererResult->domain_intern = in_array($host, $this->internalHosts);
 
             return $refererResult;
-        } else {
-            // If it's not mail source, than the URL shouldn't be used as referer
-            // otherwise all request would be loggt as local
-            return null;
         }
+        // If it's not mail source, than the URL shouldn't be used as referer
+        // otherwise all request would be loggt as local
+        return null;
     }
 
     /**

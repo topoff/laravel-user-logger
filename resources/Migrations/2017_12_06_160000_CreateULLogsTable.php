@@ -8,13 +8,11 @@ class CreateULLogsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::connection($this->connection)->hasTable('logs')) {
-            Schema::connection($this->connection)->create('logs', function (Blueprint $table) {
+            Schema::connection($this->connection)->create('logs', function (Blueprint $table): void {
                 $table->bigIncrements('id');
 
                 $table->uuid('session_id')->index();
@@ -35,10 +33,8 @@ class CreateULLogsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::connection($this->connection)->dropIfExists('logs');
     }

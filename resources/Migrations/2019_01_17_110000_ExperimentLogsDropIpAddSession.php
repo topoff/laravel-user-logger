@@ -8,15 +8,13 @@ class ExperimentLogsDropIpAddSession extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (Schema::connection($this->connection)->hasColumn('experimentlogs', 'client_ip')) {
             DB::connection($this->connection)->delete('DELETE FROM experimentlogs');
 
-            Schema::connection($this->connection)->table('experimentlogs', function (Blueprint $table) {
+            Schema::connection($this->connection)->table('experimentlogs', function (Blueprint $table): void {
                 $table->dropColumn('client_ip');
                 $table->char('session_id', 36)->index()->after('id');
             });
@@ -25,15 +23,13 @@ class ExperimentLogsDropIpAddSession extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         if (! Schema::connection($this->connection)->hasColumn('experimentlogs', 'client_ip')) {
             DB::connection($this->connection)->delete('DELETE FROM experimentlogs');
 
-            Schema::connection($this->connection)->table('experimentlogs', function (Blueprint $table) {
+            Schema::connection($this->connection)->table('experimentlogs', function (Blueprint $table): void {
                 $table->string('client_ip', 32)->index()->after('id');
                 $table->dropColumn('session_id');
             });

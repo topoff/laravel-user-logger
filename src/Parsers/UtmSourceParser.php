@@ -8,11 +8,6 @@ namespace Topoff\LaravelUserLogger\Parsers;
 class UtmSourceParser
 {
     /**
-     * @var string
-     */
-    protected $url;
-
-    /**
      * @var array
      */
     protected $attributes;
@@ -22,10 +17,9 @@ class UtmSourceParser
      *
      * @param  string  $url  full url or query string with ? in the beginning
      */
-    public function __construct(string $url)
+    public function __construct(protected string $url)
     {
-        $this->url = $url;
-        parse_str(parse_url($url, PHP_URL_QUERY), $this->attributes);
+        parse_str(parse_url($this->url, PHP_URL_QUERY), $this->attributes);
     }
 
     /**
@@ -35,20 +29,11 @@ class UtmSourceParser
     public function getResult(): ?RefererResult
     {
         if ($this->hasUtmSource()) {
-            switch ($this->attributes['utm_source']) {
-                case 'google':
-                    $source = new UtmSourceGoogle($this->url);
-                    break;
-
-                case 'bing':
-                    $source = new UtmSourceBing($this->url);
-                    break;
-
-                default:
-                    $source = new UtmSourceDefault($this->url);
-                    break;
-            }
-
+            $source = match ($this->attributes['utm_source']) {
+                'google' => new UtmSourceGoogle($this->url),
+                'bing' => new UtmSourceBing($this->url),
+                default => new UtmSourceDefault($this->url),
+            };
             return $source->getResult();
         } else {
             return null;

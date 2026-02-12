@@ -8,13 +8,11 @@ class AgentsAddRobot extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::connection($this->connection)->hasColumn('agents', 'is_robot')) {
-            Schema::connection($this->connection)->table('agents', function (Blueprint $table) {
+            Schema::connection($this->connection)->table('agents', function (Blueprint $table): void {
                 $table->boolean('is_robot')->default(false)->after('browser_version');
             });
         }
@@ -22,13 +20,11 @@ class AgentsAddRobot extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         if (! Schema::connection($this->connection)->hasColumn('agents', 'is_robot')) {
-            Schema::connection($this->connection)->table('agents', function (Blueprint $table) {
+            Schema::connection($this->connection)->table('agents', function (Blueprint $table): void {
                 $table->dropColumn('is_robot');
             });
         }

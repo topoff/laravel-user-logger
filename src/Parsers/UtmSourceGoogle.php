@@ -9,32 +9,18 @@ class UtmSourceGoogle extends AbstractUtmSource
 {
     /**
      * Devices translation, keys are the values from google delivered
-     *
-     * @var array
      */
-    private $devices = ['m' => 'mobile', 't' => 'tablet', 'c' => 'desktop'];
+    private array $devices = ['m' => 'mobile', 't' => 'tablet', 'c' => 'desktop'];
 
     /**
      * Matchtypes translation, keys are the values from google delivered
-     *
-     * @var array
      */
-    private $matchtypes = ['e' => 'exact', 'p' => 'phrase', 'b' => 'broad'];
+    private array $matchtypes = ['e' => 'exact', 'p' => 'phrase', 'b' => 'broad'];
 
     /**
      * Networks translation, keys are the values from google delivered
-     *
-     * @var array
      */
-    private $networks = ['g' => 'search', 's' => 'network', 'd' => 'display'];
-
-    /**
-     * UtmSourceGoogle constructor.
-     */
-    public function __construct(string $url)
-    {
-        parent::__construct($url);
-    }
+    private array $networks = ['g' => 'search', 's' => 'network', 'd' => 'display'];
 
     /**
      * Translates the device
@@ -43,9 +29,8 @@ class UtmSourceGoogle extends AbstractUtmSource
     {
         if (array_key_exists('device', $this->devices)) {
             return $this->devices[$this->attributes['device']];
-        } else {
-            return '';
         }
+        return '';
     }
 
     /**
@@ -55,9 +40,8 @@ class UtmSourceGoogle extends AbstractUtmSource
     {
         if (array_key_exists('matchtype', $this->matchtypes)) {
             return $this->matchtypes[$this->attributes['matchtype']];
-        } else {
-            return '';
         }
+        return '';
     }
 
     /**
@@ -67,9 +51,8 @@ class UtmSourceGoogle extends AbstractUtmSource
     {
         if (array_key_exists('network', $this->networks)) {
             return $this->networks[$this->attributes['network']];
-        } else {
-            return '';
         }
+        return '';
     }
 
     /**

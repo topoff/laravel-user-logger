@@ -15,17 +15,11 @@ abstract class AbstractUtmSource
     protected $attributes;
 
     /**
-     * @var string
-     */
-    protected $url;
-
-    /**
      * UtmSourceGoogle constructor.
      */
-    public function __construct(string $url)
+    public function __construct(protected string $url)
     {
-        $this->url = $url;
-        parse_str(parse_url($url, PHP_URL_QUERY), $this->attributes);
+        parse_str(parse_url($this->url, PHP_URL_QUERY), $this->attributes);
     }
 
     /**
@@ -33,7 +27,7 @@ abstract class AbstractUtmSource
      */
     public function getResult(): RefererResult
     {
-        $refererResult = new RefererResult();
+        $refererResult = new RefererResult;
         $refererResult->parser = $this->getClass();
         $refererResult->url = $this->url;
         $refererResult->domain = $this->getUtmSource();

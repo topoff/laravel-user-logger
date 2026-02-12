@@ -8,13 +8,11 @@ class CreateExperimentLogsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::connection($this->connection)->hasTable('experimentlogs')) {
-            Schema::connection($this->connection)->create('experimentlogs', function (Blueprint $table) {
+            Schema::connection($this->connection)->create('experimentlogs', function (Blueprint $table): void {
                 $table->smallIncrements('id');
 
                 $table->string('client_ip', 32)->index();
@@ -27,10 +25,8 @@ class CreateExperimentLogsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::connection($this->connection)->dropIfExists('experimentlogs');
     }

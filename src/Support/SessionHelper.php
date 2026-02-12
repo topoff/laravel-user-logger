@@ -18,20 +18,14 @@ class SessionHelper
     protected $sessionName;
 
     /**
-     * Request
-     *
-     * @var Request
-     */
-    protected $request;
-
-    /**
      * Session constructor.
      */
-    public function __construct(Request $request)
+    public function __construct(/**
+     * Request
+     */
+    protected \Illuminate\Http\Request $request)
     {
         $this->sessionName = config('user-logger.session_name') ?? 'user_logger_session';
-
-        $this->request = $request;
     }
 
     /**

@@ -37,7 +37,7 @@ class SessionRepository
             'agent_id' => $agent->id ?? null,
             'referer_id' => $referer->id ?? null,
             'language_id' => $language->id ?? null,
-            'client_ip' => ! empty($clientIp) ? $this->hashIp($clientIp) : null,
+            'client_ip' => in_array($clientIp, [null, '', '0'], true) ? null : $this->hashIp($clientIp),
             'is_suspicious' => $suspicious,
             'is_robot' => $isRobot,
         ]);

@@ -8,33 +8,25 @@ class UpdateLogsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
-        if (Schema::connection($this->connection)->hasTable('logs')) {
-            if (Schema::connection($this->connection)->hasColumn('logs', 'uri_id')) {
-                Schema::connection($this->connection)->table('logs', function (Blueprint $table) {
-                    $table->bigInteger('uri_id')->unsigned()->nullable()->change();
-                });
-            }
+        if (Schema::connection($this->connection)->hasTable('logs') && Schema::connection($this->connection)->hasColumn('logs', 'uri_id')) {
+            Schema::connection($this->connection)->table('logs', function (Blueprint $table): void {
+                $table->bigInteger('uri_id')->unsigned()->nullable()->change();
+            });
         }
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
-        if (Schema::connection($this->connection)->hasTable('logs')) {
-            if (Schema::connection($this->connection)->hasColumn('logs', 'uri_id')) {
-                Schema::connection($this->connection)->table('logs', function (Blueprint $table) {
-                    $table->bigInteger('uri_id')->unsigned()->change();
-                });
-            }
+        if (Schema::connection($this->connection)->hasTable('logs') && Schema::connection($this->connection)->hasColumn('logs', 'uri_id')) {
+            Schema::connection($this->connection)->table('logs', function (Blueprint $table): void {
+                $table->bigInteger('uri_id')->unsigned()->change();
+            });
         }
     }
 }

@@ -8,13 +8,11 @@ class CreateULDebugsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (! Schema::connection($this->connection)->hasTable('debugs')) {
-            Schema::connection($this->connection)->create('debugs', function (Blueprint $table) {
+            Schema::connection($this->connection)->create('debugs', function (Blueprint $table): void {
                 $table->bigIncrements('id');
 
                 $table->string('kind', 20);
@@ -27,10 +25,8 @@ class CreateULDebugsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::connection($this->connection)->dropIfExists('debugs');
     }
