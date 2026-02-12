@@ -48,6 +48,7 @@ class UtmSourceBing extends AbstractUtmSource
         if (array_key_exists('device', $this->devices)) {
             return $this->devices[$this->attributes['device']];
         }
+
         return '';
     }
 
@@ -64,6 +65,7 @@ class UtmSourceBing extends AbstractUtmSource
         if (array_key_exists('matchtype', $this->matchtypes)) {
             return $this->matchtypes[$this->attributes['matchtype']];
         }
+
         return '';
     }
 
@@ -75,6 +77,7 @@ class UtmSourceBing extends AbstractUtmSource
         if (array_key_exists('network', $this->networks)) {
             return $this->networks[$this->attributes['network']];
         }
+
         return '';
     }
 }

@@ -7,50 +7,33 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Class Session
+ * @property string $id
+ * @property int|null $user_id
+ * @property int|null $device_id
+ * @property int|null $agent_id
+ * @property int|null $referer_id
+ * @property int|null $language_id
+ * @property string|null $client_ip
+ * @property bool $is_robot
+ * @property bool $is_suspicious
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read Device|null $device
+ * @property-read Agent|null $agent
+ * @property-read Referer|null $referer
+ * @property-read Language|null $language
  */
 class Session extends Model
 {
-    /**
-     * Necessary, Because the primary key is a uuid
-     *
-     * @var bool
-     */
     public $incrementing = false;
 
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
     public $timestamps = false;
 
-    /**
-     * The connection name for the model.
-     *
-     * @var string
-     */
     protected $connection = 'user-logger';
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
     protected $table = 'sessions';
 
-    /**
-     * The attributes that are guarded from mass assignment.
-     *
-     * @var array
-     */
     protected $guarded = [];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'is_robot' => 'boolean',
         'is_suspicious' => 'boolean',

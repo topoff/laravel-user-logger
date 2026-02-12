@@ -34,6 +34,7 @@ class UtmSourceParser
                 'bing' => new UtmSourceBing($this->url),
                 default => new UtmSourceDefault($this->url),
             };
+
             return $source->getResult();
         } else {
             return null;

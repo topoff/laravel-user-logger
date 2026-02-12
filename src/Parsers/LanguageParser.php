@@ -9,15 +9,9 @@ use Illuminate\Http\Request;
  */
 class LanguageParser
 {
-    /**
-     * @var string
-     */
-    protected $defaultLanguage;
+    protected ?string $defaultLanguage = null;
 
-    /**
-     * @var array
-     */
-    protected $acceptedLanguages;
+    protected ?string $acceptedLanguages = null;
 
     /**
      * LanguageParser constructor.
@@ -58,13 +52,13 @@ class LanguageParser
      */
     public function getLanguageAttributes(): ?array
     {
-        try {
-            return [
-                'preference' => $this->defaultLanguage,
-                'range' => $this->acceptedLanguages,
-            ];
-        } catch (\Exception) {
+        if ($this->defaultLanguage === null) {
             return null;
         }
+
+        return [
+            'preference' => $this->defaultLanguage,
+            'range' => $this->acceptedLanguages,
+        ];
     }
 }

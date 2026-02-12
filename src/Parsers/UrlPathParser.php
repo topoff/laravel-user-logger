@@ -17,9 +17,7 @@ class UrlPathParser
     /**
      * UtmSourceParser constructor.
      */
-    public function __construct(protected string $url, protected array $internalHosts = [])
-    {
-    }
+    public function __construct(protected string $url, protected array $internalHosts = []) {}
 
     /**
      * Parse
@@ -47,6 +45,7 @@ class UrlPathParser
 
             return $refererResult;
         }
+
         // If it's not mail source, than the URL shouldn't be used as referer
         // otherwise all request would be loggt as local
         return null;

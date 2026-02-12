@@ -7,36 +7,27 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Class Referer
+ * @property int $id
+ * @property int $domain_id
+ * @property string|null $url
+ * @property string|null $source
+ * @property string|null $medium
+ * @property string|null $keywords
+ * @property string|null $campaign
+ * @property string|null $adgroup
+ * @property string|null $matchtype
+ * @property string|null $device
+ * @property string|null $adposition
+ * @property string|null $network
  */
 class Referer extends Model
 {
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
     public $timestamps = false;
 
-    /**
-     * The connection name for the model.
-     *
-     * @var string
-     */
     protected $connection = 'user-logger';
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
     protected $table = 'referers';
 
-    /**
-     * The attributes that are guarded from mass assignment.
-     *
-     * @var array
-     */
     protected $guarded = [];
 
     /**
@@ -49,8 +40,6 @@ class Referer extends Model
 
     /**
      * Belongs to one Domain
-     *
-     * @return HasMany
      */
     public function domain(): BelongsTo
     {

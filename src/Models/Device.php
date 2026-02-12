@@ -6,43 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Class Device
+ * @property int $id
+ * @property string|null $kind
+ * @property string|null $model
+ * @property string|null $platform
+ * @property string|null $platform_version
+ * @property bool $is_mobile
+ * @property bool $is_robot
  */
 class Device extends Model
 {
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
     public $timestamps = false;
 
-    /**
-     * The connection name for the model.
-     *
-     * @var string
-     */
     protected $connection = 'user-logger';
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
     protected $table = 'devices';
 
-    /**
-     * The attributes that are guarded from mass assignment.
-     *
-     * @var array
-     */
     protected $guarded = [];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'is_mobile' => 'boolean',
         'is_robot' => 'boolean',

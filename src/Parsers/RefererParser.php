@@ -82,25 +82,16 @@ class RefererParser
 
     protected function getSource(): string
     {
-        if ($this->referer && $this->referer->isKnown()) {
-            return $this->referer->getSource() ?? '';
-        }
-        return '';
+        return $this->referer?->getSource() ?? '';
     }
 
     protected function getMedium(): string
     {
-        if ($this->referer && $this->referer->isKnown()) {
-            return $this->referer->getMedium() ?? '';
-        }
-        return '';
+        return $this->referer?->getMedium() ?? '';
     }
 
     protected function getKeywords(): string
     {
-        if ($this->referer && $this->referer->isKnown()) {
-            return $this->referer->getSearchTerm() ?? '';
-        }
-        return '';
+        return $this->referer?->getSearchTerm() ?? '';
     }
 }

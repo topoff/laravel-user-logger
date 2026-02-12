@@ -58,7 +58,7 @@ class InjectUserLogger
 
     public function bootUserLogger(Request $request): void
     {
-        if ($this->userLogger->isEnabled() && ! $this->inExceptUriArray($request) && !$this->inIgnoreIpsArray($request) && config('user-logger.only-events') === false) {
+        if ($this->userLogger->isEnabled() && ! $this->inExceptUriArray($request) && ! $this->inIgnoreIpsArray($request) && config('user-logger.only-events') === false) {
             $this->userLogger->boot();
         }
     }

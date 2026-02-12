@@ -6,36 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Class Log
+ * @property int $id
+ * @property string $session_id
+ * @property int|null $domain_id
+ * @property int|null $uri_id
+ * @property string|null $event
+ * @property string|null $entity_type
+ * @property string|null $entity_id
+ * @property string|null $comment
+ * @property string|null $created_at
  */
 class Log extends Model
 {
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
     public $timestamps = false;
 
-    /**
-     * The connection name for the model.
-     *
-     * @var string
-     */
     protected $connection = 'user-logger';
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
     protected $table = 'logs';
 
-    /**
-     * The attributes that are guarded from mass assignment.
-     *
-     * @var array
-     */
     protected $guarded = [];
 
     /**
