@@ -36,9 +36,9 @@ class UtmSourceParser
             };
 
             return $source->getResult();
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**

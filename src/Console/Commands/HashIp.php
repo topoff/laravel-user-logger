@@ -27,7 +27,7 @@ class HashIp extends Command
     {
         $clientIp = $this->ask('Which ip?');
 
-        $clientIp = md5($clientIp);
+        $clientIp = md5((string) $clientIp);
         $this->line('This is the hashed value: '.substr($clientIp, 0, 10).substr($clientIp, 20, 12).substr($clientIp, 11, 10));
     }
 }

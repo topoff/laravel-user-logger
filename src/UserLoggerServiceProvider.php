@@ -49,11 +49,12 @@ class UserLoggerServiceProvider extends \Illuminate\Support\ServiceProvider
     /**
      * Register the application services.
      */
+    #[\Override]
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/user-logger.php', 'user-logger');
 
-        $this->app->singleton(UserLogger::class, fn ($app) => new UserLogger($app, new AgentRepository, new DeviceRepository, new DomainRepository, new LanguageRepository, new LogRepository, new UriRepository, new RefererRepository, new SessionRepository, new ExperimentLogRepository, $app['request']));
+        $this->app->singleton(UserLogger::class, fn ($app): \Topoff\LaravelUserLogger\UserLogger => new UserLogger($app, new AgentRepository, new DeviceRepository, new DomainRepository, new LanguageRepository, new LogRepository, new UriRepository, new RefererRepository, new SessionRepository, new ExperimentLogRepository, $app['request']));
 
         $this->app->alias(UserLogger::class, 'userLogger');
     }

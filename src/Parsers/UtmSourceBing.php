@@ -22,11 +22,13 @@ class UtmSourceBing extends AbstractUtmSource
      */
     private array $networks = ['o' => 'search', 's' => 'network'];
 
+    #[\Override]
     protected function getAdgroupId(): string
     {
         return $this->attributes['utm_content'] ?? '';
     }
 
+    #[\Override]
     protected function getCampaignId(): string
     {
         return $this->attributes['utm_campaign'] ?? '';
@@ -52,6 +54,7 @@ class UtmSourceBing extends AbstractUtmSource
         return '';
     }
 
+    #[\Override]
     protected function getKeywords(): string
     {
         return $this->attributes['utm_term'] ?? '';

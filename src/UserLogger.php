@@ -409,7 +409,7 @@ class UserLogger
         try {
             // because of performance it's just parsed in the first request,
             // so otherwise it has to be taken from the db out of the session
-            if (! $this->referer instanceof Models\rer && $this->session instanceof Session) {
+            if (! $this->referer instanceof Models\Referer && $this->session instanceof Session) {
                 $this->referer = $this->session->referer;
             }
         } catch (Exception) {
@@ -494,7 +494,7 @@ class UserLogger
     {
         foreach ($this->blacklistUris as $blacklistUri) {
             if ($blacklistUri !== '/') {
-                $blacklistUri = trim($blacklistUri, '/');
+                $blacklistUri = trim((string) $blacklistUri, '/');
             }
 
             if ($request->is($blacklistUri)) {

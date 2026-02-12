@@ -62,7 +62,7 @@ class RefererParser
         $refererResult = new RefererResult;
 
         $refererResult->url = $this->refererUrl;
-        $refererResult->domain = parse_url($this->refererUrl, PHP_URL_HOST);
+        $refererResult->domain = parse_url((string) $this->refererUrl, PHP_URL_HOST);
         if ($this->referer !== null && $this->referer->isKnown() && $this->referer->isValid()) {
             $refererResult->source = $this->getSource();
             $refererResult->medium = $this->getMedium();

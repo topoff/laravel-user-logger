@@ -11,7 +11,7 @@ class WorkbenchServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Event::listen(CommandStarting::class, function ($event): void {
-            if (str_starts_with($event->command, 'boost:')) {
+            if (str_starts_with((string) $event->command, 'boost:')) {
                 app()->setBasePath(realpath(__DIR__.'/../../../'));
                 app()->useAppPath(base_path('src'));
 

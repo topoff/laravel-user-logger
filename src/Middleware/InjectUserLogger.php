@@ -70,7 +70,7 @@ class InjectUserLogger
     {
         foreach ($this->exceptUris as $except) {
             if ($except !== '/') {
-                $except = trim($except, '/');
+                $except = trim((string) $except, '/');
             }
 
             if ($request->is($except)) {
