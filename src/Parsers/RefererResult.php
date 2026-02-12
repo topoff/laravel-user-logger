@@ -11,11 +11,11 @@ class RefererResult
 {
     public string $parser = 'RefererResult';
 
-    public string $url = 'unknown';
+    public ?string $url = 'unknown';
 
     public string $source = '';
 
-    public string $domain = '';
+    public ?string $domain = '';
 
     public string $medium = '';
 

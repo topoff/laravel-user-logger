@@ -9,7 +9,7 @@ namespace Topoff\LaravelUserLogger\Parsers;
  */
 abstract class AbstractUtmSource
 {
-    protected array $attributes;
+    protected array $attributes = [];
 
     /**
      * UtmSourceGoogle constructor.

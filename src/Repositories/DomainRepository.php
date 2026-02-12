@@ -16,6 +16,9 @@ class DomainRepository
             $attributes['name'] = 'unknown';
         }
 
-        return Cache::rememberForever("userlogger:domain:{$attributes['name']}:{$attributes['local']}", static fn () => Domain::firstOrCreate($attributes));
+        return Cache::rememberForever("userlogger:domain:{$attributes['name']}", static fn () => Domain::firstOrCreate(
+            ['name' => $attributes['name']],
+            ['local' => $attributes['local']],
+        ));
     }
 }

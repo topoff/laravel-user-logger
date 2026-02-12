@@ -46,7 +46,7 @@
         }
     },
     "scripts": {
-        "do" : "vendor/bin/rector && vendor/bin/pint && vendor/bin/phpstan analyse",
+        "clean" : "vendor/bin/rector && vendor/bin/pint && vendor/bin/phpstan analyse",
         "format": "vendor/bin/pint",
         "analyse": "vendor/bin/phpstan analyse",
         "lint": [

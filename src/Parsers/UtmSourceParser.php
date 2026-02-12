@@ -7,7 +7,7 @@ namespace Topoff\LaravelUserLogger\Parsers;
  */
 class UtmSourceParser
 {
-    protected array $attributes;
+    protected array $attributes = [];
 
     /**
      * UtmSourceParser constructor.
