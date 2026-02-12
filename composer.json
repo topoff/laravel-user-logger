@@ -21,8 +21,7 @@
         "illuminate/database": "*",
         "illuminate/cache": "*",
         "illuminate/log": "*",
-        "snowplow/referer-parser": "~0.2",
-        "topoff/user-agent-parser": "^v7.0"
+        "snowplow/referer-parser": "~0.2"
     },
     "_comments": {
         "snowplow/referer-parser": "Does not use semver and the newest version dev-master#2023-03-15-203816 does not get the php version. But the files seem to be ok, it uses the data/referers.json file from the repo."

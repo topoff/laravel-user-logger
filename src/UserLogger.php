@@ -35,8 +35,6 @@ use Topoff\LaravelUserLogger\Repositories\RefererRepository;
 use Topoff\LaravelUserLogger\Repositories\SessionRepository;
 use Topoff\LaravelUserLogger\Repositories\UriRepository;
 use Topoff\LaravelUserLogger\Support\SessionHelper;
-use UserAgentParser\Exception\NoResultFoundException;
-use UserAgentParser\Exception\PackageNotLoadedException;
 
 /**
  * Class UserLogger
@@ -170,22 +168,16 @@ class UserLogger
         if (! $this->session instanceof Session) {
             $this->referer ??= $this->getOrCreateReferer();
 
-            try {
-                $userAgentParser = new UserAgentParser($this->request);
+            $userAgentParser = new UserAgentParser($this->request);
+            if ($userAgentParser->hasResult()) {
                 $this->device = $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes());
                 $this->agent = $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes());
-            } catch (NoResultFoundException) {
+            } else {
                 if (config('user-logger.debug') === true && ! empty($this->request->userAgent())) {
                     Debug::create(['kind' => 'user-agent', 'value' => $this->request->userAgent()]);
                 }
-                $this->device = null; // $this->deviceRepository->findOrCreateNotDetected();
-                $this->agent = null; // $this->agentRepository->findOrCreateNotDetected();
-            } catch (PackageNotLoadedException $e) {
-                if (config('user-logger.debug') === true && ! empty($this->request->userAgent())) {
-                    Debug::create(['kind' => 'user-agent', 'value' => 'PackageNotLoadedException'.$e->getMessage()]);
-                }
-                $this->device = null; // $this->deviceRepository->findOrCreateNotDetected();
-                $this->agent = null; // $this->agentRepository->findOrCreateNotDetected();
+                $this->device = null;
+                $this->agent = null;
             }
 
             // Language

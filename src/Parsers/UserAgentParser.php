@@ -2,45 +2,29 @@
 
 namespace Topoff\LaravelUserLogger\Parsers;
 
+use DeviceDetector\DeviceDetector;
 use Illuminate\Http\Request;
-use UserAgentParser\Model\UserAgent;
-use UserAgentParser\Provider;
 
 /**
- * Class MultiUserAgentParser
+ * Class UserAgentParser
  */
 class UserAgentParser
 {
-    protected UserAgent $parseResult;
+    protected ?DeviceDetector $detector = null;
 
-    /**
-     * UserAgentParser constructor.
-     *
-     *
-     * @throws \UserAgentParser\Exception\NoResultFoundException
-     * @throws \UserAgentParser\Exception\PackageNotLoadedException
-     */
     public function __construct(protected Request $request)
     {
         $this->parse();
     }
 
-    /**
-     * chained parsing until one provider detects the agent
-     *
-     * @throws \UserAgentParser\Exception\NoResultFoundException
-     */
     protected function parse(): void
     {
         if ($this->request->userAgent() === null) {
-            $this->parseResult = new UserAgent;
-
             return;
         }
 
-        // If you want to use more then one provider, you can use the @see Provider\Chain::class() instead of a single provider itself
-        $provider = new Provider\MatomoDeviceDetector;
-        $this->parseResult = $provider->parse($this->request->userAgent(), $this->request->headers->all());
+        $this->detector = new DeviceDetector($this->request->userAgent());
+        $this->detector->parse();
     }
 
     /**
@@ -48,15 +32,17 @@ class UserAgentParser
      */
     public function getAgentAttributes(): ?array
     {
-        try {
-            return [
-                'name' => $this->request->userAgent(),
-                'browser' => $this->parseResult->getBrowser()->getName(),
-                'browser_version' => $this->parseResult->getBrowser()->getVersion()->getComplete(),
-            ];
-        } catch (\Exception) {
+        if (! $this->detector instanceof DeviceDetector) {
             return null;
         }
+
+        $client = $this->detector->getClient();
+
+        return [
+            'name' => $this->request->userAgent(),
+            'browser' => $client['name'] ?? '',
+            'browser_version' => $client['version'] ?? '',
+        ];
     }
 
     /**
@@ -64,19 +50,38 @@ class UserAgentParser
      */
     public function getDeviceAttributes(): ?array
     {
-        try {
-            $device = $this->parseResult->getDevice();
-
-            return [
-                'kind' => mb_strtolower($device->getType()),
-                'model' => mb_strtolower($device->getModel()),
-                'platform' => mb_strtolower($this->parseResult->getOperatingSystem()->getName()),
-                'platform_version' => mb_strtolower($this->parseResult->getOperatingSystem()->getVersion()->getComplete()),
-                'is_mobile' => $this->parseResult->isMobile(),
-                'is_robot' => $this->parseResult->isBot(),
-            ];
-        } catch (\Exception) {
+        if (! $this->detector instanceof DeviceDetector) {
             return null;
         }
+
+        $os = $this->detector->getOs();
+
+        return [
+            'kind' => mb_strtolower($this->detector->getDeviceName()),
+            'model' => mb_strtolower($this->detector->getModel()),
+            'platform' => mb_strtolower($os['name'] ?? ''),
+            'platform_version' => mb_strtolower($os['version'] ?? ''),
+            'is_mobile' => $this->detector->isMobile(),
+            'is_robot' => $this->detector->isBot(),
+        ];
+    }
+
+    /**
+     * Whether the user agent was detected
+     */
+    public function hasResult(): bool
+    {
+        if (! $this->detector instanceof DeviceDetector) {
+            return false;
+        }
+
+        if ($this->detector->isBot()) {
+            return true;
+        }
+
+        $client = $this->detector->getClient();
+        $os = $this->detector->getOs();
+
+        return ! empty($client['name']) || ! empty($os['name']) || $this->detector->getDevice() !== null;
     }
 }
