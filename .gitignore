@@ -1,5 +1,6 @@
 # Composer Related
 composer.lock
+composer.dev.json
 /vendor
 
 # Caches
