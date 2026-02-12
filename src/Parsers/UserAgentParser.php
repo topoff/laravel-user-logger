@@ -38,13 +38,9 @@ class UserAgentParser
             return;
         }
 
-        $chain = new Provider\Chain([
-            new Provider\JenssegersAgent, // Much faster, ~15ms
-            new Provider\MatomoDeviceDetector, // Takes ~600ms
-        ]);
-
-        /* @var $result \UserAgentParser\Model\UserAgent */
-        $this->parseResult = $chain->parse($this->request->userAgent(), $this->request->headers->all());
+        // If you want to use more then one provider, you can use the @see Provider\Chain::class() instead of a single provider itself
+        $provider = new Provider\MatomoDeviceDetector;
+        $this->parseResult = $provider->parse($this->request->userAgent(), $this->request->headers->all());
     }
 
     /**
