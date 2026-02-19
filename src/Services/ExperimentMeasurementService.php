@@ -3,7 +3,6 @@
 namespace Topoff\LaravelUserLogger\Services;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log as LaravelLogger;
 use Topoff\LaravelUserLogger\Models\ExperimentMeasurement;
 use Topoff\LaravelUserLogger\Models\Log;
@@ -104,7 +103,9 @@ class ExperimentMeasurementService
                 return null;
             }
 
-            return $this->normalizeVariant($featureFacade::for($this->resolveScope($session))->value($feature));
+            $store = (string) config('user-logger.experiments.pennant.store', 'user-logger');
+
+            return $this->normalizeVariant($featureFacade::store($store)->for($this->resolveScope($session))->value($feature));
         } catch (Throwable $exception) {
             LaravelLogger::warning('Error resolving Pennant feature variant in topoff/user-logger: '.$exception->getMessage());
 
@@ -151,8 +152,8 @@ class ExperimentMeasurementService
 
     protected function resolveScope(Session $session): mixed
     {
-        if (Auth::check()) {
-            return Auth::user();
+        if (config('user-logger.experiments.pennant.scope', 'session') === 'auth_or_session' && auth()->check()) {
+            return auth()->user();
         }
 
         return 'user-logger-session:'.$session->id;

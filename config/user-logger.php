@@ -149,7 +149,7 @@ return [
         /*
          * List of Pennant features to measure
          */
-        'features' => [],
+        'features' =>  [],
 
         /*
          * Log events that count as conversions
@@ -168,6 +168,25 @@ return [
          */
         'nova' => [
             'enabled' => true,
+        ],
+
+        /*
+         * Pennant store configuration used by user-logger.
+         * This allows multiple apps to share experiment resolutions
+         * via the same user-logger database.
+         */
+        'pennant' => [
+            'store' => 'user-logger',
+            'connection' => 'user-logger',
+            'table' => 'pennant_features',
+            'auto_install' => true,
+
+            /*
+             * Scope strategy:
+             * - session: always use user-logger session id (recommended for multi-app shared DB)
+             * - auth_or_session: use authenticated user scope when available, otherwise session id
+             */
+            'scope' => 'session',
         ],
     ],
 

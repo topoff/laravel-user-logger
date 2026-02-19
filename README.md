@@ -29,7 +29,7 @@ Publish the package config:
 php artisan vendor:publish --tag=config
 ```
 
-Create a dedicated `user-logger` database connection in `config/database.php`:
+If you want to, create a dedicated `user-logger` database connection in `config/database.php`:
 
 
 ```php
@@ -96,8 +96,19 @@ Experiment measurement uses `laravel/pennant`. Configure tracked features in `co
     'nova' => [
         'enabled' => true,
     ],
+    'pennant' => [
+        'store' => 'user-logger',
+        'connection' => 'user-logger',
+        'table' => 'pennant_features',
+        'auto_install' => true,
+        'scope' => 'session',
+    ],
 ],
 ```
+
+Pennant storage is installed by this package via migrations on the `user-logger` connection (`pennant_features` table).  
+This makes feature resolutions shareable across multiple apps that point to the same `user-logger` database.
+With `auto_install=true` (default), the package also creates the Pennant table automatically at boot if it is missing.
 
 Flush all measured experiment data:
 
