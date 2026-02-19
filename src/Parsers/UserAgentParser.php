@@ -2,8 +2,10 @@
 
 namespace Topoff\LaravelUserLogger\Parsers;
 
+use DeviceDetector\Cache\LaravelCache;
 use DeviceDetector\DeviceDetector;
 use Illuminate\Http\Request;
+use Throwable;
 
 /**
  * Class UserAgentParser
@@ -23,8 +25,22 @@ class UserAgentParser
             return;
         }
 
-        $this->detector = new DeviceDetector($this->request->userAgent());
-        $this->detector->parse();
+        $detector = new DeviceDetector($this->request->userAgent());
+
+        if (config('user-logger.user_agent.cache', true) === true) {
+            try {
+                $detector->setCache(new LaravelCache);
+            } catch (Throwable) {
+                // Ignore cache adapter failures and continue with plain parsing.
+            }
+        }
+
+        if (config('user-logger.user_agent.skip_bot_detection', false) === true) {
+            $detector->skipBotDetection();
+        }
+
+        $detector->parse();
+        $this->detector = $detector;
     }
 
     /**

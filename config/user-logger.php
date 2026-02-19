@@ -174,6 +174,22 @@ return [
     'debug' => false,
 
     /*
+     * User-Agent parser optimizations (matomo/device-detector)
+     */
+    'user_agent' => [
+        /*
+         * Enable parser cache (uses the app's default Laravel cache store)
+         */
+        'cache' => true,
+
+        /*
+         * Skip DeviceDetector bot matching for faster parsing.
+         * Enable only if bot detection is handled elsewhere in your app.
+         */
+        'skip_bot_detection' => false,
+    ],
+
+    /*
      * Performance instrumentation
      */
     'performance' => [
