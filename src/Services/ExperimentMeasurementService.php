@@ -2,6 +2,7 @@
 
 namespace Topoff\LaravelUserLogger\Services;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log as LaravelLogger;
 use Topoff\LaravelUserLogger\Models\ExperimentMeasurement;
@@ -23,26 +24,45 @@ class ExperimentMeasurementService
         }
 
         $now = now();
+        $existing = ExperimentMeasurement::query()
+            ->where('session_id', $session->id)
+            ->whereIn('feature', $features)
+            ->get()
+            ->keyBy('feature');
+
+        $insertRows = [];
 
         foreach ($features as $feature) {
             $variant = $this->getVariant($feature, $session);
-            $measurement = ExperimentMeasurement::firstOrNew([
-                'session_id' => $session->id,
-                'feature' => $feature,
-            ]);
+            $measurement = $existing->get($feature);
 
-            if (! $measurement->exists) {
-                $measurement->first_log_id = $log->id;
-                $measurement->first_exposed_at = $now;
-                $measurement->exposure_count = 0;
-                $measurement->conversion_count = 0;
+            if ($measurement instanceof ExperimentMeasurement) {
+                $measurement->variant = $variant;
+                $measurement->last_log_id = $log->id;
+                $measurement->last_exposed_at = $now;
+                $measurement->exposure_count++;
+                $measurement->save();
+
+                continue;
             }
 
-            $measurement->variant = $variant;
-            $measurement->last_log_id = $log->id;
-            $measurement->last_exposed_at = $now;
-            $measurement->exposure_count++;
-            $measurement->save();
+            $insertRows[] = [
+                'session_id' => $session->id,
+                'feature' => $feature,
+                'variant' => $variant,
+                'first_log_id' => $log->id,
+                'last_log_id' => $log->id,
+                'exposure_count' => 1,
+                'conversion_count' => 0,
+                'first_exposed_at' => $now,
+                'last_exposed_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+
+        if ($insertRows !== []) {
+            ExperimentMeasurement::query()->insert($insertRows);
         }
     }
 
@@ -52,28 +72,28 @@ class ExperimentMeasurementService
             return;
         }
 
-        $measurements = ExperimentMeasurement::query()->where('session_id', $session->id)->get();
-        if ($measurements->isEmpty()) {
+        $query = ExperimentMeasurement::query()->where('session_id', $session->id);
+        if (! $query->exists()) {
             return;
         }
 
         $now = now();
+        $nowString = $now->format('Y-m-d H:i:s');
+        $updates = [
+            'first_converted_at' => DB::raw("COALESCE(first_converted_at, '{$nowString}')"),
+            'last_converted_at' => $now,
+            'last_conversion_event' => $event,
+            'last_conversion_entity_type' => $entityType,
+            'last_conversion_entity_id' => $entityId,
+            'conversion_count' => DB::raw('conversion_count + 1'),
+            'updated_at' => $now,
+        ];
 
-        foreach ($measurements as $measurement) {
-            if ($measurement->first_converted_at === null) {
-                $measurement->first_converted_at = $now;
-            }
-
-            $measurement->last_converted_at = $now;
-            $measurement->last_conversion_event = $event;
-            $measurement->last_conversion_entity_type = $entityType;
-            $measurement->last_conversion_entity_id = $entityId;
-            if ($log instanceof Log) {
-                $measurement->last_log_id = $log->id;
-            }
-            $measurement->conversion_count++;
-            $measurement->save();
+        if ($log instanceof Log) {
+            $updates['last_log_id'] = $log->id;
         }
+
+        $query->update($updates);
     }
 
     public function getVariant(string $feature, Session $session): ?string

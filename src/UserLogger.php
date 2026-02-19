@@ -110,6 +110,8 @@ class UserLogger
     protected function createLog(?string $event = null, ?string $entityType = null, ?string $entityId = null): ?Log
     {
         try {
+            $isBlacklistedUri = $this->isInBlacklistedUriArray($this->request);
+
             // URI -> decoded path returns without query parameters
             $uri = $this->uriRepository->findOrCreate(['uri' => $this->request->decodedPath()]);
 
@@ -117,10 +119,10 @@ class UserLogger
             $this->domain = $this->domainRepository->findOrCreate(['name' => $this->request->getHost(), 'local' => true]);
 
             // Session
-            $this->session = $this->getOrCreateSession();
+            $this->session = $this->getOrCreateSession($isBlacklistedUri);
 
             // Check if the uri is blacklisted, if so, set the session to robot and suspicious
-            if (($this->session->isNoRobot() || $this->session->isNotSuspicious()) && $this->isInBlacklistedUriArray($this->request)) {
+            if (($this->session->isNoRobot() || $this->session->isNotSuspicious()) && $isBlacklistedUri) {
                 $this->sessionRepository->setRobotAndSuspicious($this->session);
             }
 
@@ -156,9 +158,10 @@ class UserLogger
      *
      * @throws Exception
      */
-    protected function getOrCreateSession(): Session
+    protected function getOrCreateSession(?bool $isBlacklistedUri = null): Session
     {
         $sessionHelper = new SessionHelper($this->request);
+        $isBlacklistedUri ??= $this->isInBlacklistedUriArray($this->request);
 
         if (! $this->session instanceof Session) {
             $this->setSessionFromRequest($sessionHelper);
@@ -190,7 +193,7 @@ class UserLogger
                 $this->language = null;
             }
 
-            if ($this->isInBlacklistedUriArray($this->request)) {
+            if ($isBlacklistedUri) {
                 $suspicious = true;
                 $isRobot = true;
             } else {
@@ -221,30 +224,36 @@ class UserLogger
      */
     protected function getOrCreateReferer(): ?Referer
     {
-        $refererUrl = $this->request->headers->get('referer');
+        $hasRefererSource = static fn (?RefererResult $result): bool => $result instanceof RefererResult && ! in_array($result->source, ['', '0'], true);
 
-        // 1 - from url: utm_source -ok
-        $utmUrlParser = new UtmSourceParser($this->request->fullUrl());
-        $refererResult = $utmUrlParser->getResult();
+        $fullUrl = $this->request->fullUrl();
+        $refererUrl = $this->request->headers->get('referer');
+        $hasRefererUrl = ! in_array($refererUrl, [null, '', '0'], true);
+
+        $refererResult = null;
+        if (str_contains($fullUrl, 'utm_source=')) {
+            // 1 - from url: utm_source -ok
+            $refererResult = (new UtmSourceParser($fullUrl))->getResult();
+        }
 
         // 2 - from referer: with referer-parser -ok
-        if ((! $refererResult instanceof RefererResult || ($refererResult->source === '' || $refererResult->source === '0')) && ! in_array($refererUrl, [null, '', '0'], true)) {
+        if (! $hasRefererSource($refererResult) && $hasRefererUrl) {
             $refererParser = new RefererParser($refererUrl);
             $refererResult = $refererParser->getResult();
         }
         // 3 - from referer: utm_source
-        if ((! $refererResult instanceof RefererResult || ($refererResult->source === '' || $refererResult->source === '0')) && ! in_array($refererUrl, [null, '', '0'], true)) {
+        if (! $hasRefererSource($refererResult) && $hasRefererUrl && str_contains((string) $refererUrl, 'utm_source=')) {
             $utmRefParser = new UtmSourceParser($refererUrl);
             $refererResult = $utmRefParser->getResult();
         }
         // 4 - from referer: local domain
-        if (! $refererResult instanceof RefererResult || ($refererResult->source === '' || $refererResult->source === '0')) {
+        if (! $hasRefererSource($refererResult)) {
             $refererParser = new RefererParser($refererUrl, $this->request->fullUrl());
             $refererResult = $refererParser->getResult();
         }
         // 5 - from url: atlg - mail
-        if (! $refererResult instanceof RefererResult || ($refererResult->source === '' || $refererResult->source === '0')) {
-            $urlPathParser = new UrlPathParser($this->request->fullUrl(), config('user-logger.internal_domains'));
+        if (! $hasRefererSource($refererResult)) {
+            $urlPathParser = new UrlPathParser($fullUrl, config('user-logger.internal_domains'));
             $refererResult = $urlPathParser->getResult();
         }
 
@@ -252,9 +261,9 @@ class UserLogger
             $domain = $this->getOrCreateDomain($refererResult->domain, $refererResult->domain_intern);
             $referer = $this->refererRepository->findOrCreate($domain, $refererResult);
         } elseif (config('user-logger.debug') === true) {
-            Debug::create(['kind' => 'url', 'value' => $this->request->fullUrl()]);
-            if (! in_array($this->request->headers->get('referer'), [null, '', '0'], true)) {
-                Debug::create(['kind' => 'referer', 'value' => $this->request->headers->get('referer')]);
+            Debug::create(['kind' => 'url', 'value' => $fullUrl]);
+            if ($hasRefererUrl) {
+                Debug::create(['kind' => 'referer', 'value' => $refererUrl]);
             }
         }
 

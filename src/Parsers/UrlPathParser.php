@@ -19,15 +19,16 @@ class UrlPathParser
      */
     public function getResult(): ?RefererResult
     {
-        if ($this->urlContainsAutologin()) {
+        $containsAutologin = $this->urlContainsAutologin();
+        if ($containsAutologin) {
             $host = parse_url($this->url, PHP_URL_HOST);
 
             $refererResult = new RefererResult;
             $refererResult->parser = self::class;
             $refererResult->url = $this->url;
             $refererResult->domain = $host;
-            $refererResult->source = $this->getSource();
-            $refererResult->medium = $this->getMedium();
+            $refererResult->source = 'autologin';
+            $refererResult->medium = 'email';
             $refererResult->campaign = '';
             $refererResult->adgroup = '';
             $refererResult->matchtype = '';
@@ -54,13 +55,4 @@ class UrlPathParser
         return Str::contains($this->url, config('user-logger.path_is_mail'));
     }
 
-    private function getSource(): ?string
-    {
-        return $this->urlContainsAutologin() ? 'autologin' : null;
-    }
-
-    private function getMedium(): ?string
-    {
-        return $this->urlContainsAutologin() ? 'email' : null;
-    }
 }
