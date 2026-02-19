@@ -54,6 +54,30 @@ Run migrations:
 php artisan migrate
 ```
 
+Set up Pennant (required for experiment variant storage/resolution):
+
+```bash
+php artisan vendor:publish --provider="Laravel\Pennant\PennantServiceProvider"
+```
+
+Then set the Pennant DB connection to your user-logger connection in `config/pennant.php`:
+
+```php
+'stores' => [
+    'database' => [
+        'driver' => 'database',
+        'connection' => 'user-logger',
+        'table' => 'features',
+    ],
+],
+```
+
+Run migrations again so the Pennant `features` table is created:
+
+```bash
+php artisan migrate
+```
+
 ## Experiments
 
 Experiment measurement uses `laravel/pennant`. Configure tracked features in `config/user-logger.php`:
