@@ -2,6 +2,7 @@
 
 namespace Topoff\LaravelUserLogger\Support;
 
+use Exception;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 
@@ -31,7 +32,7 @@ class SessionHelper
     /**
      * Create new Session UUID
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function createSessionUuid(): string
     {

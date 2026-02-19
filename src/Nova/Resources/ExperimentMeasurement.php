@@ -13,6 +13,8 @@ use Topoff\LaravelUserLogger\Nova\Lenses\ExperimentResultsLens;
 
 class ExperimentMeasurement extends Resource
 {
+    public $conversion_rate;
+
     /**
      * The model the resource corresponds to.
      *

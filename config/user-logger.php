@@ -149,7 +149,7 @@ return [
         /*
          * List of Pennant features to measure
          */
-        'features' =>  [],
+        'features' => [],
 
         /*
          * Log events that count as conversions

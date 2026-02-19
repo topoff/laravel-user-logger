@@ -32,4 +32,3 @@ class ExperimentResultsDashboard extends Dashboard
         ];
     }
 }
-

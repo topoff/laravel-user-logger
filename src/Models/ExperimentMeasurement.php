@@ -2,6 +2,7 @@
 
 namespace Topoff\LaravelUserLogger\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -13,10 +14,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $last_log_id
  * @property int $exposure_count
  * @property int $conversion_count
- * @property \Carbon\Carbon|null $first_exposed_at
- * @property \Carbon\Carbon|null $last_exposed_at
- * @property \Carbon\Carbon|null $first_converted_at
- * @property \Carbon\Carbon|null $last_converted_at
+ * @property Carbon|null $first_exposed_at
+ * @property Carbon|null $last_exposed_at
+ * @property Carbon|null $first_converted_at
+ * @property Carbon|null $last_converted_at
  * @property string|null $last_conversion_event
  * @property string|null $last_conversion_entity_type
  * @property string|null $last_conversion_entity_id

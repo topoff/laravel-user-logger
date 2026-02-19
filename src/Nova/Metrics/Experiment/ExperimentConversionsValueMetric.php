@@ -40,4 +40,3 @@ class ExperimentConversionsValueMetric extends Value
         return 'experiment-conversions-value-metric';
     }
 }
-

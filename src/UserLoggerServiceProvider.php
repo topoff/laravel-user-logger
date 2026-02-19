@@ -7,9 +7,15 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Log as LaravelLogger;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Nova\Nova;
+use Laravel\Pennant\Feature;
+use Override;
+use Throwable;
 use Topoff\LaravelUserLogger\Console\Commands\Flush;
 use Topoff\LaravelUserLogger\Console\Commands\HashIp;
 use Topoff\LaravelUserLogger\Middleware\InjectUserLogger;
+use Topoff\LaravelUserLogger\Nova\Resources\ExperimentMeasurement;
+use Topoff\LaravelUserLogger\Nova\Resources\PerformanceLog;
 use Topoff\LaravelUserLogger\Repositories\AgentRepository;
 use Topoff\LaravelUserLogger\Repositories\DeviceRepository;
 use Topoff\LaravelUserLogger\Repositories\DomainRepository;
@@ -47,7 +53,7 @@ class UserLoggerServiceProvider extends ServiceProvider
 
     protected function configurePennantStore(): void
     {
-        if (! class_exists(\Laravel\Pennant\Feature::class)) {
+        if (! class_exists(Feature::class)) {
             return;
         }
 
@@ -68,7 +74,7 @@ class UserLoggerServiceProvider extends ServiceProvider
 
     protected function ensurePennantStoreInfrastructure(): void
     {
-        if (! class_exists(\Laravel\Pennant\Feature::class)) {
+        if (! class_exists(Feature::class)) {
             return;
         }
 
@@ -92,7 +98,7 @@ class UserLoggerServiceProvider extends ServiceProvider
                 $table->timestamps();
                 $table->unique(['name', 'scope']);
             });
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             LaravelLogger::warning('user-logger.pennant.auto-install-failed: '.$exception->getMessage(), [
                 'connection' => $connection,
                 'table' => $table,
@@ -115,20 +121,20 @@ class UserLoggerServiceProvider extends ServiceProvider
             return;
         }
 
-        if (! class_exists(\Laravel\Nova\Nova::class)) {
+        if (! class_exists(Nova::class)) {
             return;
         }
 
-        \Laravel\Nova\Nova::resources([
-            \Topoff\LaravelUserLogger\Nova\Resources\ExperimentMeasurement::class,
-            \Topoff\LaravelUserLogger\Nova\Resources\PerformanceLog::class,
+        Nova::resources([
+            ExperimentMeasurement::class,
+            PerformanceLog::class,
         ]);
     }
 
     /**
      * Register the application services.
      */
-    #[\Override]
+    #[Override]
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/user-logger.php', 'user-logger');

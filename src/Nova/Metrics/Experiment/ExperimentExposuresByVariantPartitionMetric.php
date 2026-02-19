@@ -29,4 +29,3 @@ class ExperimentExposuresByVariantPartitionMetric extends Partition
         return 'experiment-exposures-by-variant-partition-metric';
     }
 }
-

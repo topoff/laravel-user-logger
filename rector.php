@@ -3,8 +3,10 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 
 return RectorConfig::configure()
+    ->withImportNames(removeUnusedImports: true)
     ->withPaths([
         __DIR__.'/config',
         __DIR__.'/resources',
@@ -18,4 +20,7 @@ return RectorConfig::configure()
         typeDeclarations: true,
         privatization: true,
         earlyReturn: true,
-    );
+    )
+    ->withSkip([
+        DisallowedEmptyRuleFixerRector::class,
+    ]);

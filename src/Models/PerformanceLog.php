@@ -2,6 +2,7 @@
 
 namespace Topoff\LaravelUserLogger\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -20,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property array<string, float>|null $user_logger_segments
  * @property array<string, int>|null $user_logger_counters
  * @property array<string, mixed>|null $user_logger_meta
- * @property \Carbon\Carbon|null $created_at
+ * @property Carbon|null $created_at
  */
 class PerformanceLog extends Model
 {

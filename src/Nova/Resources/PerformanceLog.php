@@ -20,6 +20,12 @@ use Topoff\LaravelUserLogger\Nova\Filters\PerformanceLogStatusFilter;
 
 class PerformanceLog extends Resource
 {
+    public $user_logger_segments;
+
+    public $user_logger_counters;
+
+    public $user_logger_meta;
+
     /**
      * The model the resource corresponds to.
      *

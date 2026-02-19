@@ -4,10 +4,11 @@ namespace Topoff\LaravelUserLogger\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log as LaravelLogger;
+use Laravel\Pennant\Feature;
+use Throwable;
 use Topoff\LaravelUserLogger\Models\ExperimentMeasurement;
 use Topoff\LaravelUserLogger\Models\Log;
 use Topoff\LaravelUserLogger\Models\Session;
-use Throwable;
 
 class ExperimentMeasurementService
 {
@@ -60,9 +61,7 @@ class ExperimentMeasurementService
             ];
         }
 
-        if ($insertRows !== []) {
-            ExperimentMeasurement::query()->insert($insertRows);
-        }
+        ExperimentMeasurement::query()->insert($insertRows);
     }
 
     public function recordConversion(Session $session, ?string $event = null, ?string $entityType = null, ?string $entityId = null, ?Log $log = null): void
@@ -98,7 +97,7 @@ class ExperimentMeasurementService
     public function getVariant(string $feature, Session $session): ?string
     {
         try {
-            $featureFacade = '\\Laravel\\Pennant\\Feature';
+            $featureFacade = Feature::class;
             if (! class_exists($featureFacade)) {
                 return null;
             }

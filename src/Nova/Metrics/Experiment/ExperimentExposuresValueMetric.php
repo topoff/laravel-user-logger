@@ -40,4 +40,3 @@ class ExperimentExposuresValueMetric extends Value
         return 'experiment-exposures-value-metric';
     }
 }
-

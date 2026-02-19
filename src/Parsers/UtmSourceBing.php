@@ -2,6 +2,8 @@
 
 namespace Topoff\LaravelUserLogger\Parsers;
 
+use Override;
+
 /**
  * Class UtmSourceBing
  */
@@ -22,13 +24,13 @@ class UtmSourceBing extends AbstractUtmSource
      */
     private array $networks = ['o' => 'search', 's' => 'network'];
 
-    #[\Override]
+    #[Override]
     protected function getAdgroupId(): string
     {
         return $this->attributes['utm_content'] ?? '';
     }
 
-    #[\Override]
+    #[Override]
     protected function getCampaignId(): string
     {
         return $this->attributes['utm_campaign'] ?? '';
@@ -46,7 +48,7 @@ class UtmSourceBing extends AbstractUtmSource
         return '';
     }
 
-    #[\Override]
+    #[Override]
     protected function getKeywords(): string
     {
         return $this->attributes['utm_term'] ?? '';

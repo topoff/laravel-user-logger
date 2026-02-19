@@ -24,4 +24,3 @@ class ExperimentExposuresByFeaturePartitionMetric extends Partition
         return 'experiment-exposures-by-feature-partition-metric';
     }
 }
-

@@ -17,3 +17,9 @@ parameters:
 			identifier: catch.neverThrown
 			count: 4
 			path: src/UserLogger.php
+
+		-
+			message: '#^Using nullsafe property access \"\?\-\>domain_id\" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Middleware/InjectUserLogger.php

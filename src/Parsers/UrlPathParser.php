@@ -54,5 +54,4 @@ class UrlPathParser
     {
         return Str::contains($this->url, config('user-logger.path_is_mail'));
     }
-
 }

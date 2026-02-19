@@ -20,6 +20,7 @@ use Topoff\LaravelUserLogger\Models\Language;
 use Topoff\LaravelUserLogger\Models\Log;
 use Topoff\LaravelUserLogger\Models\Referer;
 use Topoff\LaravelUserLogger\Models\Session;
+use Topoff\LaravelUserLogger\Models\Uri;
 use Topoff\LaravelUserLogger\Parsers\LanguageParser;
 use Topoff\LaravelUserLogger\Parsers\RefererParser;
 use Topoff\LaravelUserLogger\Parsers\RefererResult;
@@ -130,21 +131,21 @@ class UserLogger
             $isBlacklistedUri = $this->isInBlacklistedUriArray($this->request);
 
             // URI -> decoded path returns without query parameters
-            $uri = $this->profile('uri_lookup', fn () => $this->uriRepository->findOrCreate(['uri' => $this->request->decodedPath()]));
+            $uri = $this->profile('uri_lookup', fn (): Uri => $this->uriRepository->findOrCreate(['uri' => $this->request->decodedPath()]));
 
             // Domain
-            $this->domain = $this->profile('domain_lookup', fn () => $this->domainRepository->findOrCreate(['name' => $this->request->getHost(), 'local' => true]));
+            $this->domain = $this->profile('domain_lookup', fn (): Domain => $this->domainRepository->findOrCreate(['name' => $this->request->getHost(), 'local' => true]));
 
             // Session
-            $this->session = $this->profile('session_resolution', fn () => $this->getOrCreateSession($isBlacklistedUri, $preClassifiedAsBot));
+            $this->session = $this->profile('session_resolution', fn (): Session => $this->getOrCreateSession($isBlacklistedUri, $preClassifiedAsBot));
 
             // Check if the uri is blacklisted, if so, set the session to robot and suspicious
             if (($this->session->isNoRobot() || $this->session->isNotSuspicious()) && $isBlacklistedUri) {
-                $this->profile('session_mark_suspicious', fn () => $this->sessionRepository->setRobotAndSuspicious($this->session));
+                $this->profile('session_mark_suspicious', fn (): Session => $this->sessionRepository->setRobotAndSuspicious($this->session));
             }
 
             // Log
-            $this->log = $this->profile('log_create', fn () => $this->logRepository->create($this->session, $this->domain, $uri, $event, $entityType, $entityId));
+            $this->log = $this->profile('log_create', fn (): \Topoff\LaravelUserLogger\Models\Log => $this->logRepository->create($this->session, $this->domain, $uri, $event, $entityType, $entityId));
             $this->profile('experiment_record_exposure', fn () => $this->experimentMeasurementService->recordExposure($this->session, $this->log));
 
             return $this->log;
@@ -185,12 +186,12 @@ class UserLogger
         }
 
         if (! $this->session instanceof Session) {
-            $this->referer ??= $this->profile('referer_resolution', fn () => $this->getOrCreateReferer());
+            $this->referer ??= $this->profile('referer_resolution', fn (): ?Referer => $this->getOrCreateReferer());
 
-            $userAgentParser = $this->profile('user_agent_parse', fn () => new UserAgentParser($this->request, $preClassifiedAsBot));
+            $userAgentParser = $this->profile('user_agent_parse', fn (): UserAgentParser => new UserAgentParser($this->request, $preClassifiedAsBot));
             if ($userAgentParser->hasResult()) {
-                $this->device = $this->profile('device_lookup', fn () => $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes()));
-                $this->agent = $this->profile('agent_lookup', fn () => $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes()));
+                $this->device = $this->profile('device_lookup', fn (): Device => $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes()));
+                $this->agent = $this->profile('agent_lookup', fn (): Agent => $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes()));
             } else {
                 if (config('user-logger.debug') === true && ! empty($this->request->userAgent())) {
                     Debug::create(['kind' => 'user-agent', 'value' => $this->request->userAgent()]);
@@ -200,9 +201,9 @@ class UserLogger
             }
 
             // Language
-            $languageParser = $this->profile('language_parse', fn () => new LanguageParser($this->request));
+            $languageParser = $this->profile('language_parse', fn (): LanguageParser => new LanguageParser($this->request));
             if ($languageParser->getLanguageAttributes() !== null) {
-                $this->language = $this->profile('language_lookup', fn () => $this->languageRepository->findOrCreate($languageParser->getLanguageAttributes()));
+                $this->language = $this->profile('language_lookup', fn (): Language => $this->languageRepository->findOrCreate($languageParser->getLanguageAttributes()));
             } else {
                 if (config('user-logger.debug') === true) {
                     Debug::create(['kind' => 'language', 'value' => $this->request->header('accept-language')]);
@@ -225,7 +226,7 @@ class UserLogger
             }
 
             // Session
-            return $this->profile('session_persist', fn () => $this->sessionRepository->findOrCreate($sessionHelper->getSessionUuid(), Auth::user(), $this->device, $this->agent, $this->referer, $this->language, $this->request->ip(), $suspicious, $isRobot));
+            return $this->profile('session_persist', fn (): Session => $this->sessionRepository->findOrCreate($sessionHelper->getSessionUuid(), Auth::user(), $this->device, $this->agent, $this->referer, $this->language, $this->request->ip(), $suspicious, $isRobot));
         }
 
         return $this->session;
@@ -339,10 +340,10 @@ class UserLogger
         }
 
         $sessionId ??= Uuid::uuid7()->toString();
-        $this->session = $this->profile('event_session_find_or_create', fn () => $this->sessionRepository->findOrCreate($sessionId));
+        $this->session = $this->profile('event_session_find_or_create', fn (): Session => $this->sessionRepository->findOrCreate($sessionId));
         $lastLog = $this->session->logs()->orderBy('created_at', 'desc')->first();
 
-        $log = $this->profile('event_log_create_minimal', fn () => $this->logRepository->createMinimal($this->session, $lastLog?->domain_id, null, $event, $entityType, $entityId));
+        $log = $this->profile('event_log_create_minimal', fn (): \Topoff\LaravelUserLogger\Models\Log => $this->logRepository->createMinimal($this->session, $lastLog?->domain_id, null, $event, $entityType, $entityId));
 
         $this->profile('experiment_record_conversion', fn () => $this->experimentMeasurementService->recordConversion($this->session, $event, $entityType, $entityId, $log));
 

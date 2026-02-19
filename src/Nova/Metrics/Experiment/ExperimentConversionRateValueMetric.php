@@ -33,4 +33,3 @@ class ExperimentConversionRateValueMetric extends Value
         return 'experiment-conversion-rate-value-metric';
     }
 }
-
