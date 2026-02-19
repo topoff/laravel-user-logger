@@ -23,14 +23,9 @@ class ExperimentMeasurementService
         $now = now();
         $normalizedVariant = $this->normalizeVariant($variant);
         $lastLogId = $log?->id;
-
-        $measurement = ExperimentMeasurement::query()
-            ->where('session_id', $session->id)
-            ->where('feature', $feature)
-            ->first();
+        $measurement = $this->findMeasurement($session->id, $feature, $normalizedVariant);
 
         if ($measurement instanceof ExperimentMeasurement) {
-            $measurement->variant = $normalizedVariant;
             if ($lastLogId !== null) {
                 $measurement->last_log_id = $lastLogId;
             }
@@ -71,14 +66,14 @@ class ExperimentMeasurementService
         $existing = ExperimentMeasurement::query()
             ->where('session_id', $session->id)
             ->whereIn('feature', $features)
-            ->get()
-            ->keyBy('feature');
-
-        $insertRows = [];
+            ->get();
 
         foreach ($features as $feature) {
             $variant = $this->getVariant($feature, $session);
-            $measurement = $existing->get($feature);
+            $measurement = $existing->first(
+                fn (ExperimentMeasurement $item): bool => $item->feature === $feature
+                    && $this->variantsEqual($item->variant, $variant),
+            );
 
             if ($measurement instanceof ExperimentMeasurement) {
                 $measurement->variant = $variant;
@@ -90,7 +85,7 @@ class ExperimentMeasurementService
                 continue;
             }
 
-            $insertRows[] = [
+            ExperimentMeasurement::query()->create([
                 'session_id' => $session->id,
                 'feature' => $feature,
                 'variant' => $variant,
@@ -102,10 +97,8 @@ class ExperimentMeasurementService
                 'last_exposed_at' => $now,
                 'created_at' => $now,
                 'updated_at' => $now,
-            ];
+            ]);
         }
-
-        ExperimentMeasurement::query()->insert($insertRows);
     }
 
     public function recordConversion(Session $session, ?string $event = null, ?string $entityType = null, ?string $entityId = null, ?Log $log = null): void
@@ -114,28 +107,73 @@ class ExperimentMeasurementService
             return;
         }
 
-        $query = ExperimentMeasurement::query()->where('session_id', $session->id);
-        if (! $query->exists()) {
+        $now = now();
+        $nowString = $now->format('Y-m-d H:i:s');
+        $features = $this->getTrackedFeatures();
+        if ($features === []) {
+            $query = ExperimentMeasurement::query()->where('session_id', $session->id);
+            if (! $query->exists()) {
+                return;
+            }
+
+            $updates = [
+                'first_converted_at' => DB::raw("COALESCE(first_converted_at, '{$nowString}')"),
+                'last_converted_at' => $now,
+                'last_conversion_event' => $event,
+                'last_conversion_entity_type' => $entityType,
+                'last_conversion_entity_id' => $entityId,
+                'conversion_count' => DB::raw('conversion_count + 1'),
+                'updated_at' => $now,
+            ];
+
+            if ($log instanceof Log) {
+                $updates['last_log_id'] = $log->id;
+            }
+
+            $query->update($updates);
+
             return;
         }
 
-        $now = now();
-        $nowString = $now->format('Y-m-d H:i:s');
-        $updates = [
-            'first_converted_at' => DB::raw("COALESCE(first_converted_at, '{$nowString}')"),
-            'last_converted_at' => $now,
-            'last_conversion_event' => $event,
-            'last_conversion_entity_type' => $entityType,
-            'last_conversion_entity_id' => $entityId,
-            'conversion_count' => DB::raw('conversion_count + 1'),
-            'updated_at' => $now,
-        ];
+        foreach ($features as $feature) {
+            $variant = $this->getVariant($feature, $session);
+            $query = ExperimentMeasurement::query()
+                ->where('session_id', $session->id)
+                ->where('feature', $feature);
 
-        if ($log instanceof Log) {
-            $updates['last_log_id'] = $log->id;
+            if ($variant === null) {
+                $query->whereNull('variant');
+            } else {
+                $query->where('variant', $variant);
+            }
+
+            if (! $query->exists()) {
+                // Backward compatibility: update any row for the feature in this session
+                // if no exact variant row exists yet.
+                $query = ExperimentMeasurement::query()
+                    ->where('session_id', $session->id)
+                    ->where('feature', $feature);
+                if (! $query->exists()) {
+                    continue;
+                }
+            }
+
+            $updates = [
+                'first_converted_at' => DB::raw("COALESCE(first_converted_at, '{$nowString}')"),
+                'last_converted_at' => $now,
+                'last_conversion_event' => $event,
+                'last_conversion_entity_type' => $entityType,
+                'last_conversion_entity_id' => $entityId,
+                'conversion_count' => DB::raw('conversion_count + 1'),
+                'updated_at' => $now,
+            ];
+
+            if ($log instanceof Log) {
+                $updates['last_log_id'] = $log->id;
+            }
+
+            $query->update($updates);
         }
-
-        $query->update($updates);
     }
 
     public function getVariant(string $feature, Session $session): ?string
@@ -232,5 +270,25 @@ class ExperimentMeasurementService
         }
 
         return json_encode($variant, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?: null;
+    }
+
+    protected function findMeasurement(string $sessionId, string $feature, ?string $variant): ?ExperimentMeasurement
+    {
+        $query = ExperimentMeasurement::query()
+            ->where('session_id', $sessionId)
+            ->where('feature', $feature);
+
+        if ($variant === null) {
+            $query->whereNull('variant');
+        } else {
+            $query->where('variant', $variant);
+        }
+
+        return $query->first();
+    }
+
+    protected function variantsEqual(?string $left, ?string $right): bool
+    {
+        return $left === $right;
     }
 }

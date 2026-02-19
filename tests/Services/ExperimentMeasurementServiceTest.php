@@ -121,7 +121,7 @@ class ExperimentMeasurementServiceTest extends TestCase
         $measurement = ExperimentMeasurement::query()->create([
             'session_id' => $session->id,
             'feature' => 'which-landingpage',
-            'variant' => 'false',
+            'variant' => 'cityTemplate2025',
             'first_log_id' => $log->id,
             'last_log_id' => $log->id,
             'exposure_count' => 7,
@@ -155,5 +155,36 @@ class ExperimentMeasurementServiceTest extends TestCase
         $this->assertSame('cityTemplate2025', $measurement->variant);
         $this->assertSame(1, $measurement->exposure_count);
         $this->assertSame(0, $measurement->conversion_count);
+    }
+
+    public function test_set_variant_creates_new_row_when_variant_changes_for_same_session_and_feature(): void
+    {
+        config()->set('user-logger.experiments.enabled', true);
+
+        $session = Session::query()->create(['id' => '00000000-0000-0000-0000-000000000006']);
+        $log = Log::query()->create(['session_id' => $session->id]);
+
+        ExperimentMeasurement::query()->create([
+            'session_id' => $session->id,
+            'feature' => 'which-landingpage',
+            'variant' => 'old-b',
+            'first_log_id' => $log->id,
+            'last_log_id' => $log->id,
+            'exposure_count' => 3,
+            'conversion_count' => 1,
+            'first_exposed_at' => now(),
+            'last_exposed_at' => now(),
+        ]);
+
+        $this->service->setVariant($session, 'which-landingpage', 'cityTemplate2025', $log);
+
+        $rows = ExperimentMeasurement::query()
+            ->where('session_id', $session->id)
+            ->where('feature', 'which-landingpage')
+            ->orderBy('id')
+            ->get();
+
+        $this->assertCount(2, $rows);
+        $this->assertSame(['old-b', 'cityTemplate2025'], $rows->pluck('variant')->all());
     }
 }
