@@ -12,6 +12,50 @@ use Topoff\LaravelUserLogger\Models\Session;
 
 class ExperimentMeasurementService
 {
+    public function setVariant(Session $session, string $feature, mixed $variant, ?Log $log = null): void
+    {
+        if (! $this->isMeasurementEnabled()) {
+            return;
+        }
+
+        $this->activateFeature($session, $feature, $variant);
+
+        $now = now();
+        $normalizedVariant = $this->normalizeVariant($variant);
+        $lastLogId = $log?->id;
+
+        $measurement = ExperimentMeasurement::query()
+            ->where('session_id', $session->id)
+            ->where('feature', $feature)
+            ->first();
+
+        if ($measurement instanceof ExperimentMeasurement) {
+            $measurement->variant = $normalizedVariant;
+            if ($lastLogId !== null) {
+                $measurement->last_log_id = $lastLogId;
+            }
+            $measurement->updated_at = $now;
+            $measurement->save();
+
+            return;
+        }
+
+        ExperimentMeasurement::query()->create([
+            'session_id' => $session->id,
+            'feature' => $feature,
+            'variant' => $normalizedVariant,
+            'first_log_id' => $lastLogId,
+            'last_log_id' => $lastLogId,
+            // If no exposure row exists yet, create a baseline row for this request.
+            'exposure_count' => 1,
+            'conversion_count' => 0,
+            'first_exposed_at' => $now,
+            'last_exposed_at' => $now,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+    }
+
     public function recordExposure(Session $session, Log $log): void
     {
         if (! $this->isMeasurementEnabled()) {
@@ -109,6 +153,21 @@ class ExperimentMeasurementService
             LaravelLogger::warning('Error resolving Pennant feature variant in topoff/user-logger: '.$exception->getMessage());
 
             return null;
+        }
+    }
+
+    protected function activateFeature(Session $session, string $feature, mixed $variant): void
+    {
+        try {
+            $featureFacade = Feature::class;
+            if (! class_exists($featureFacade)) {
+                return;
+            }
+
+            $store = (string) config('user-logger.experiments.pennant.store', 'user-logger');
+            $featureFacade::store($store)->for($this->resolveScope($session))->activate($feature, $variant);
+        } catch (Throwable $exception) {
+            LaravelLogger::warning('Error activating Pennant feature variant in topoff/user-logger: '.$exception->getMessage());
         }
     }
 

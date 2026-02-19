@@ -527,6 +527,20 @@ class UserLogger
         return $this->experimentMeasurementService->isVariant($feature, $variant, $session);
     }
 
+    public function setExperimentVariant(string $feature, mixed $variant): void
+    {
+        if (! $this->isEnabled()) {
+            return;
+        }
+
+        $session = $this->session;
+        if (! $session instanceof Session) {
+            $session = $this->getOrCreateSession();
+        }
+
+        $this->experimentMeasurementService->setVariant($session, $feature, $variant, $this->log);
+    }
+
     /**
      * Determine if the request has a URI that should be ignored.
      */

@@ -110,4 +110,50 @@ class ExperimentMeasurementServiceTest extends TestCase
 
         $this->assertSame(['landing', 'checkout'], $features);
     }
+
+    public function test_set_variant_updates_existing_measurement_without_resetting_counts(): void
+    {
+        config()->set('user-logger.experiments.enabled', true);
+
+        $session = Session::query()->create(['id' => '00000000-0000-0000-0000-000000000004']);
+        $log = Log::query()->create(['session_id' => $session->id]);
+
+        $measurement = ExperimentMeasurement::query()->create([
+            'session_id' => $session->id,
+            'feature' => 'which-landingpage',
+            'variant' => 'false',
+            'first_log_id' => $log->id,
+            'last_log_id' => $log->id,
+            'exposure_count' => 7,
+            'conversion_count' => 2,
+            'first_exposed_at' => now(),
+            'last_exposed_at' => now(),
+        ]);
+
+        $this->service->setVariant($session, 'which-landingpage', 'cityTemplate2025', $log);
+
+        $measurement->refresh();
+        $this->assertSame('cityTemplate2025', $measurement->variant);
+        $this->assertSame(7, $measurement->exposure_count);
+        $this->assertSame(2, $measurement->conversion_count);
+    }
+
+    public function test_set_variant_creates_measurement_if_missing(): void
+    {
+        config()->set('user-logger.experiments.enabled', true);
+
+        $session = Session::query()->create(['id' => '00000000-0000-0000-0000-000000000005']);
+        $log = Log::query()->create(['session_id' => $session->id]);
+
+        $this->service->setVariant($session, 'which-landingpage', 'cityTemplate2025', $log);
+
+        $measurement = ExperimentMeasurement::query()
+            ->where('session_id', $session->id)
+            ->where('feature', 'which-landingpage')
+            ->firstOrFail();
+
+        $this->assertSame('cityTemplate2025', $measurement->variant);
+        $this->assertSame(1, $measurement->exposure_count);
+        $this->assertSame(0, $measurement->conversion_count);
+    }
 }
