@@ -141,7 +141,7 @@ class TestCase extends Orchestra
             $table->string('last_conversion_entity_id', 100)->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
-            $table->unique(['session_id', 'feature']);
+            $table->unique(['session_id', 'feature', 'variant']);
         });
     }
 }
