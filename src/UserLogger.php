@@ -95,20 +95,20 @@ class UserLogger
             $this->performanceProfiler?->start('user_logger_total');
         }
 
+        $crawlerDetect = new CrawlerDetect;
+        $isCrawler = $crawlerDetect->isCrawler();
+
         if (config('app.debug')) {
-            // Display Error if app.debug is true
-            $crawlerDetect = new CrawlerDetect;
-            if (config('user-logger.log_robots') || ! $crawlerDetect->isCrawler()) {
-                $this->log = $this->createLog();
+            if (config('user-logger.log_robots') || ! $isCrawler) {
+                $this->log = $this->createLog(preClassifiedAsBot: $isCrawler);
             }
         } else {
             // try - catch in middleware not working as expected: https://github.com/laravel/framework/issues/14573
             // Intentional used twice, in InjectUserLogger Middleware -> completely suppresses errors in this package
             // and here: does log some of them.
             try {
-                $crawlerDetect = new CrawlerDetect;
-                if (config('user-logger.log_robots') || ! $crawlerDetect->isCrawler()) {
-                    $this->log = $this->createLog();
+                if (config('user-logger.log_robots') || ! $isCrawler) {
+                    $this->log = $this->createLog(preClassifiedAsBot: $isCrawler);
                 }
             } catch (Exception $e) {
                 // Sometimes reached
@@ -124,7 +124,7 @@ class UserLogger
     /**
      * Create the Log of the Request
      */
-    protected function createLog(?string $event = null, ?string $entityType = null, ?string $entityId = null): ?Log
+    protected function createLog(?string $event = null, ?string $entityType = null, ?string $entityId = null, bool $preClassifiedAsBot = false): ?Log
     {
         try {
             $isBlacklistedUri = $this->isInBlacklistedUriArray($this->request);
@@ -136,7 +136,7 @@ class UserLogger
             $this->domain = $this->profile('domain_lookup', fn () => $this->domainRepository->findOrCreate(['name' => $this->request->getHost(), 'local' => true]));
 
             // Session
-            $this->session = $this->profile('session_resolution', fn () => $this->getOrCreateSession($isBlacklistedUri));
+            $this->session = $this->profile('session_resolution', fn () => $this->getOrCreateSession($isBlacklistedUri, $preClassifiedAsBot));
 
             // Check if the uri is blacklisted, if so, set the session to robot and suspicious
             if (($this->session->isNoRobot() || $this->session->isNotSuspicious()) && $isBlacklistedUri) {
@@ -175,7 +175,7 @@ class UserLogger
      *
      * @throws Exception
      */
-    protected function getOrCreateSession(?bool $isBlacklistedUri = null): Session
+    protected function getOrCreateSession(?bool $isBlacklistedUri = null, bool $preClassifiedAsBot = false): Session
     {
         $sessionHelper = new SessionHelper($this->request);
         $isBlacklistedUri ??= $this->isInBlacklistedUriArray($this->request);
@@ -187,7 +187,7 @@ class UserLogger
         if (! $this->session instanceof Session) {
             $this->referer ??= $this->profile('referer_resolution', fn () => $this->getOrCreateReferer());
 
-            $userAgentParser = $this->profile('user_agent_parse', fn () => new UserAgentParser($this->request));
+            $userAgentParser = $this->profile('user_agent_parse', fn () => new UserAgentParser($this->request, $preClassifiedAsBot));
             if ($userAgentParser->hasResult()) {
                 $this->device = $this->profile('device_lookup', fn () => $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes()));
                 $this->agent = $this->profile('agent_lookup', fn () => $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes()));
@@ -219,7 +219,9 @@ class UserLogger
 
                 // Agents can be set manually in the agents table as robots and this will overwrite the is_robot detection from
                 // the UserAgentParser Result.
-                $isRobot = ($this->agent instanceof Agent && $this->agent->is_robot) || ($this->device instanceof Device && $this->device['is_robot']);
+                $isRobot = $preClassifiedAsBot
+                    || ($this->agent instanceof Agent && $this->agent->is_robot)
+                    || ($this->device instanceof Device && $this->device['is_robot']);
             }
 
             // Session

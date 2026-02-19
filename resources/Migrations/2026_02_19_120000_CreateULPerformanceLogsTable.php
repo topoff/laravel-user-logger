@@ -27,6 +27,7 @@ class CreateULPerformanceLogsTable extends Migration
                 $table->unsignedInteger('queries_total')->nullable();
                 $table->unsignedInteger('queries_user_logger')->nullable();
                 $table->unsignedBigInteger('log_id')->nullable()->index();
+                $table->unsignedBigInteger('domain_id')->nullable()->index();
 
                 $table->json('user_logger_segments')->nullable();
                 $table->json('user_logger_counters')->nullable();

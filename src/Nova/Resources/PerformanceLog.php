@@ -42,6 +42,7 @@ class PerformanceLog extends Resource
     public static $search = [
         'id',
         'log_id',
+        'domain_id',
         'path',
         'method',
         'status',
@@ -65,6 +66,7 @@ class PerformanceLog extends Resource
             Text::make('Method')->sortable(),
             Number::make('Status', 'status')->sortable(),
             Number::make('Log ID', 'log_id')->sortable(),
+            Number::make('Domain ID', 'domain_id')->sortable(),
             Boolean::make('Booted', 'booted')->sortable(),
             Text::make('Skip Reason', 'skip_reason')->sortable(),
             Number::make('Request Duration (ms)', 'request_duration_ms')->sortable(),

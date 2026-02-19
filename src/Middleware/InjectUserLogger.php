@@ -164,10 +164,13 @@ class InjectUserLogger
             return;
         }
 
-        $requestDurationMs = round((microtime(true) - $requestStart) * 1000, 3);
+        $requestStartAt = defined('LARAVEL_START') ? LARAVEL_START : $requestStart;
+        $requestDurationMs = round((microtime(true) - $requestStartAt) * 1000, 3);
         $slowMs = (int) config('user-logger.performance.slow_ms', 0);
         $userLogger = $this->userLogger->getPerformanceSnapshot();
-        $currentLogId = $this->userLogger->getCurrentLog()?->id;
+        $currentLog = $this->userLogger->getCurrentLog();
+        $currentLogId = $currentLog?->id;
+        $currentDomainId = $currentLog?->domain_id ?? $this->userLogger->getCurrentDomain()?->id;
 
         $context = [
             'path' => $request->path(),
@@ -180,6 +183,7 @@ class InjectUserLogger
             'queries_total' => null,
             'queries_user_logger' => null,
             'log_id' => $currentLogId,
+            'domain_id' => $currentDomainId,
             'user_logger_segments' => $userLogger['segments'] ?? null,
             'user_logger_counters' => $userLogger['counters'] ?? null,
             'user_logger_meta' => $userLogger['meta'] ?? null,

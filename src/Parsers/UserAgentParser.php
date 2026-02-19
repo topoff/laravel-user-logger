@@ -14,7 +14,7 @@ class UserAgentParser
 {
     protected ?DeviceDetector $detector = null;
 
-    public function __construct(protected Request $request)
+    public function __construct(protected Request $request, protected bool $skipBotDetection = false)
     {
         $this->parse();
     }
@@ -35,7 +35,7 @@ class UserAgentParser
             }
         }
 
-        if (config('user-logger.user_agent.skip_bot_detection', false) === true) {
+        if ($this->skipBotDetection) {
             $detector->skipBotDetection();
         }
 

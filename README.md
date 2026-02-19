@@ -117,17 +117,17 @@ Slow request warnings can be emitted with `slow_ms` (set `0` to disable warnings
 
 ## User-Agent Parsing Performance
 
-`matomo/device-detector` supports cache-backed parsing and optional bot-parser skipping:
+`matomo/device-detector` supports cache-backed parsing:
 
 ```php
 'user_agent' => [
     'cache' => true,
-    'skip_bot_detection' => false,
 ],
 ```
 
 - `cache`: uses Laravel's default cache store to speed up parser internals.
-- `skip_bot_detection`: avoids DeviceDetector bot matching (faster), useful when bot detection already happens elsewhere.
+
+The package automatically skips DeviceDetector bot matching when the request was already classified as a crawler via `CrawlerDetect`.
 
 ## Update
 

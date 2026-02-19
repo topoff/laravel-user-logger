@@ -33,6 +33,7 @@ return [
      * Which uri names are not trackable?
      */
     'do_not_track_routes' => [
+        'api/auth/sanctum/*',
         'livewire*',
         'telescope*',
         'pulse*',
@@ -42,6 +43,8 @@ return [
         'log-viewer*',
         'nova*',
         'admin/*',
+        'admin-nova/*',
+        'admin-filament/*',
         '*.jpg',
         '*.jpeg',
         '*.js',
@@ -186,7 +189,7 @@ return [
          * Skip DeviceDetector bot matching for faster parsing.
          * Enable only if bot detection is handled elsewhere in your app.
          */
-        'skip_bot_detection' => false,
+        'skip_bot_detection' => true,
     ],
 
     /*
