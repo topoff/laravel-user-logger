@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Agent|null $agent
  * @property-read Referer|null $referer
  * @property-read Language|null $language
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, ExperimentMeasurement> $experimentMeasurements
  */
 class Session extends Model
 {
@@ -65,6 +66,14 @@ class Session extends Model
     public function logs(): HasMany
     {
         return $this->hasMany(Log::class);
+    }
+
+    /**
+     * Can have many Experiment Measurements
+     */
+    public function experimentMeasurements(): HasMany
+    {
+        return $this->hasMany(ExperimentMeasurement::class);
     }
 
     /**

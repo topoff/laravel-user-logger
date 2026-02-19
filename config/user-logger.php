@@ -135,17 +135,37 @@ return [
     'log_ip' => true,
 
     /*
-    * use A/B Testing experiments
-    */
-    'use_experiments' => false,
-
-    /*
-     * active experiments - max 16 chars
-     * crawlers will always run as in the first experiment, but will not be logged
+     * Pennant-based experiment measurement
      */
     'experiments' => [
-        'a',
-        'b',
+        /*
+         * Enable experiment measurement in the logger
+         */
+        'enabled' => false,
+
+        /*
+         * List of Pennant features to measure
+         */
+        'features' => [],
+
+        /*
+         * Log events that count as conversions
+         */
+        'conversion_events' => [
+            'conversion',
+        ],
+
+        /*
+         * Optional conversion entity type whitelist (empty = all)
+         */
+        'conversion_entity_types' => [],
+
+        /*
+         * Auto-register Nova resources when Nova is installed
+         */
+        'nova' => [
+            'enabled' => true,
+        ],
     ],
 
     /*

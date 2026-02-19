@@ -3,7 +3,7 @@
 namespace Topoff\LaravelUserLogger\Console\Commands;
 
 use Illuminate\Console\Command;
-use Topoff\LaravelUserLogger\Models\ExperimentLog;
+use Topoff\LaravelUserLogger\Models\ExperimentMeasurement;
 
 class Flush extends Command
 {
@@ -19,13 +19,13 @@ class Flush extends Command
      *
      * @var string
      */
-    protected $description = 'Deletes the experiments logs to start a new experiment.';
+    protected $description = 'Deletes experiment measurements to start a fresh measurement cycle.';
 
     /**
      * Execute the console command.
      */
     public function handle(): void
     {
-        ExperimentLog::truncate();
+        ExperimentMeasurement::truncate();
     }
 }

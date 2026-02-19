@@ -7,4 +7,6 @@ parameters:
     paths:
         - src
         - config
+    excludePaths:
+        - src/Nova/*
     tmpDir: build/phpstan

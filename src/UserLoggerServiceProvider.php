@@ -10,12 +10,12 @@ use Topoff\LaravelUserLogger\Middleware\InjectUserLogger;
 use Topoff\LaravelUserLogger\Repositories\AgentRepository;
 use Topoff\LaravelUserLogger\Repositories\DeviceRepository;
 use Topoff\LaravelUserLogger\Repositories\DomainRepository;
-use Topoff\LaravelUserLogger\Repositories\ExperimentLogRepository;
 use Topoff\LaravelUserLogger\Repositories\LanguageRepository;
 use Topoff\LaravelUserLogger\Repositories\LogRepository;
 use Topoff\LaravelUserLogger\Repositories\RefererRepository;
 use Topoff\LaravelUserLogger\Repositories\SessionRepository;
 use Topoff\LaravelUserLogger\Repositories\UriRepository;
+use Topoff\LaravelUserLogger\Services\ExperimentMeasurementService;
 
 class UserLoggerServiceProvider extends ServiceProvider
 {
@@ -29,6 +29,7 @@ class UserLoggerServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../resources/Migrations/');
 
         $this->registerMiddleware(InjectUserLogger::class);
+        $this->registerNovaResources();
 
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -45,6 +46,21 @@ class UserLoggerServiceProvider extends ServiceProvider
     {
         $router = $this->app->make(Router::class);
         $router->pushMiddlewareToGroup('web', $middleware);
+    }
+
+    protected function registerNovaResources(): void
+    {
+        if (config('user-logger.experiments.nova.enabled', true) !== true) {
+            return;
+        }
+
+        if (! class_exists(\Laravel\Nova\Nova::class)) {
+            return;
+        }
+
+        \Laravel\Nova\Nova::resources([
+            \Topoff\LaravelUserLogger\Nova\Resources\ExperimentMeasurement::class,
+        ]);
     }
 
     /**
@@ -65,7 +81,7 @@ class UserLoggerServiceProvider extends ServiceProvider
             new UriRepository,
             new RefererRepository,
             new SessionRepository,
-            new ExperimentLogRepository,
+            new ExperimentMeasurementService,
             $app['request'],
         ));
 

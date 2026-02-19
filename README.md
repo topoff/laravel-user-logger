@@ -5,30 +5,31 @@
 [![License](https://poser.pugx.org/topoff/laravel-user-logger/license)](https://packagist.org/packages/topoff/laravel-user-logger)
 [![Total Downloads](https://poser.pugx.org/topoff/laravel-user-logger/downloads)](https://packagist.org/packages/topoff/laravel-user-logger) 
 
-This is a Simple user logger and A/B Testing Tool for laravel.
+Laravel User Logger with Pennant-based experiment measurement.
 
-## Requirements  
+## Requirements
 
-Needs Laravel 8
+- Laravel
+- `laravel/pennant`
 
 
 ## Installation
 
-Using composer is currently the only supported way to install this package.
+Using Composer is currently the only supported way to install this package.
 
-```
+```bash
 composer require topoff/laravel-user-logger
 ```
 
 ## Getting started
 
-You can publish & change the configuration with this command:
+Publish the package config:
 
-```
-php artisan vendor:publish
+```bash
+php artisan vendor:publish --tag=config
 ```
 
-You need to create a connection namend user-logger in your config/database.php
+Create a dedicated `user-logger` database connection in `config/database.php`:
 
 
 ```php
@@ -47,32 +48,52 @@ You need to create a connection namend user-logger in your config/database.php
             'engine' => null,
         ],
 ```
-## Experiences
+Run migrations:
 
-To start with experiences, A/B testing, set use_experiments in the config file to true and define at least two experiments, per example a,b. 
+```bash
+php artisan migrate
+```
 
+## Experiments
+
+Experiment measurement uses `laravel/pennant`. Configure tracked features in `config/user-logger.php`:
 
 ```php
-/*
-    * use A/B Testing experiments
-    */
-    'use_experiments'     => true,
-
-    /*
-     * active experiments - max 16 chars
-     * crawlers will always run as in the first experiment, but will not be logged
-     */
-    'experiments'         => [
-        'a',
-        'b',
+'experiments' => [
+    'enabled' => true,
+    'features' => [
+        'landing-page-headline',
+        'checkout-flow',
     ],
+    'conversion_events' => [
+        'conversion',
+    ],
+    'conversion_entity_types' => [],
+    'nova' => [
+        'enabled' => true,
+    ],
+],
 ```
-To start e new experience, flush the old data with
-```
+
+Flush all measured experiment data:
+
+```bash
 php artisan user-logger:flush
 ```
 
+## Nova
+
+When Nova is installed and `experiments.nova.enabled` is `true`, the package auto-registers the `ExperimentMeasurement` Nova resource.
+
+If your app defines a fully custom `Nova::mainMenu(...)`, you must also add the resource manually in that menu.
+
+## Testing
+
+```bash
+composer test
+```
 
 ## Update
 
-This package uses https://github.com/snowplow-referer-parser/referer-parser. There you find information to update the list of known referers, which should sequently be done, manually.
+This package uses https://github.com/snowplow-referer-parser/referer-parser.
+Use that repository to update the known referer list when needed.

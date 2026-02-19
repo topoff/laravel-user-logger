@@ -21,6 +21,7 @@
         "illuminate/database": "*",
         "illuminate/cache": "*",
         "illuminate/log": "*",
+        "laravel/pennant": "^1.0",
         "snowplow/referer-parser": "~0.2"
     },
     "_comments": {
@@ -42,6 +43,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Topoff\\LaravelUserLogger\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },

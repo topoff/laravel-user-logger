@@ -5,6 +5,7 @@ namespace Topoff\LaravelUserLogger;
 use Exception;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log as LaravelLogger;
@@ -14,7 +15,7 @@ use Topoff\LaravelUserLogger\Models\Agent;
 use Topoff\LaravelUserLogger\Models\Debug;
 use Topoff\LaravelUserLogger\Models\Device;
 use Topoff\LaravelUserLogger\Models\Domain;
-use Topoff\LaravelUserLogger\Models\ExperimentLog;
+use Topoff\LaravelUserLogger\Models\ExperimentMeasurement;
 use Topoff\LaravelUserLogger\Models\Language;
 use Topoff\LaravelUserLogger\Models\Log;
 use Topoff\LaravelUserLogger\Models\Referer;
@@ -28,12 +29,12 @@ use Topoff\LaravelUserLogger\Parsers\UtmSourceParser;
 use Topoff\LaravelUserLogger\Repositories\AgentRepository;
 use Topoff\LaravelUserLogger\Repositories\DeviceRepository;
 use Topoff\LaravelUserLogger\Repositories\DomainRepository;
-use Topoff\LaravelUserLogger\Repositories\ExperimentLogRepository;
 use Topoff\LaravelUserLogger\Repositories\LanguageRepository;
 use Topoff\LaravelUserLogger\Repositories\LogRepository;
 use Topoff\LaravelUserLogger\Repositories\RefererRepository;
 use Topoff\LaravelUserLogger\Repositories\SessionRepository;
 use Topoff\LaravelUserLogger\Repositories\UriRepository;
+use Topoff\LaravelUserLogger\Services\ExperimentMeasurementService;
 use Topoff\LaravelUserLogger\Support\SessionHelper;
 
 /**
@@ -57,7 +58,7 @@ class UserLogger
 
     protected ?Referer $referer = null;
 
-    protected ?ExperimentLog $experimentLog = null;
+    protected ?Collection $experimentMeasurements = null;
 
     protected array $blacklistUris = [];
 
@@ -73,7 +74,7 @@ class UserLogger
         protected UriRepository $uriRepository,
         protected RefererRepository $refererRepository,
         protected SessionRepository $sessionRepository,
-        protected ExperimentLogRepository $experimentLogRepository,
+        protected ExperimentMeasurementService $experimentMeasurementService,
         protected Request $request)
     {
         $this->blacklistUris = Cache::rememberForever('user-logger.blacklist_routes', static fn () => config('user-logger.blacklist_routes') ?: []);
@@ -123,13 +124,11 @@ class UserLogger
                 $this->sessionRepository->setRobotAndSuspicious($this->session);
             }
 
-            // Experiment
-            if (config('user-logger.use_experiments')) {
-                $this->experimentLog = $this->getOrCreateExperimentLog($this->session);
-            }
-
             // Log
-            return $this->logRepository->create($this->session, $this->domain, $uri, $event, $entityType, $entityId);
+            $this->log = $this->logRepository->create($this->session, $this->domain, $uri, $event, $entityType, $entityId);
+            $this->experimentMeasurementService->recordExposure($this->session, $this->log);
+
+            return $this->log;
         } catch (Exception $e) {
             if (config('user-logger.debug') === true && ! empty($this->request->userAgent())) {
                 Debug::create(['kind' => 'user-agent', 'value' => 'Error in getOrCreateSession: '.$e->getMessage().' in '.$e->getFile().' on line '.$e->getLine().' - Trace: '.$e->getTraceAsString()]);
@@ -267,25 +266,6 @@ class UserLogger
         return $this->domainRepository->findOrCreate(['name' => $name, 'local' => $local]);
     }
 
-    protected function getOrCreateExperimentLog(Session $session): ExperimentLog
-    {
-        $this->experimentLog = $this->experimentLogRepository->firstOrCreate(['session_id' => $session->id], ['experiment' => $this->getRandomExperimentName()]);
-
-        return $this->experimentLog;
-    }
-
-    /**
-     * Gets a Random Element from the Experiments from the config
-     */
-    private function getRandomExperimentName(): ?string
-    {
-        if (empty(config('user-logger.experiments'))) {
-            return null;
-        }
-
-        return config('user-logger.experiments')[array_rand(config('user-logger.experiments'), 1)];
-    }
-
     public function setRefererFromExternalUrl(string $refererUrl): self
     {
         if ($this->isEnabled()) {
@@ -306,11 +286,19 @@ class UserLogger
         if (! $this->isEnabled()) {
             return null;
         }
+
+        $log = null;
         if ($this->log instanceof Log) {
-            return $this->logRepository->updateWithEvent($this->log, $event, $entityType, $entityId);
+            $log = $this->logRepository->updateWithEvent($this->log, $event, $entityType, $entityId);
+        } else {
+            $log = $this->createLog($event, $entityType, $entityId);
         }
 
-        return $this->createLog($event, $entityType, $entityId);
+        if ($log instanceof Log && $this->session instanceof Session) {
+            $this->experimentMeasurementService->recordConversion($this->session, $event, $entityType, $entityId, $log);
+        }
+
+        return $log;
     }
 
     /**
@@ -326,7 +314,11 @@ class UserLogger
         $this->session = $this->sessionRepository->findOrCreate($sessionId);
         $lastLog = $this->session->logs()->orderBy('created_at', 'desc')->first();
 
-        return $this->logRepository->createMinimal($this->session, $lastLog?->domain_id, null, $event, $entityType, $entityId);
+        $log = $this->logRepository->createMinimal($this->session, $lastLog?->domain_id, null, $event, $entityType, $entityId);
+
+        $this->experimentMeasurementService->recordConversion($this->session, $event, $entityType, $entityId, $log);
+
+        return $log;
     }
 
     public function isDisabled(): bool
@@ -459,24 +451,51 @@ class UserLogger
     }
 
     /**
-     * Get the ExperimentLog of the current Request
+     * Get experiment measurements of the current Request
      */
-    public function getCurrentExperimentLog(): ?ExperimentLog
+    public function getCurrentExperimentMeasurements(): Collection
     {
-        return $this->experimentLog;
+        if (! $this->session instanceof Session) {
+            return collect();
+        }
+
+        $this->experimentMeasurements = ExperimentMeasurement::query()->where('session_id', $this->session->id)->get();
+
+        return $this->experimentMeasurements;
     }
 
     /**
-     * Check if the current Request is running in the asked $experimentName
+     * Get the resolved Pennant variant for the current Request.
      */
-    public function isExperiment(string $experimentName): bool
+    public function getExperimentVariant(string $feature): ?string
     {
-        // Crawlers always get the first experiment, not logged
-        if (! $this->experimentLog instanceof ExperimentLog) {
-            return config('user-logger.experiments')[0] === $experimentName;
+        if (! $this->isEnabled()) {
+            return null;
         }
 
-        return $this->experimentLog->experiment === $experimentName;
+        $session = $this->session;
+        if (! $session instanceof Session) {
+            $session = $this->getOrCreateSession();
+        }
+
+        return $this->experimentMeasurementService->getVariant($feature, $session);
+    }
+
+    /**
+     * Check if the current Request is running in the requested variant of a Pennant feature.
+     */
+    public function isExperiment(string $feature, mixed $variant = true): bool
+    {
+        if (! $this->isEnabled()) {
+            return false;
+        }
+
+        $session = $this->session;
+        if (! $session instanceof Session) {
+            $session = $this->getOrCreateSession();
+        }
+
+        return $this->experimentMeasurementService->isVariant($feature, $variant, $session);
     }
 
     /**
