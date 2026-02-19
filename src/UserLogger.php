@@ -35,6 +35,7 @@ use Topoff\LaravelUserLogger\Repositories\RefererRepository;
 use Topoff\LaravelUserLogger\Repositories\SessionRepository;
 use Topoff\LaravelUserLogger\Repositories\UriRepository;
 use Topoff\LaravelUserLogger\Services\ExperimentMeasurementService;
+use Topoff\LaravelUserLogger\Support\PerformanceProfiler;
 use Topoff\LaravelUserLogger\Support\SessionHelper;
 
 /**
@@ -62,6 +63,10 @@ class UserLogger
 
     protected array $blacklistUris = [];
 
+    protected bool $performanceEnabled = false;
+
+    protected ?PerformanceProfiler $performanceProfiler = null;
+
     public function __construct(/**
      * The Laravel application instance.
      */
@@ -78,10 +83,18 @@ class UserLogger
         protected Request $request)
     {
         $this->blacklistUris = Cache::rememberForever('user-logger.blacklist_routes', static fn () => config('user-logger.blacklist_routes') ?: []);
+        $this->performanceEnabled = config('user-logger.performance.enabled', false) === true;
+        if ($this->performanceEnabled) {
+            $this->performanceProfiler = new PerformanceProfiler;
+        }
     }
 
     public function boot(): void
     {
+        if ($this->performanceEnabled) {
+            $this->performanceProfiler?->start('user_logger_total');
+        }
+
         if (config('app.debug')) {
             // Display Error if app.debug is true
             $crawlerDetect = new CrawlerDetect;
@@ -102,6 +115,10 @@ class UserLogger
                 LaravelLogger::warning('Error in topoff/user-logger: '.$e->getMessage(), $e->getTrace());
             }
         }
+
+        if ($this->performanceEnabled) {
+            $this->performanceProfiler?->stop('user_logger_total');
+        }
     }
 
     /**
@@ -113,22 +130,22 @@ class UserLogger
             $isBlacklistedUri = $this->isInBlacklistedUriArray($this->request);
 
             // URI -> decoded path returns without query parameters
-            $uri = $this->uriRepository->findOrCreate(['uri' => $this->request->decodedPath()]);
+            $uri = $this->profile('uri_lookup', fn () => $this->uriRepository->findOrCreate(['uri' => $this->request->decodedPath()]));
 
             // Domain
-            $this->domain = $this->domainRepository->findOrCreate(['name' => $this->request->getHost(), 'local' => true]);
+            $this->domain = $this->profile('domain_lookup', fn () => $this->domainRepository->findOrCreate(['name' => $this->request->getHost(), 'local' => true]));
 
             // Session
-            $this->session = $this->getOrCreateSession($isBlacklistedUri);
+            $this->session = $this->profile('session_resolution', fn () => $this->getOrCreateSession($isBlacklistedUri));
 
             // Check if the uri is blacklisted, if so, set the session to robot and suspicious
             if (($this->session->isNoRobot() || $this->session->isNotSuspicious()) && $isBlacklistedUri) {
-                $this->sessionRepository->setRobotAndSuspicious($this->session);
+                $this->profile('session_mark_suspicious', fn () => $this->sessionRepository->setRobotAndSuspicious($this->session));
             }
 
             // Log
-            $this->log = $this->logRepository->create($this->session, $this->domain, $uri, $event, $entityType, $entityId);
-            $this->experimentMeasurementService->recordExposure($this->session, $this->log);
+            $this->log = $this->profile('log_create', fn () => $this->logRepository->create($this->session, $this->domain, $uri, $event, $entityType, $entityId));
+            $this->profile('experiment_record_exposure', fn () => $this->experimentMeasurementService->recordExposure($this->session, $this->log));
 
             return $this->log;
         } catch (Exception $e) {
@@ -164,16 +181,16 @@ class UserLogger
         $isBlacklistedUri ??= $this->isInBlacklistedUriArray($this->request);
 
         if (! $this->session instanceof Session) {
-            $this->setSessionFromRequest($sessionHelper);
+            $this->profile('session_lookup_from_cookie', fn () => $this->setSessionFromRequest($sessionHelper));
         }
 
         if (! $this->session instanceof Session) {
-            $this->referer ??= $this->getOrCreateReferer();
+            $this->referer ??= $this->profile('referer_resolution', fn () => $this->getOrCreateReferer());
 
-            $userAgentParser = new UserAgentParser($this->request);
+            $userAgentParser = $this->profile('user_agent_parse', fn () => new UserAgentParser($this->request));
             if ($userAgentParser->hasResult()) {
-                $this->device = $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes());
-                $this->agent = $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes());
+                $this->device = $this->profile('device_lookup', fn () => $this->deviceRepository->findOrCreate($userAgentParser->getDeviceAttributes()));
+                $this->agent = $this->profile('agent_lookup', fn () => $this->agentRepository->findOrCreate($userAgentParser->getAgentAttributes()));
             } else {
                 if (config('user-logger.debug') === true && ! empty($this->request->userAgent())) {
                     Debug::create(['kind' => 'user-agent', 'value' => $this->request->userAgent()]);
@@ -183,9 +200,9 @@ class UserLogger
             }
 
             // Language
-            $languageParser = new LanguageParser($this->request);
+            $languageParser = $this->profile('language_parse', fn () => new LanguageParser($this->request));
             if ($languageParser->getLanguageAttributes() !== null) {
-                $this->language = $this->languageRepository->findOrCreate($languageParser->getLanguageAttributes());
+                $this->language = $this->profile('language_lookup', fn () => $this->languageRepository->findOrCreate($languageParser->getLanguageAttributes()));
             } else {
                 if (config('user-logger.debug') === true) {
                     Debug::create(['kind' => 'language', 'value' => $this->request->header('accept-language')]);
@@ -206,7 +223,7 @@ class UserLogger
             }
 
             // Session
-            return $this->sessionRepository->findOrCreate($sessionHelper->getSessionUuid(), Auth::user(), $this->device, $this->agent, $this->referer, $this->language, $this->request->ip(), $suspicious, $isRobot);
+            return $this->profile('session_persist', fn () => $this->sessionRepository->findOrCreate($sessionHelper->getSessionUuid(), Auth::user(), $this->device, $this->agent, $this->referer, $this->language, $this->request->ip(), $suspicious, $isRobot));
         }
 
         return $this->session;
@@ -304,7 +321,7 @@ class UserLogger
         }
 
         if ($log instanceof Log && $this->session instanceof Session) {
-            $this->experimentMeasurementService->recordConversion($this->session, $event, $entityType, $entityId, $log);
+            $this->profile('experiment_record_conversion', fn () => $this->experimentMeasurementService->recordConversion($this->session, $event, $entityType, $entityId, $log));
         }
 
         return $log;
@@ -320,12 +337,12 @@ class UserLogger
         }
 
         $sessionId ??= Uuid::uuid7()->toString();
-        $this->session = $this->sessionRepository->findOrCreate($sessionId);
+        $this->session = $this->profile('event_session_find_or_create', fn () => $this->sessionRepository->findOrCreate($sessionId));
         $lastLog = $this->session->logs()->orderBy('created_at', 'desc')->first();
 
-        $log = $this->logRepository->createMinimal($this->session, $lastLog?->domain_id, null, $event, $entityType, $entityId);
+        $log = $this->profile('event_log_create_minimal', fn () => $this->logRepository->createMinimal($this->session, $lastLog?->domain_id, null, $event, $entityType, $entityId));
 
-        $this->experimentMeasurementService->recordConversion($this->session, $event, $entityType, $entityId, $log);
+        $this->profile('experiment_record_conversion', fn () => $this->experimentMeasurementService->recordConversion($this->session, $event, $entityType, $entityId, $log));
 
         return $log;
     }
@@ -523,5 +540,31 @@ class UserLogger
         }
 
         return false;
+    }
+
+    /**
+     * @return array{segments: array<string, float>, counters: array<string, int>, meta: array<string, mixed>}|null
+     */
+    public function getPerformanceSnapshot(): ?array
+    {
+        if (! $this->performanceEnabled) {
+            return null;
+        }
+
+        return $this->performanceProfiler?->snapshot();
+    }
+
+    protected function profile(string $segment, callable $callback): mixed
+    {
+        if (! $this->performanceEnabled || ! $this->performanceProfiler instanceof PerformanceProfiler) {
+            return $callback();
+        }
+
+        $this->performanceProfiler->start($segment);
+        try {
+            return $callback();
+        } finally {
+            $this->performanceProfiler->stop($segment);
+        }
     }
 }

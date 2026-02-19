@@ -93,6 +93,28 @@ If your app defines a fully custom `Nova::mainMenu(...)`, you must also add the 
 composer test
 ```
 
+## Performance Profiling
+
+You can enable runtime profiling logs in `config/user-logger.php`:
+
+```php
+'performance' => [
+    'enabled' => true,
+    'log_queries' => true,
+    'slow_ms' => 500,
+],
+```
+
+When enabled, the package logs:
+
+- total request duration (`request_duration_ms`) - server-side time until response
+- user-logger boot duration (`boot_duration_ms`)
+- user-logger internal segment timings (`user_logger.segments`)
+- optional query counters (`queries_total`, `queries_user_logger`)
+- skip reason (`skip_reason`) when logging is bypassed
+
+Slow request warnings can be emitted with `slow_ms` (set `0` to disable warnings).
+
 ## Update
 
 This package uses https://github.com/snowplow-referer-parser/referer-parser.

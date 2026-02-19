@@ -60,6 +60,7 @@ class UserLoggerServiceProvider extends ServiceProvider
 
         \Laravel\Nova\Nova::resources([
             \Topoff\LaravelUserLogger\Nova\Resources\ExperimentMeasurement::class,
+            \Topoff\LaravelUserLogger\Nova\Resources\PerformanceLog::class,
         ]);
     }
 

@@ -172,4 +172,25 @@ return [
      * debug not parsable Agents, Referers, etc. in debugs table
      */
     'debug' => false,
+
+    /*
+     * Performance instrumentation
+     */
+    'performance' => [
+        /*
+         * Enable request + user-logger timing logs
+         */
+        'enabled' => false,
+
+        /*
+         * Include query counters in performance logs
+         */
+        'log_queries' => false,
+
+        /*
+         * Emit warning log when request duration is >= this threshold (ms)
+         * Set 0 to disable slow-request warnings
+         */
+        'slow_ms' => 0,
+    ],
 ];
