@@ -34,14 +34,17 @@ class UserLoggerServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configurePennantStore();
-        $this->ensurePennantStoreInfrastructure();
+        if ($this->isUserLoggerEnabled()) {
+            $this->ensurePennantStoreInfrastructure();
+        }
 
         $this->publishes([__DIR__.'/../config/user-logger.php' => config_path('user-logger.php')], 'config');
 
-        $this->loadMigrationsFrom(__DIR__.'/../resources/Migrations/');
-
-        $this->registerMiddleware(InjectUserLogger::class);
-        $this->registerNovaResources();
+        if ($this->isUserLoggerEnabled()) {
+            $this->loadMigrationsFrom(__DIR__.'/../resources/Migrations/');
+            $this->registerMiddleware(InjectUserLogger::class);
+            $this->registerNovaResources();
+        }
 
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -129,6 +132,11 @@ class UserLoggerServiceProvider extends ServiceProvider
             ExperimentMeasurement::class,
             PerformanceLog::class,
         ]);
+    }
+
+    protected function isUserLoggerEnabled(): bool
+    {
+        return config('user-logger.enabled', false) === true;
     }
 
     /**
