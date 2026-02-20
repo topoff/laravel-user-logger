@@ -8,48 +8,70 @@ class ExperimentMeasurementsUniqueByVariant extends Migration
 {
     public function up(): void
     {
-        if (! Schema::connection($this->connection)->hasTable('experiment_measurements')) {
+        if ( ! Schema::connection($this->connection)->hasTable('experiment_measurements')) {
             return;
         }
 
-        Schema::connection($this->connection)->table('experiment_measurements', function (Blueprint $table): void {
-            try {
+        try {
+            Schema::connection($this->connection)->table('experiment_measurements', function (Blueprint $table): void {
                 $table->dropUnique('experiment_measurements_session_id_feature_unique');
-            } catch (\Throwable) {
-                // ignore
-            }
+            });
+        } catch (\Throwable) {
+            // ignore
+        }
 
-            try {
-                $table->dropUnique('experiment_measurements_session_id_feature_variant_unique');
-            } catch (\Throwable) {
-                // ignore
-            }
+        try {
+            Schema::connection($this->connection)->table('experiment_measurements', function (Blueprint $table): void {
+                try {
+                    $table->dropUnique('experiment_measurements_session_id_feature_variant_unique');
+                } catch (\Throwable) {
+                    // ignore
+                }
+            });
+        } catch (\Throwable) {
+            // ignore
+        }
 
-            $table->unique(['session_id', 'feature', 'variant'], 'experiment_measurements_session_id_feature_variant_unique');
-        });
+        try {
+            Schema::connection($this->connection)->table('experiment_measurements', function (Blueprint $table): void {
+                $table->unique(['session_id', 'feature', 'variant'], 'experiment_measurements_session_id_feature_variant_unique');
+            });
+        } catch (\Throwable) {
+            // ignore
+        }
     }
 
     public function down(): void
     {
-        if (! Schema::connection($this->connection)->hasTable('experiment_measurements')) {
+        if ( ! Schema::connection($this->connection)->hasTable('experiment_measurements')) {
             return;
         }
 
-        Schema::connection($this->connection)->table('experiment_measurements', function (Blueprint $table): void {
-            try {
+        try {
+            Schema::connection($this->connection)->table('experiment_measurements', function (Blueprint $table): void {
                 $table->dropUnique('experiment_measurements_session_id_feature_variant_unique');
-            } catch (\Throwable) {
-                // ignore
-            }
-
-            try {
-                $table->dropUnique('experiment_measurements_session_id_feature_unique');
-            } catch (\Throwable) {
-                // ignore
-            }
-
-            $table->unique(['session_id', 'feature'], 'experiment_measurements_session_id_feature_unique');
-        });
+            });
+        } catch (\Throwable) {
+            // ignore
+        }
+        try {
+            Schema::connection($this->connection)->table('experiment_measurements', function (Blueprint $table): void {
+                try {
+                    $table->dropUnique('experiment_measurements_session_id_feature_unique');
+                } catch (\Throwable) {
+                    // ignore
+                }
+            });
+        } catch (\Throwable) {
+            // ignore
+        }
+        try {
+            Schema::connection($this->connection)->table('experiment_measurements', function (Blueprint $table): void {
+                $table->unique(['session_id', 'feature'], 'experiment_measurements_session_id_feature_unique');
+            });
+        } catch (\Throwable) {
+            // ignore
+        }
     }
 }
 
