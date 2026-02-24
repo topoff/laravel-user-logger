@@ -60,7 +60,7 @@ class ExperimentMeasurement extends Resource
             Text::make('Session', 'session_id')->sortable(),
             Number::make('Exposures', 'exposure_count')->sortable(),
             Number::make('Conversions', 'conversion_count')->sortable(),
-            Number::make('Conversion Rate', fn (): float => $this->conversion_rate)->sortable(),
+            Number::make('Conversion Rate', fn (): ?float => $this->conversion_rate)->sortable(),
             DateTime::make('First Exposed', 'first_exposed_at')->sortable(),
             DateTime::make('Last Exposed', 'last_exposed_at')->sortable(),
             DateTime::make('First Converted', 'first_converted_at')->sortable(),
