@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $last_conversion_event
  * @property string|null $last_conversion_entity_type
  * @property string|null $last_conversion_entity_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read float $conversion_rate
  */
 class ExperimentMeasurement extends Model
