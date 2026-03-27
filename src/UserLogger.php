@@ -145,7 +145,7 @@ class UserLogger
             }
 
             // Log
-            $this->log = $this->profile('log_create', fn (): \Topoff\LaravelUserLogger\Models\Log => $this->logRepository->create($this->session, $this->domain, $uri, $event, $entityType, $entityId));
+            $this->log = $this->profile('log_create', fn (): Log => $this->logRepository->create($this->session, $this->domain, $uri, $event, $entityType, $entityId));
             $this->profile('experiment_record_exposure', fn () => $this->experimentMeasurementService->recordExposure($this->session, $this->log));
 
             return $this->log;
@@ -343,7 +343,7 @@ class UserLogger
         $this->session = $this->profile('event_session_find_or_create', fn (): Session => $this->sessionRepository->findOrCreate($sessionId));
         $lastLog = $this->session->logs()->orderBy('created_at', 'desc')->first();
 
-        $log = $this->profile('event_log_create_minimal', fn (): \Topoff\LaravelUserLogger\Models\Log => $this->logRepository->createMinimal($this->session, $lastLog?->domain_id, null, $event, $entityType, $entityId));
+        $log = $this->profile('event_log_create_minimal', fn (): Log => $this->logRepository->createMinimal($this->session, $lastLog?->domain_id, null, $event, $entityType, $entityId));
 
         $this->profile('experiment_record_conversion', fn () => $this->experimentMeasurementService->recordConversion($this->session, $event, $entityType, $entityId, $log));
 
