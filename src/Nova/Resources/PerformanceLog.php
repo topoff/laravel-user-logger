@@ -10,7 +10,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Topoff\LaravelUserLogger\Models\PerformanceLog as PerformanceLogModel;
-use Topoff\LaravelUserLogger\Nova\Compatibility\Resource;
+use Laravel\Nova\Resource;
 use Topoff\LaravelUserLogger\Nova\Filters\PerformanceLogBootedFilter;
 use Topoff\LaravelUserLogger\Nova\Filters\PerformanceLogDurationFilter;
 use Topoff\LaravelUserLogger\Nova\Filters\PerformanceLogMethodFilter;
