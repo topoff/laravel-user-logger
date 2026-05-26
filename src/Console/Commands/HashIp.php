@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Topoff\LaravelUserLogger\Console\Commands;
 
 use Illuminate\Console\Command;

@@ -7,8 +7,8 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
-use Topoff\LaravelUserLogger\Models\ExperimentMeasurement as ExperimentMeasurementModel;
 use Laravel\Nova\Resource;
+use Topoff\LaravelUserLogger\Models\ExperimentMeasurement as ExperimentMeasurementModel;
 use Topoff\LaravelUserLogger\Nova\Lenses\ExperimentResultsLens;
 
 class ExperimentMeasurement extends Resource

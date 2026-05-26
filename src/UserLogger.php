@@ -253,7 +253,7 @@ class UserLogger
         $refererResult = null;
         if (str_contains($fullUrl, 'utm_source=')) {
             // 1 - from url: utm_source -ok
-            $refererResult = (new UtmSourceParser($fullUrl))->getResult();
+            $refererResult = new UtmSourceParser($fullUrl)->getResult();
         }
 
         // 2 - from referer: with referer-parser -ok

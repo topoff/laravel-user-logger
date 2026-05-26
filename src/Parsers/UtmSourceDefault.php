@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Topoff\LaravelUserLogger\Parsers;
 
 class UtmSourceDefault extends AbstractUtmSource

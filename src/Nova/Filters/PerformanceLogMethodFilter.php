@@ -42,6 +42,6 @@ class PerformanceLogMethodFilter extends Filter
             ->pluck('method')
             ->all();
 
-        return array_combine($methods, $methods) ?: [];
+        return array_combine($methods, $methods);
     }
 }

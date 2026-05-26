@@ -13,7 +13,7 @@ return RectorConfig::configure()
         __DIR__.'/src',
         __DIR__.'/workbench',
     ])
-    ->withPhpSets(php83: true)
+    ->withPhpSets(php84: true)
     ->withPreparedSets(
         deadCode: true,
         codeQuality: true,
