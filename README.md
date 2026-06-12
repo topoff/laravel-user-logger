@@ -225,13 +225,16 @@ definitions - including search engines (with keyword parameters), social
 networks and AI assistants (medium `ai`: ChatGPT, Claude, Gemini, ...).
 Email provider entries are carried over from the snowplow database.
 
-To refresh the data (in this package repository, requires dev dependencies):
+The data refreshes itself on three levels:
 
-```bash
-composer update matomo/searchengine-and-social-list
-php artisan user-logger:update-referers
-# commit the regenerated resources/data/referers.json
-```
+- A scheduled GitHub Action (`.github/workflows/update-referers.yml`) runs
+  monthly, regenerates the database and - only when it changed - commits,
+  tags the next patch release and pushes. Requires "Read and write
+  permissions" for Actions in the repository settings.
+- Every `composer update` in this package repository regenerates the file
+  automatically (`post-update-cmd`); commit the diff if there is one.
+- Manually: `composer update-referers` (updates the matomo list and
+  regenerates in one step).
 
 A custom database (snowplow json format) can be configured via
 `user-logger.referer_data_path`.

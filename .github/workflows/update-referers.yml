@@ -1,0 +1,65 @@
+name: Update referer database
+
+on:
+  schedule:
+    # First day of each month, 04:30 UTC (outside the prod maintenance window)
+    - cron: '30 4 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-referers
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history so the latest vX.Y.Z tag is available for the bump
+          fetch-depth: 0
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      # No composer.lock is committed, so install resolves the latest
+      # matomo/searchengine-and-social-list dev-master and the
+      # post-update hook does not apply here (install, not update).
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress
+
+      - name: Regenerate referer database
+        run: php artisan user-logger:update-referers
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if git diff --quiet -- resources/data/referers.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run tests
+        if: steps.diff.outputs.changed == 'true'
+        run: vendor/bin/pest
+
+      - name: Commit, tag and push
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add resources/data/referers.json
+          git commit -m "Update referer database from matomo/searchengine-and-social-list"
+          latest=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -1)
+          IFS=. read -r major minor patch <<< "${latest#v}"
+          next="v${major}.${minor}.$((patch + 1))"
+          git tag "$next"
+          git push origin "HEAD:${GITHUB_REF_NAME:-master}"
+          git push origin "$next"
+          echo "Released $next"

@@ -61,7 +61,14 @@
         ],
         "rector": "vendor/bin/rector",
         "rector-dry": "vendor/bin/rector --dry-run",
-        "test": "vendor/bin/pest"
+        "test": "vendor/bin/pest",
+        "update-referers": [
+            "@composer update matomo/searchengine-and-social-list --no-interaction",
+            "@php artisan user-logger:update-referers"
+        ],
+        "post-update-cmd": [
+            "@php artisan user-logger:update-referers || true"
+        ]
     },
     "config": {
         "sort-packages": true,
