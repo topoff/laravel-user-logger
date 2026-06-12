@@ -1,0 +1,4833 @@
+{
+    "email": {
+        "Bigpond": {
+            "domains": [
+                "webmail.bigpond.com",
+                "webmail2.bigpond.com"
+            ]
+        },
+        "Naver Mail": {
+            "domains": [
+                "mail.naver.com"
+            ]
+        },
+        "Optus Zoo": {
+            "domains": [
+                "webmail.optuszoo.com.au"
+            ]
+        },
+        "Seznam Mail": {
+            "domains": [
+                "email.seznam.cz"
+            ]
+        },
+        "126 Mail": {
+            "domains": [
+                "mail.126.com"
+            ]
+        },
+        "Outlook.com": {
+            "domains": [
+                "mail.live.com"
+            ]
+        },
+        "AOL Mail": {
+            "domains": [
+                "mail.aol.com"
+            ]
+        },
+        "Daum Mail": {
+            "domains": [
+                "mail2.daum.net"
+            ]
+        },
+        "Yahoo! Mail": {
+            "domains": [
+                "mail.yahoo.net",
+                "mail.yahoo.com",
+                "mail.yahoo.co.uk",
+                "mail.yahoo.co.jp"
+            ]
+        },
+        "163 Mail": {
+            "domains": [
+                "mail.163.com"
+            ]
+        },
+        "Orange Webmail": {
+            "domains": [
+                "orange.fr/webmail"
+            ]
+        },
+        "QQ Mail": {
+            "domains": [
+                "mail.qq.com"
+            ]
+        },
+        "Mynet Mail": {
+            "domains": [
+                "mail.mynet.com"
+            ]
+        },
+        "Gmail": {
+            "domains": [
+                "mail.google.com"
+            ]
+        }
+    },
+    "search": {
+        "1.cz": {
+            "domains": [
+                "1.cz"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "118 700": {
+            "domains": [
+                "www.118700.se",
+                "foretag.118700.se",
+                "webben.118700.se"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "123people": {
+            "domains": [
+                "www.123people.com",
+                "123people.com",
+                "123people.ch",
+                "123people.de",
+                "123people.at",
+                "123people.li",
+                "123people.lu",
+                "123people.fr",
+                "123people.it",
+                "123people.nl",
+                "123people.be",
+                "123people.es",
+                "123people.pt",
+                "123people.pl",
+                "123people.co.uk",
+                "123people.ie",
+                "123people.dk",
+                "123people.se",
+                "123people.no",
+                "123people.fi",
+                "123people.cz",
+                "123people.sk",
+                "123people.hu",
+                "123people.ro",
+                "123people.gr",
+                "123people.com.tr",
+                "123people.ru",
+                "123people.com.au",
+                "123people.co.nz",
+                "123people.ca",
+                "123people.com.br",
+                "123people.com.mx",
+                "123people.co.in",
+                "123people.co.jp",
+                "123people.com.hk",
+                "123people.com.sg"
+            ],
+            "parameters": [
+                "search_term"
+            ]
+        },
+        "360search": {
+            "domains": [
+                "so.360.cn",
+                "www.so.com",
+                "m.so.com",
+                "www.sou.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Abacho": {
+            "domains": [
+                "www.abacho.de",
+                "www.abacho.com",
+                "www.abacho.co.uk",
+                "www.se.abacho.com",
+                "www.tr.abacho.com",
+                "www.abacho.at",
+                "www.abacho.fr",
+                "www.abacho.es",
+                "www.abacho.ch",
+                "www.abacho.it"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "ABCsøk": {
+            "domains": [
+                "abcsok.no",
+                "verden.abcsok.no"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Acoon": {
+            "domains": [
+                "www.acoon.de"
+            ],
+            "parameters": [
+                "begriff"
+            ]
+        },
+        "Aguea": {
+            "domains": [
+                "chercherfr.aguea.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Allaverksamheter": {
+            "domains": [
+                "www.allaverksamheter.se"
+            ],
+            "parameters": [
+                "What"
+            ]
+        },
+        "Alexa": {
+            "domains": [
+                "alexa.com",
+                "search.toolbars.alexa.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Alice Adsl": {
+            "domains": [
+                "rechercher.aliceadsl.fr"
+            ],
+            "parameters": [
+                "qs"
+            ]
+        },
+        "All.by": {
+            "domains": [
+                "all.by"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Allesklar": {
+            "domains": [
+                "www.allesklar.de",
+                "www.allesklar.at",
+                "www.allesklar.ch"
+            ],
+            "parameters": [
+                "words"
+            ]
+        },
+        "AllTheInternet": {
+            "domains": [
+                "www.alltheinternet.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "AllTheWeb": {
+            "domains": [
+                "www.alltheweb.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "AlohaFind": {
+            "domains": [
+                "alohafind.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "AltaVista": {
+            "domains": [
+                "www.altavista.com",
+                "search.altavista.com",
+                "listings.altavista.com",
+                "altavista.de",
+                "altavista.fr",
+                "com.altavista.com",
+                "ch.altavista.com",
+                "de.altavista.com",
+                "at.altavista.com",
+                "li.altavista.com",
+                "lu.altavista.com",
+                "fr.altavista.com",
+                "it.altavista.com",
+                "nl.altavista.com",
+                "be.altavista.com",
+                "es.altavista.com",
+                "pt.altavista.com",
+                "pl.altavista.com",
+                "co.uk.altavista.com",
+                "ie.altavista.com",
+                "dk.altavista.com",
+                "se.altavista.com",
+                "no.altavista.com",
+                "fi.altavista.com",
+                "cz.altavista.com",
+                "sk.altavista.com",
+                "hu.altavista.com",
+                "ro.altavista.com",
+                "gr.altavista.com",
+                "com.tr.altavista.com",
+                "ru.altavista.com",
+                "com.au.altavista.com",
+                "co.nz.altavista.com",
+                "ca.altavista.com",
+                "com.br.altavista.com",
+                "com.mx.altavista.com",
+                "co.in.altavista.com",
+                "co.jp.altavista.com",
+                "com.hk.altavista.com",
+                "com.sg.altavista.com",
+                "be-nl.altavista.com",
+                "be-fr.altavista.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "AOL": {
+            "domains": [
+                "search.aol.com",
+                "search.aol.it",
+                "aolsearch.aol.com",
+                "www.aolrecherche.aol.fr",
+                "www.aolrecherches.aol.fr",
+                "www.aolimages.aol.fr",
+                "aim.search.aol.com",
+                "www.recherche.aol.fr",
+                "recherche.aol.fr",
+                "find.web.aol.com",
+                "recherche.aol.ca",
+                "aolsearch.aol.co.uk",
+                "search.aol.co.uk",
+                "aolrecherche.aol.fr",
+                "sucheaol.aol.de",
+                "suche.aol.de",
+                "o2suche.aol.de",
+                "suche.aolsvc.de",
+                "aolbusqueda.aol.com.mx",
+                "alicesuche.aol.de",
+                "alicesuchet.aol.de",
+                "suchet2.aol.de",
+                "search.hp.my.aol.com.au",
+                "search.hp.my.aol.de",
+                "search.hp.my.aol.it",
+                "search-intl.netscape.com",
+                "de.aolsearch.com"
+            ],
+            "parameters": [
+                "query",
+                "q"
+            ]
+        },
+        "Apollo lv": {
+            "domains": [
+                "apollo.lv/portal/search/"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Apollo7": {
+            "domains": [
+                "apollo7.de"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Aport": {
+            "domains": [
+                "sm.aport.ru"
+            ],
+            "parameters": [
+                "r"
+            ]
+        },
+        "Arama": {
+            "domains": [
+                "arama.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Arcor": {
+            "domains": [
+                "www.arcor.de"
+            ],
+            "parameters": [
+                "Keywords"
+            ]
+        },
+        "Arianna": {
+            "domains": [
+                "arianna.libero.it",
+                "www.arianna.com"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Ask": {
+            "domains": [
+                "ask.com",
+                "web.ask.com",
+                "int.ask.com",
+                "mws.ask.com",
+                "images.ask.com",
+                "images.com.ask.com",
+                "images.ch.ask.com",
+                "images.de.ask.com",
+                "images.at.ask.com",
+                "images.li.ask.com",
+                "images.lu.ask.com",
+                "images.fr.ask.com",
+                "images.it.ask.com",
+                "images.nl.ask.com",
+                "images.be.ask.com",
+                "images.es.ask.com",
+                "images.pt.ask.com",
+                "images.pl.ask.com",
+                "images.co.uk.ask.com",
+                "images.ie.ask.com",
+                "images.dk.ask.com",
+                "images.se.ask.com",
+                "images.no.ask.com",
+                "images.fi.ask.com",
+                "images.cz.ask.com",
+                "images.sk.ask.com",
+                "images.hu.ask.com",
+                "images.ro.ask.com",
+                "images.gr.ask.com",
+                "images.com.tr.ask.com",
+                "images.ru.ask.com",
+                "images.com.au.ask.com",
+                "images.co.nz.ask.com",
+                "images.ca.ask.com",
+                "images.com.br.ask.com",
+                "images.com.mx.ask.com",
+                "images.co.in.ask.com",
+                "images.co.jp.ask.com",
+                "images.com.hk.ask.com",
+                "images.com.sg.ask.com",
+                "ask.reference.com",
+                "www.askkids.com",
+                "iwon.ask.com",
+                "www.ask.co.uk",
+                "com.ask.com",
+                "ch.ask.com",
+                "de.ask.com",
+                "at.ask.com",
+                "li.ask.com",
+                "lu.ask.com",
+                "fr.ask.com",
+                "it.ask.com",
+                "nl.ask.com",
+                "be.ask.com",
+                "es.ask.com",
+                "pt.ask.com",
+                "pl.ask.com",
+                "co.uk.ask.com",
+                "ie.ask.com",
+                "dk.ask.com",
+                "se.ask.com",
+                "no.ask.com",
+                "fi.ask.com",
+                "cz.ask.com",
+                "sk.ask.com",
+                "hu.ask.com",
+                "ro.ask.com",
+                "gr.ask.com",
+                "com.tr.ask.com",
+                "ru.ask.com",
+                "com.au.ask.com",
+                "co.nz.ask.com",
+                "ca.ask.com",
+                "com.br.ask.com",
+                "com.mx.ask.com",
+                "co.in.ask.com",
+                "co.jp.ask.com",
+                "com.hk.ask.com",
+                "com.sg.ask.com",
+                "www.qbyrd.com",
+                "com.qbyrd.com",
+                "ch.qbyrd.com",
+                "de.qbyrd.com",
+                "at.qbyrd.com",
+                "li.qbyrd.com",
+                "lu.qbyrd.com",
+                "fr.qbyrd.com",
+                "it.qbyrd.com",
+                "nl.qbyrd.com",
+                "be.qbyrd.com",
+                "es.qbyrd.com",
+                "pt.qbyrd.com",
+                "pl.qbyrd.com",
+                "co.uk.qbyrd.com",
+                "ie.qbyrd.com",
+                "dk.qbyrd.com",
+                "se.qbyrd.com",
+                "no.qbyrd.com",
+                "fi.qbyrd.com",
+                "cz.qbyrd.com",
+                "sk.qbyrd.com",
+                "hu.qbyrd.com",
+                "ro.qbyrd.com",
+                "gr.qbyrd.com",
+                "com.tr.qbyrd.com",
+                "ru.qbyrd.com",
+                "com.au.qbyrd.com",
+                "co.nz.qbyrd.com",
+                "ca.qbyrd.com",
+                "com.br.qbyrd.com",
+                "com.mx.qbyrd.com",
+                "co.in.qbyrd.com",
+                "co.jp.qbyrd.com",
+                "com.hk.qbyrd.com",
+                "com.sg.qbyrd.com",
+                "www.search-results.com",
+                "www1.search-results.com",
+                "int.search-results.com",
+                "com.search-results.com",
+                "ch.search-results.com",
+                "de.search-results.com",
+                "at.search-results.com",
+                "li.search-results.com",
+                "lu.search-results.com",
+                "fr.search-results.com",
+                "it.search-results.com",
+                "nl.search-results.com",
+                "be.search-results.com",
+                "es.search-results.com",
+                "pt.search-results.com",
+                "pl.search-results.com",
+                "co.uk.search-results.com",
+                "ie.search-results.com",
+                "dk.search-results.com",
+                "se.search-results.com",
+                "no.search-results.com",
+                "fi.search-results.com",
+                "cz.search-results.com",
+                "sk.search-results.com",
+                "hu.search-results.com",
+                "ro.search-results.com",
+                "gr.search-results.com",
+                "com.tr.search-results.com",
+                "ru.search-results.com",
+                "com.au.search-results.com",
+                "co.nz.search-results.com",
+                "ca.search-results.com",
+                "com.br.search-results.com",
+                "com.mx.search-results.com",
+                "co.in.search-results.com",
+                "co.jp.search-results.com",
+                "com.hk.search-results.com",
+                "com.sg.search-results.com",
+                "search.ask.com",
+                "com.search.ask.com",
+                "ch.search.ask.com",
+                "de.search.ask.com",
+                "at.search.ask.com",
+                "li.search.ask.com",
+                "lu.search.ask.com",
+                "fr.search.ask.com",
+                "it.search.ask.com",
+                "nl.search.ask.com",
+                "be.search.ask.com",
+                "es.search.ask.com",
+                "pt.search.ask.com",
+                "pl.search.ask.com",
+                "co.uk.search.ask.com",
+                "ie.search.ask.com",
+                "dk.search.ask.com",
+                "se.search.ask.com",
+                "no.search.ask.com",
+                "fi.search.ask.com",
+                "cz.search.ask.com",
+                "sk.search.ask.com",
+                "hu.search.ask.com",
+                "ro.search.ask.com",
+                "gr.search.ask.com",
+                "com.tr.search.ask.com",
+                "ru.search.ask.com",
+                "com.au.search.ask.com",
+                "co.nz.search.ask.com",
+                "ca.search.ask.com",
+                "com.br.search.ask.com",
+                "com.mx.search.ask.com",
+                "co.in.search.ask.com",
+                "co.jp.search.ask.com",
+                "com.hk.search.ask.com",
+                "com.sg.search.ask.com",
+                "avira-int.ask.com",
+                "searchqu.com",
+                "search.tb.ask.com",
+                "nortonsafe.search.ask.com",
+                "avira.search.ask.com",
+                "int.search.tb.ask.com"
+            ],
+            "parameters": [
+                "ask",
+                "q",
+                "searchfor"
+            ]
+        },
+        "Avira SafeSearch": {
+            "domains": [
+                "search.avira.com",
+                "search.avira.net",
+                "safesearch.avira.com"
+            ],
+            "parameters": [
+                "ask",
+                "q",
+                "searchfor"
+            ]
+        },
+        "Atlas": {
+            "domains": [
+                "searchatlas.centrum.cz"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "auone": {
+            "domains": [
+                "search.auone.jp",
+                "sp-search.auone.jp",
+                "sp-web.search.auone.jp"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "auone Images": {
+            "domains": [
+                "sp-image.search.auone.jp"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Austronaut": {
+            "domains": [
+                "www2.austronaut.at",
+                "www1.austronaut.at"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Babylon": {
+            "domains": [
+                "search.babylon.com",
+                "searchassist.babylon.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Baidu": {
+            "domains": [
+                "www.baidu.com",
+                "www1.baidu.com",
+                "baidu.com",
+                "m.baidu.com",
+                "www.baidu.co.th",
+                "zhidao.baidu.com",
+                "tieba.baidu.com",
+                "news.baidu.com"
+            ],
+            "parameters": [
+                "wd",
+                "word",
+                "kw"
+            ]
+        },
+        "Biglobe": {
+            "domains": [
+                "cgi.search.biglobe.ne.jp"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Biglobe Images": {
+            "domains": [
+                "images.search.biglobe.ne.jp"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Bing": {
+            "domains": [
+                "bing.com",
+                "com.bing.com",
+                "ch.bing.com",
+                "de.bing.com",
+                "at.bing.com",
+                "li.bing.com",
+                "lu.bing.com",
+                "fr.bing.com",
+                "it.bing.com",
+                "nl.bing.com",
+                "be.bing.com",
+                "es.bing.com",
+                "pt.bing.com",
+                "pl.bing.com",
+                "co.uk.bing.com",
+                "ie.bing.com",
+                "dk.bing.com",
+                "se.bing.com",
+                "no.bing.com",
+                "fi.bing.com",
+                "cz.bing.com",
+                "sk.bing.com",
+                "hu.bing.com",
+                "ro.bing.com",
+                "gr.bing.com",
+                "com.tr.bing.com",
+                "ru.bing.com",
+                "com.au.bing.com",
+                "co.nz.bing.com",
+                "ca.bing.com",
+                "com.br.bing.com",
+                "com.mx.bing.com",
+                "co.in.bing.com",
+                "co.jp.bing.com",
+                "com.hk.bing.com",
+                "com.sg.bing.com",
+                "global.bing.com",
+                "msnbc.msn.com",
+                "dizionario.it.msn.com",
+                "enciclopedia.it.msn.com",
+                "cc.bingj.com"
+            ],
+            "parameters": [
+                "q",
+                "Q"
+            ]
+        },
+        "Bing Images": {
+            "domains": [
+                "bing.com/images/search",
+                "com.bing.com/images/search",
+                "ch.bing.com/images/search",
+                "de.bing.com/images/search",
+                "at.bing.com/images/search",
+                "li.bing.com/images/search",
+                "lu.bing.com/images/search",
+                "fr.bing.com/images/search",
+                "it.bing.com/images/search",
+                "nl.bing.com/images/search",
+                "be.bing.com/images/search",
+                "es.bing.com/images/search",
+                "pt.bing.com/images/search",
+                "pl.bing.com/images/search",
+                "co.uk.bing.com/images/search",
+                "ie.bing.com/images/search",
+                "dk.bing.com/images/search",
+                "se.bing.com/images/search",
+                "no.bing.com/images/search",
+                "fi.bing.com/images/search",
+                "cz.bing.com/images/search",
+                "sk.bing.com/images/search",
+                "hu.bing.com/images/search",
+                "ro.bing.com/images/search",
+                "gr.bing.com/images/search",
+                "com.tr.bing.com/images/search",
+                "ru.bing.com/images/search",
+                "com.au.bing.com/images/search",
+                "co.nz.bing.com/images/search",
+                "ca.bing.com/images/search",
+                "com.br.bing.com/images/search",
+                "com.mx.bing.com/images/search",
+                "co.in.bing.com/images/search",
+                "co.jp.bing.com/images/search",
+                "com.hk.bing.com/images/search",
+                "com.sg.bing.com/images/search"
+            ],
+            "parameters": [
+                "q",
+                "Q"
+            ]
+        },
+        "blekko": {
+            "domains": [
+                "blekko.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Blogdigger": {
+            "domains": [
+                "www.blogdigger.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Blogpulse": {
+            "domains": [
+                "www.blogpulse.com"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Bluewin": {
+            "domains": [
+                "search.bluewin.ch"
+            ],
+            "parameters": [
+                "searchTerm",
+                "q"
+            ]
+        },
+        "Brave": {
+            "domains": [
+                "search.brave.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Canoe.ca": {
+            "domains": [
+                "web.canoe.ca"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Centrum": {
+            "domains": [
+                "search.centrum.cz",
+                "morfeo.centrum.cz"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Charter": {
+            "domains": [
+                "www.charter.net"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Claro Search": {
+            "domains": [
+                "claro-search.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "ChatGPT": {
+            "domains": [
+                "chat.openai.com",
+                "chatgpt.com"
+            ],
+            "parameters": []
+        },
+        "Clix": {
+            "domains": [
+                "pesquisa.clix.pt"
+            ],
+            "parameters": [
+                "question"
+            ]
+        },
+        "Cốc Cốc": {
+            "domains": [
+                "coccoc.com"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Comcast": {
+            "domains": [
+                "search.comcast.net"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Compuserve.com (Enhanced by Google)": {
+            "domains": [
+                "websearch.cs.com"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Conduit.com": {
+            "domains": [
+                "search.conduit.com",
+                "images.search.conduit.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Crawler": {
+            "domains": [
+                "www.crawler.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Cuil": {
+            "domains": [
+                "www.cuil.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Daemon search": {
+            "domains": [
+                "daemon-search.com",
+                "my.daemon-search.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "DasOertliche": {
+            "domains": [
+                "www.dasoertliche.de",
+                "www2.dasoertliche.de"
+            ],
+            "parameters": [
+                "kw",
+                "ph"
+            ]
+        },
+        "DasTelefonbuch": {
+            "domains": [
+                "www1.dastelefonbuch.de"
+            ],
+            "parameters": [
+                "kw"
+            ]
+        },
+        "Daum": {
+            "domains": [
+                "search.daum.net"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Delfi EE": {
+            "domains": [
+                "otsing.delfi.ee"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Delfi lv": {
+            "domains": [
+                "smart.delfi.lv"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Digg": {
+            "domains": [
+                "digg.com"
+            ],
+            "parameters": [
+                "s"
+            ]
+        },
+        "dir.com": {
+            "domains": [
+                "fr.dir.com"
+            ],
+            "parameters": [
+                "req"
+            ]
+        },
+        "DisconnectSearch": {
+            "domains": [
+                "search.disconnect.me"
+            ],
+            "parameters": []
+        },
+        "dmoz": {
+            "domains": [
+                "dmoz.org",
+                "editors.dmoz.org"
+            ],
+            "parameters": [
+                "search"
+            ]
+        },
+        "DuckDuckGo": {
+            "domains": [
+                "duckduckgo.com",
+                "r.duckduckgo.com",
+                "duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Earthlink": {
+            "domains": [
+                "search.earthlink.net"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Ecosia": {
+            "domains": [
+                "ecosia.org",
+                "www.ecosia.org"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "El Mundo": {
+            "domains": [
+                "ariadna.elmundo.es"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Eniro": {
+            "domains": [
+                "www.eniro.se"
+            ],
+            "parameters": [
+                "q",
+                "search_word"
+            ]
+        },
+        "Entireweb": {
+            "domains": [
+                "www.entireweb.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "eo": {
+            "domains": [
+                "eo.st"
+            ],
+            "parameters": [
+                "x_query"
+            ]
+        },
+        "EpicSearch.in": {
+            "domains": [
+                "epicsearch.in",
+                "www.epicsearch.in"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Eurip": {
+            "domains": [
+                "www.eurip.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Euroseek": {
+            "domains": [
+                "www.euroseek.com"
+            ],
+            "parameters": [
+                "string"
+            ]
+        },
+        "Everyclick": {
+            "domains": [
+                "www.everyclick.com"
+            ],
+            "parameters": [
+                "keyword"
+            ]
+        },
+        "Exalead": {
+            "domains": [
+                "www.exalead.fr",
+                "www.exalead.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Excite": {
+            "domains": [
+                "search.excite.it",
+                "search.excite.fr",
+                "search.excite.de",
+                "search.excite.co.uk",
+                "search.excite.es",
+                "search.excite.nl",
+                "msxml.excite.com",
+                "www.excite.co.jp"
+            ],
+            "parameters": [
+                "q",
+                "search"
+            ]
+        },
+        "Facebook": {
+            "domains": [
+                "www.facebook.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Fast Browser Search": {
+            "domains": [
+                "www.fastbrowsersearch.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Findhurtig": {
+            "domains": [
+                "www.findhurtig.dk"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Fireball": {
+            "domains": [
+                "www.fireball.de",
+                "fireball.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Firstsfind": {
+            "domains": [
+                "www.firstsfind.com"
+            ],
+            "parameters": [
+                "qry"
+            ]
+        },
+        "Fixsuche": {
+            "domains": [
+                "www.fixsuche.de"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Flix.de": {
+            "domains": [
+                "www.flix.de"
+            ],
+            "parameters": [
+                "keyword"
+            ]
+        },
+        "Fooooo": {
+            "domains": [
+                "search.fooooo.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Forestle": {
+            "domains": [
+                "forestle.org",
+                "com.forestle.org",
+                "ch.forestle.org",
+                "de.forestle.org",
+                "at.forestle.org",
+                "li.forestle.org",
+                "lu.forestle.org",
+                "fr.forestle.org",
+                "it.forestle.org",
+                "nl.forestle.org",
+                "be.forestle.org",
+                "es.forestle.org",
+                "pt.forestle.org",
+                "pl.forestle.org",
+                "co.uk.forestle.org",
+                "ie.forestle.org",
+                "dk.forestle.org",
+                "se.forestle.org",
+                "no.forestle.org",
+                "fi.forestle.org",
+                "cz.forestle.org",
+                "sk.forestle.org",
+                "hu.forestle.org",
+                "ro.forestle.org",
+                "gr.forestle.org",
+                "com.tr.forestle.org",
+                "ru.forestle.org",
+                "com.au.forestle.org",
+                "co.nz.forestle.org",
+                "ca.forestle.org",
+                "com.br.forestle.org",
+                "com.mx.forestle.org",
+                "co.in.forestle.org",
+                "co.jp.forestle.org",
+                "com.hk.forestle.org",
+                "com.sg.forestle.org",
+                "forestle.mobi"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Francite": {
+            "domains": [
+                "recherche.francite.com"
+            ],
+            "parameters": [
+                "name"
+            ]
+        },
+        "Free": {
+            "domains": [
+                "search.free.fr",
+                "search1-2.free.fr",
+                "search1-1.free.fr"
+            ],
+            "parameters": [
+                "q",
+                "qs"
+            ]
+        },
+        "FreeCause": {
+            "domains": [
+                "search.freecause.com"
+            ],
+            "parameters": [
+                "p"
+            ]
+        },
+        "Freenet": {
+            "domains": [
+                "suche.freenet.de"
+            ],
+            "parameters": [
+                "query",
+                "Keywords"
+            ]
+        },
+        "Freespoke": {
+            "domains": [
+                "freespoke.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "FriendFeed": {
+            "domains": [
+                "friendfeed.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Frontier": {
+            "domains": [
+                "search.frontier.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "GAIS": {
+            "domains": [
+                "gais.cs.ccu.edu.tw"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Genieo": {
+            "domains": [
+                "search.genieo.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Geona": {
+            "domains": [
+                "geona.net"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Gibiru": {
+            "domains": [
+                "gibiru.com",
+                "www.gibiru.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Gigablast": {
+            "domains": [
+                "www.gigablast.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Gigablast (Directory)": {
+            "domains": [
+                "dir.gigablast.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Gnadenmeer": {
+            "domains": [
+                "www.gnadenmeer.de"
+            ],
+            "parameters": [
+                "keyword"
+            ]
+        },
+        "Gomeo": {
+            "domains": [
+                "www.gomeo.com"
+            ],
+            "parameters": [
+                "Keywords"
+            ]
+        },
+        "goo": {
+            "domains": [
+                "search.goo.ne.jp",
+                "ocnsearch.goo.ne.jp"
+            ],
+            "parameters": [
+                "MT"
+            ]
+        },
+        "Google": {
+            "domains": [
+                "google.com",
+                "google.ch",
+                "google.de",
+                "google.at",
+                "google.li",
+                "google.lu",
+                "google.fr",
+                "google.it",
+                "google.nl",
+                "google.be",
+                "google.es",
+                "google.pt",
+                "google.pl",
+                "google.co.uk",
+                "google.ie",
+                "google.dk",
+                "google.se",
+                "google.no",
+                "google.fi",
+                "google.cz",
+                "google.sk",
+                "google.hu",
+                "google.ro",
+                "google.gr",
+                "google.com.tr",
+                "google.ru",
+                "google.com.au",
+                "google.co.nz",
+                "google.ca",
+                "google.com.br",
+                "google.com.mx",
+                "google.co.in",
+                "google.co.jp",
+                "google.com.hk",
+                "google.com.sg",
+                "encrypted.google.com",
+                "www2.google.com",
+                "ipv6.google.com",
+                "go.google.com",
+                "wwwgoogle.com",
+                "wwwgoogle.ch",
+                "wwwgoogle.de",
+                "wwwgoogle.at",
+                "wwwgoogle.li",
+                "wwwgoogle.lu",
+                "wwwgoogle.fr",
+                "wwwgoogle.it",
+                "wwwgoogle.nl",
+                "wwwgoogle.be",
+                "wwwgoogle.es",
+                "wwwgoogle.pt",
+                "wwwgoogle.pl",
+                "wwwgoogle.co.uk",
+                "wwwgoogle.ie",
+                "wwwgoogle.dk",
+                "wwwgoogle.se",
+                "wwwgoogle.no",
+                "wwwgoogle.fi",
+                "wwwgoogle.cz",
+                "wwwgoogle.sk",
+                "wwwgoogle.hu",
+                "wwwgoogle.ro",
+                "wwwgoogle.gr",
+                "wwwgoogle.com.tr",
+                "wwwgoogle.ru",
+                "wwwgoogle.com.au",
+                "wwwgoogle.co.nz",
+                "wwwgoogle.ca",
+                "wwwgoogle.com.br",
+                "wwwgoogle.com.mx",
+                "wwwgoogle.co.in",
+                "wwwgoogle.co.jp",
+                "wwwgoogle.com.hk",
+                "wwwgoogle.com.sg",
+                "gogole.com",
+                "gogole.ch",
+                "gogole.de",
+                "gogole.at",
+                "gogole.li",
+                "gogole.lu",
+                "gogole.fr",
+                "gogole.it",
+                "gogole.nl",
+                "gogole.be",
+                "gogole.es",
+                "gogole.pt",
+                "gogole.pl",
+                "gogole.co.uk",
+                "gogole.ie",
+                "gogole.dk",
+                "gogole.se",
+                "gogole.no",
+                "gogole.fi",
+                "gogole.cz",
+                "gogole.sk",
+                "gogole.hu",
+                "gogole.ro",
+                "gogole.gr",
+                "gogole.com.tr",
+                "gogole.ru",
+                "gogole.com.au",
+                "gogole.co.nz",
+                "gogole.ca",
+                "gogole.com.br",
+                "gogole.com.mx",
+                "gogole.co.in",
+                "gogole.co.jp",
+                "gogole.com.hk",
+                "gogole.com.sg",
+                "gppgle.com",
+                "gppgle.ch",
+                "gppgle.de",
+                "gppgle.at",
+                "gppgle.li",
+                "gppgle.lu",
+                "gppgle.fr",
+                "gppgle.it",
+                "gppgle.nl",
+                "gppgle.be",
+                "gppgle.es",
+                "gppgle.pt",
+                "gppgle.pl",
+                "gppgle.co.uk",
+                "gppgle.ie",
+                "gppgle.dk",
+                "gppgle.se",
+                "gppgle.no",
+                "gppgle.fi",
+                "gppgle.cz",
+                "gppgle.sk",
+                "gppgle.hu",
+                "gppgle.ro",
+                "gppgle.gr",
+                "gppgle.com.tr",
+                "gppgle.ru",
+                "gppgle.com.au",
+                "gppgle.co.nz",
+                "gppgle.ca",
+                "gppgle.com.br",
+                "gppgle.com.mx",
+                "gppgle.co.in",
+                "gppgle.co.jp",
+                "gppgle.com.hk",
+                "gppgle.com.sg",
+                "googel.com",
+                "googel.ch",
+                "googel.de",
+                "googel.at",
+                "googel.li",
+                "googel.lu",
+                "googel.fr",
+                "googel.it",
+                "googel.nl",
+                "googel.be",
+                "googel.es",
+                "googel.pt",
+                "googel.pl",
+                "googel.co.uk",
+                "googel.ie",
+                "googel.dk",
+                "googel.se",
+                "googel.no",
+                "googel.fi",
+                "googel.cz",
+                "googel.sk",
+                "googel.hu",
+                "googel.ro",
+                "googel.gr",
+                "googel.com.tr",
+                "googel.ru",
+                "googel.com.au",
+                "googel.co.nz",
+                "googel.ca",
+                "googel.com.br",
+                "googel.com.mx",
+                "googel.co.in",
+                "googel.co.jp",
+                "googel.com.hk",
+                "googel.com.sg",
+                "search.avg.com",
+                "isearch.avg.com",
+                "com.google.android.googlequicksearchbox",
+                "android-app//com.google.android.googlequicksearchbox/https/www.google.com",
+                "search.chedot.com",
+                "www.cnn.com",
+                "darkoogle.com",
+                "search.darkoogle.com",
+                "search.foxtab.com",
+                "www.gooofullsearch.com",
+                "search.hiyo.com",
+                "search.incredimail.com",
+                "search1.incredimail.com",
+                "search2.incredimail.com",
+                "search3.incredimail.com",
+                "search4.incredimail.com",
+                "search.sweetim.com",
+                "www.fastweb.it",
+                "search.juno.com",
+                "search.zum.com",
+                "find.tdc.dk",
+                "it.luna.tv",
+                "searchresults.verizon.com",
+                "search.walla.co.il",
+                "search.alot.com",
+                "suche.gmx.net",
+                "search.gmx.com",
+                "search.incredibar.com",
+                "www.delta-search.com",
+                "www1.delta-search.com",
+                "search.1und1.de",
+                "suche.1und1.de",
+                "search.zonealarm.com",
+                "start.lenovo.com",
+                "wow.com",
+                "com.wow.com",
+                "ch.wow.com",
+                "de.wow.com",
+                "at.wow.com",
+                "li.wow.com",
+                "lu.wow.com",
+                "fr.wow.com",
+                "it.wow.com",
+                "nl.wow.com",
+                "be.wow.com",
+                "es.wow.com",
+                "pt.wow.com",
+                "pl.wow.com",
+                "co.uk.wow.com",
+                "ie.wow.com",
+                "dk.wow.com",
+                "se.wow.com",
+                "no.wow.com",
+                "fi.wow.com",
+                "cz.wow.com",
+                "sk.wow.com",
+                "hu.wow.com",
+                "ro.wow.com",
+                "gr.wow.com",
+                "com.tr.wow.com",
+                "ru.wow.com",
+                "com.au.wow.com",
+                "co.nz.wow.com",
+                "ca.wow.com",
+                "com.br.wow.com",
+                "com.mx.wow.com",
+                "co.in.wow.com",
+                "co.jp.wow.com",
+                "com.hk.wow.com",
+                "com.sg.wow.com",
+                "search.leonardo.it",
+                "www.optuszoo.com.au",
+                "search.dolphin-browser.jp",
+                "netlavis.azione.jp",
+                "search.nan.so",
+                "cgi2.nintendo.co.jp",
+                "search.smt.docomo.ne.jp",
+                "image.search.smt.docomo.ne.jp",
+                "gfsoso.com",
+                "searches.safehomepage.com",
+                "searches.f-secure.com",
+                "search.f-secure.com",
+                "webcache.googleusercontent.com",
+                "monumentbrowser.com",
+                "search.bt.com",
+                "startab.me",
+                "search.abv.bg",
+                "search.xfinity.com",
+                "www.kadaza.com"
+            ],
+            "parameters": [
+                "q",
+                "text",
+                "query",
+                "Keywords",
+                "gsc.q",
+                "MT",
+                "p",
+                "searchTerm"
+            ]
+        },
+        "Google Blogsearch": {
+            "domains": [
+                "blogsearch.google.com",
+                "blogsearch.google.ch",
+                "blogsearch.google.de",
+                "blogsearch.google.at",
+                "blogsearch.google.li",
+                "blogsearch.google.lu",
+                "blogsearch.google.fr",
+                "blogsearch.google.it",
+                "blogsearch.google.nl",
+                "blogsearch.google.be",
+                "blogsearch.google.es",
+                "blogsearch.google.pt",
+                "blogsearch.google.pl",
+                "blogsearch.google.co.uk",
+                "blogsearch.google.ie",
+                "blogsearch.google.dk",
+                "blogsearch.google.se",
+                "blogsearch.google.no",
+                "blogsearch.google.fi",
+                "blogsearch.google.cz",
+                "blogsearch.google.sk",
+                "blogsearch.google.hu",
+                "blogsearch.google.ro",
+                "blogsearch.google.gr",
+                "blogsearch.google.com.tr",
+                "blogsearch.google.ru",
+                "blogsearch.google.com.au",
+                "blogsearch.google.co.nz",
+                "blogsearch.google.ca",
+                "blogsearch.google.com.br",
+                "blogsearch.google.com.mx",
+                "blogsearch.google.co.in",
+                "blogsearch.google.co.jp",
+                "blogsearch.google.com.hk",
+                "blogsearch.google.com.sg"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Google Custom Search": {
+            "domains": [
+                "google.com/cse",
+                "google.ch/cse",
+                "google.de/cse",
+                "google.at/cse",
+                "google.li/cse",
+                "google.lu/cse",
+                "google.fr/cse",
+                "google.it/cse",
+                "google.nl/cse",
+                "google.be/cse",
+                "google.es/cse",
+                "google.pt/cse",
+                "google.pl/cse",
+                "google.co.uk/cse",
+                "google.ie/cse",
+                "google.dk/cse",
+                "google.se/cse",
+                "google.no/cse",
+                "google.fi/cse",
+                "google.cz/cse",
+                "google.sk/cse",
+                "google.hu/cse",
+                "google.ro/cse",
+                "google.gr/cse",
+                "google.com.tr/cse",
+                "google.ru/cse",
+                "google.com.au/cse",
+                "google.co.nz/cse",
+                "google.ca/cse",
+                "google.com.br/cse",
+                "google.com.mx/cse",
+                "google.co.in/cse",
+                "google.co.jp/cse",
+                "google.com.hk/cse",
+                "google.com.sg/cse",
+                "cse.google.com",
+                "cse.google.ch",
+                "cse.google.de",
+                "cse.google.at",
+                "cse.google.li",
+                "cse.google.lu",
+                "cse.google.fr",
+                "cse.google.it",
+                "cse.google.nl",
+                "cse.google.be",
+                "cse.google.es",
+                "cse.google.pt",
+                "cse.google.pl",
+                "cse.google.co.uk",
+                "cse.google.ie",
+                "cse.google.dk",
+                "cse.google.se",
+                "cse.google.no",
+                "cse.google.fi",
+                "cse.google.cz",
+                "cse.google.sk",
+                "cse.google.hu",
+                "cse.google.ro",
+                "cse.google.gr",
+                "cse.google.com.tr",
+                "cse.google.ru",
+                "cse.google.com.au",
+                "cse.google.co.nz",
+                "cse.google.ca",
+                "cse.google.com.br",
+                "cse.google.com.mx",
+                "cse.google.co.in",
+                "cse.google.co.jp",
+                "cse.google.com.hk",
+                "cse.google.com.sg",
+                "google.com/custom",
+                "google.ch/custom",
+                "google.de/custom",
+                "google.at/custom",
+                "google.li/custom",
+                "google.lu/custom",
+                "google.fr/custom",
+                "google.it/custom",
+                "google.nl/custom",
+                "google.be/custom",
+                "google.es/custom",
+                "google.pt/custom",
+                "google.pl/custom",
+                "google.co.uk/custom",
+                "google.ie/custom",
+                "google.dk/custom",
+                "google.se/custom",
+                "google.no/custom",
+                "google.fi/custom",
+                "google.cz/custom",
+                "google.sk/custom",
+                "google.hu/custom",
+                "google.ro/custom",
+                "google.gr/custom",
+                "google.com.tr/custom",
+                "google.ru/custom",
+                "google.com.au/custom",
+                "google.co.nz/custom",
+                "google.ca/custom",
+                "google.com.br/custom",
+                "google.com.mx/custom",
+                "google.co.in/custom",
+                "google.co.jp/custom",
+                "google.com.hk/custom",
+                "google.com.sg/custom"
+            ],
+            "parameters": [
+                "q",
+                "query"
+            ]
+        },
+        "Google Images": {
+            "domains": [
+                "images.google.com",
+                "images.google.ch",
+                "images.google.de",
+                "images.google.at",
+                "images.google.li",
+                "images.google.lu",
+                "images.google.fr",
+                "images.google.it",
+                "images.google.nl",
+                "images.google.be",
+                "images.google.es",
+                "images.google.pt",
+                "images.google.pl",
+                "images.google.co.uk",
+                "images.google.ie",
+                "images.google.dk",
+                "images.google.se",
+                "images.google.no",
+                "images.google.fi",
+                "images.google.cz",
+                "images.google.sk",
+                "images.google.hu",
+                "images.google.ro",
+                "images.google.gr",
+                "images.google.com.tr",
+                "images.google.ru",
+                "images.google.com.au",
+                "images.google.co.nz",
+                "images.google.ca",
+                "images.google.com.br",
+                "images.google.com.mx",
+                "images.google.co.in",
+                "images.google.co.jp",
+                "images.google.com.hk",
+                "images.google.com.sg",
+                "google.com/imgres",
+                "google.ch/imgres",
+                "google.de/imgres",
+                "google.at/imgres",
+                "google.li/imgres",
+                "google.lu/imgres",
+                "google.fr/imgres",
+                "google.it/imgres",
+                "google.nl/imgres",
+                "google.be/imgres",
+                "google.es/imgres",
+                "google.pt/imgres",
+                "google.pl/imgres",
+                "google.co.uk/imgres",
+                "google.ie/imgres",
+                "google.dk/imgres",
+                "google.se/imgres",
+                "google.no/imgres",
+                "google.fi/imgres",
+                "google.cz/imgres",
+                "google.sk/imgres",
+                "google.hu/imgres",
+                "google.ro/imgres",
+                "google.gr/imgres",
+                "google.com.tr/imgres",
+                "google.ru/imgres",
+                "google.com.au/imgres",
+                "google.co.nz/imgres",
+                "google.ca/imgres",
+                "google.com.br/imgres",
+                "google.com.mx/imgres",
+                "google.co.in/imgres",
+                "google.co.jp/imgres",
+                "google.com.hk/imgres",
+                "google.com.sg/imgres"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Google Maps": {
+            "domains": [
+                "maps.google.com",
+                "maps.google.ch",
+                "maps.google.de",
+                "maps.google.at",
+                "maps.google.li",
+                "maps.google.lu",
+                "maps.google.fr",
+                "maps.google.it",
+                "maps.google.nl",
+                "maps.google.be",
+                "maps.google.es",
+                "maps.google.pt",
+                "maps.google.pl",
+                "maps.google.co.uk",
+                "maps.google.ie",
+                "maps.google.dk",
+                "maps.google.se",
+                "maps.google.no",
+                "maps.google.fi",
+                "maps.google.cz",
+                "maps.google.sk",
+                "maps.google.hu",
+                "maps.google.ro",
+                "maps.google.gr",
+                "maps.google.com.tr",
+                "maps.google.ru",
+                "maps.google.com.au",
+                "maps.google.co.nz",
+                "maps.google.ca",
+                "maps.google.com.br",
+                "maps.google.com.mx",
+                "maps.google.co.in",
+                "maps.google.co.jp",
+                "maps.google.com.hk",
+                "maps.google.com.sg"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Google News": {
+            "domains": [
+                "news.google.com",
+                "news.google.ch",
+                "news.google.de",
+                "news.google.at",
+                "news.google.li",
+                "news.google.lu",
+                "news.google.fr",
+                "news.google.it",
+                "news.google.nl",
+                "news.google.be",
+                "news.google.es",
+                "news.google.pt",
+                "news.google.pl",
+                "news.google.co.uk",
+                "news.google.ie",
+                "news.google.dk",
+                "news.google.se",
+                "news.google.no",
+                "news.google.fi",
+                "news.google.cz",
+                "news.google.sk",
+                "news.google.hu",
+                "news.google.ro",
+                "news.google.gr",
+                "news.google.com.tr",
+                "news.google.ru",
+                "news.google.com.au",
+                "news.google.co.nz",
+                "news.google.ca",
+                "news.google.com.br",
+                "news.google.com.mx",
+                "news.google.co.in",
+                "news.google.co.jp",
+                "news.google.com.hk",
+                "news.google.com.sg"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Google Scholar": {
+            "domains": [
+                "scholar.google.com",
+                "scholar.google.ch",
+                "scholar.google.de",
+                "scholar.google.at",
+                "scholar.google.li",
+                "scholar.google.lu",
+                "scholar.google.fr",
+                "scholar.google.it",
+                "scholar.google.nl",
+                "scholar.google.be",
+                "scholar.google.es",
+                "scholar.google.pt",
+                "scholar.google.pl",
+                "scholar.google.co.uk",
+                "scholar.google.ie",
+                "scholar.google.dk",
+                "scholar.google.se",
+                "scholar.google.no",
+                "scholar.google.fi",
+                "scholar.google.cz",
+                "scholar.google.sk",
+                "scholar.google.hu",
+                "scholar.google.ro",
+                "scholar.google.gr",
+                "scholar.google.com.tr",
+                "scholar.google.ru",
+                "scholar.google.com.au",
+                "scholar.google.co.nz",
+                "scholar.google.ca",
+                "scholar.google.com.br",
+                "scholar.google.com.mx",
+                "scholar.google.co.in",
+                "scholar.google.co.jp",
+                "scholar.google.com.hk",
+                "scholar.google.com.sg"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Google Shopping": {
+            "domains": [
+                "google.com/products",
+                "google.ch/products",
+                "google.de/products",
+                "google.at/products",
+                "google.li/products",
+                "google.lu/products",
+                "google.fr/products",
+                "google.it/products",
+                "google.nl/products",
+                "google.be/products",
+                "google.es/products",
+                "google.pt/products",
+                "google.pl/products",
+                "google.co.uk/products",
+                "google.ie/products",
+                "google.dk/products",
+                "google.se/products",
+                "google.no/products",
+                "google.fi/products",
+                "google.cz/products",
+                "google.sk/products",
+                "google.hu/products",
+                "google.ro/products",
+                "google.gr/products",
+                "google.com.tr/products",
+                "google.ru/products",
+                "google.com.au/products",
+                "google.co.nz/products",
+                "google.ca/products",
+                "google.com.br/products",
+                "google.com.mx/products",
+                "google.co.in/products",
+                "google.co.jp/products",
+                "google.com.hk/products",
+                "google.com.sg/products"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Google syndicated search": {
+            "domains": [
+                "googlesyndicatedsearch.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Google Translations": {
+            "domains": [
+                "translate.google.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Google Video": {
+            "domains": [
+                "video.google.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "GoYellow.de": {
+            "domains": [
+                "www.goyellow.de"
+            ],
+            "parameters": [
+                "MDN"
+            ]
+        },
+        "Gule Sider": {
+            "domains": [
+                "www.gulesider.no"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Haosou": {
+            "domains": [
+                "www.haosou.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "HighBeam": {
+            "domains": [
+                "www.highbeam.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Hit-Parade": {
+            "domains": [
+                "req.hit-parade.com",
+                "class.hit-parade.com",
+                "www.hit-parade.com"
+            ],
+            "parameters": [
+                "p7"
+            ]
+        },
+        "Holmes": {
+            "domains": [
+                "holmes.ge"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Hooseek": {
+            "domains": [
+                "www.hooseek.com"
+            ],
+            "parameters": [
+                "recherche"
+            ]
+        },
+        "Hotbot": {
+            "domains": [
+                "www.hotbot.com"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "I-play": {
+            "domains": [
+                "start.iplay.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Icerocket": {
+            "domains": [
+                "blogs.icerocket.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "ICQ": {
+            "domains": [
+                "www.icq.com",
+                "search.icq.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Ilse NL": {
+            "domains": [
+                "www.ilse.nl"
+            ],
+            "parameters": [
+                "search_for"
+            ]
+        },
+        "iMesh": {
+            "domains": [
+                "search.imesh.com"
+            ],
+            "parameters": [
+                "q",
+                "si"
+            ]
+        },
+        "Inbox": {
+            "domains": [
+                "www2.inbox.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "info.com": {
+            "domains": [
+                "www.info.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "InfoSpace": {
+            "domains": [
+                "infospace.com",
+                "dogpile.com",
+                "tattoodle.com",
+                "metacrawler.com",
+                "webfetch.com",
+                "webcrawler.com",
+                "search.kiwee.com",
+                "searches.vi-view.com",
+                "search.webssearches.com",
+                "search.fbdownloader.com",
+                "searches3.globososo.com",
+                "wsdsold.infospace.com",
+                "search.avast.com",
+                "isearch.babylon.com",
+                "start.facemoods.com",
+                "start.funmoods.com",
+                "search.magentic.com",
+                "search.searchcompletion.com",
+                "www.searchmobileonline.com",
+                "isearch.glarysoft.com",
+                "search.chatzum.com",
+                "home.speedbit.com",
+                "search.b1.org",
+                "searchya.com",
+                "search.handycafe.com",
+                "search.v9.com",
+                "search.iminent.com",
+                "utorrent.inspsearch.com",
+                "govome.inspsearch.com"
+            ],
+            "parameters": [
+                "q",
+                "s"
+            ]
+        },
+        "Interia": {
+            "domains": [
+                "www.google.interia.pl"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Isodelen": {
+            "domains": [
+                "www.isodelen.se"
+            ],
+            "parameters": [
+                "Keywords"
+            ]
+        },
+        "IxQuick": {
+            "domains": [
+                "ixquick.com",
+                "www.eu.ixquick.com",
+                "ixquick.de",
+                "www.ixquick.de",
+                "us.ixquick.com",
+                "s1.us.ixquick.com",
+                "s2.us.ixquick.com",
+                "s3.us.ixquick.com",
+                "s4.us.ixquick.com",
+                "s5.us.ixquick.com",
+                "eu.ixquick.com",
+                "s8-eu.ixquick.com",
+                "s1-eu.ixquick.de",
+                "s2-eu4.ixquick.com",
+                "s5-eu4.ixquick.com"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Jungle Key": {
+            "domains": [
+                "junglekey.com",
+                "junglekey.fr"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Jungle Spider": {
+            "domains": [
+                "www.jungle-spider.de"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Junior Safe Search": {
+            "domains": [
+                "www.juniorsafesearch.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Jyxo": {
+            "domains": [
+                "jyxo.1188.cz"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "K9 Safe Search": {
+            "domains": [
+                "k9safesearch.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Kagi": {
+            "domains": [
+                "kagi.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "KARMA": {
+            "domains": [
+                "karmasearch.org"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Kataweb": {
+            "domains": [
+                "www.kataweb.it"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Kensaq": {
+            "domains": [
+                "www.kensaq.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Kvasir": {
+            "domains": [
+                "kvasir.no",
+                "www.kvasir.no"
+            ],
+            "parameters": [
+                "q",
+                "search_word"
+            ]
+        },
+        "La Toile Du Québec (Google)": {
+            "domains": [
+                "www.toile.com",
+                "web.toile.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Laban": {
+            "domains": [
+                "laban.vn"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Latne": {
+            "domains": [
+                "www.latne.lv"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Lilo": {
+            "domains": [
+                "search.lilo.org"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Lo.st": {
+            "domains": [
+                "lo.st"
+            ],
+            "parameters": [
+                "x_query"
+            ]
+        },
+        "Local Moxie": {
+            "domains": [
+                "www.localmoxie.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "LookAny": {
+            "domains": [
+                "www.lookany.com"
+            ],
+            "parameters": []
+        },
+        "Lookseek": {
+            "domains": [
+                "search.lookseek.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Looksmart": {
+            "domains": [
+                "www.looksmart.com"
+            ],
+            "parameters": [
+                "key"
+            ]
+        },
+        "Lycos": {
+            "domains": [
+                "search.lycos.com",
+                "lycos.com",
+                "lycos.ch",
+                "lycos.de",
+                "lycos.at",
+                "lycos.li",
+                "lycos.lu",
+                "lycos.fr",
+                "lycos.it",
+                "lycos.nl",
+                "lycos.be",
+                "lycos.es",
+                "lycos.pt",
+                "lycos.pl",
+                "lycos.co.uk",
+                "lycos.ie",
+                "lycos.dk",
+                "lycos.se",
+                "lycos.no",
+                "lycos.fi",
+                "lycos.cz",
+                "lycos.sk",
+                "lycos.hu",
+                "lycos.ro",
+                "lycos.gr",
+                "lycos.com.tr",
+                "lycos.ru",
+                "lycos.com.au",
+                "lycos.co.nz",
+                "lycos.ca",
+                "lycos.com.br",
+                "lycos.com.mx",
+                "lycos.co.in",
+                "lycos.co.jp",
+                "lycos.com.hk",
+                "lycos.com.sg"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "maailm.com": {
+            "domains": [
+                "www.maailm.com"
+            ],
+            "parameters": [
+                "tekst"
+            ]
+        },
+        "Mailru": {
+            "domains": [
+                "go.mail.ru"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Mamma": {
+            "domains": [
+                "www.mamma.com",
+                "mamma75.mamma.com"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Meinestadt.de": {
+            "domains": [
+                "www.meinestadt.de"
+            ],
+            "parameters": [
+                "words"
+            ]
+        },
+        "Meta.ua": {
+            "domains": [
+                "meta.ua"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "MetaCrawler DE": {
+            "domains": [
+                "s1.metacrawler.de",
+                "s2.metacrawler.de",
+                "s3.metacrawler.de"
+            ],
+            "parameters": [
+                "qry"
+            ]
+        },
+        "Metager": {
+            "domains": [
+                "meta.rrzn.uni-hannover.de",
+                "www.metager.de",
+                "metager.de"
+            ],
+            "parameters": [
+                "eingabe"
+            ]
+        },
+        "Metager2": {
+            "domains": [
+                "metager2.de"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Mister Wong": {
+            "domains": [
+                "www.mister-wong.com",
+                "www.mister-wong.de"
+            ],
+            "parameters": [
+                "keywords"
+            ]
+        },
+        "Mojeek": {
+            "domains": [
+                "www.mojeek.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Monstercrawler": {
+            "domains": [
+                "www.monstercrawler.com"
+            ],
+            "parameters": [
+                "qry"
+            ]
+        },
+        "mozbot": {
+            "domains": [
+                "www.mozbot.fr",
+                "www.mozbot.co.uk",
+                "www.mozbot.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "MyPrivateSearch": {
+            "domains": [
+                "www.myprivatesearch.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "MySpace": {
+            "domains": [
+                "searchservice.myspace.com"
+            ],
+            "parameters": [
+                "qry"
+            ]
+        },
+        "MyWebSearch": {
+            "domains": [
+                "www.mysearch.com",
+                "ms114.mysearch.com",
+                "ms146.mysearch.com",
+                "kf.mysearch.myway.com",
+                "ki.mysearch.myway.com",
+                "search.myway.com",
+                "search.mywebsearch.com"
+            ],
+            "parameters": [
+                "searchfor",
+                "searchFor"
+            ]
+        },
+        "Najdi.si": {
+            "domains": [
+                "www.najdi.si"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Nate": {
+            "domains": [
+                "search.nate.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Naver": {
+            "domains": [
+                "search.naver.com"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Needtofind": {
+            "domains": [
+                "ko.search.need2find.com"
+            ],
+            "parameters": [
+                "searchfor"
+            ]
+        },
+        "Neti": {
+            "domains": [
+                "www.neti.ee"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Nifty": {
+            "domains": [
+                "search.nifty.com",
+                "search.azby.fmworld.net"
+            ],
+            "parameters": [
+                "q",
+                "Text"
+            ]
+        },
+        "Nifty Videos": {
+            "domains": [
+                "videosearch.nifty.com"
+            ],
+            "parameters": [
+                "kw"
+            ]
+        },
+        "Nigma": {
+            "domains": [
+                "nigma.ru"
+            ],
+            "parameters": [
+                "s"
+            ]
+        },
+        "OceanHero": {
+            "domains": [
+                "oceanhero.today"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Onet.pl": {
+            "domains": [
+                "szukaj.onet.pl"
+            ],
+            "parameters": [
+                "qt"
+            ]
+        },
+        "Online.no": {
+            "domains": [
+                "online.no"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "OnlySearch": {
+            "domains": [
+                "www.only-search.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Opplysningen 1881": {
+            "domains": [
+                "www.1881.no"
+            ],
+            "parameters": [
+                "Query"
+            ]
+        },
+        "Orange": {
+            "domains": [
+                "busca.orange.es",
+                "lemoteur.ke.voila.fr",
+                "lemoteur.orange.fr"
+            ],
+            "parameters": [
+                "q",
+                "kw"
+            ]
+        },
+        "Paperball": {
+            "domains": [
+                "www.paperball.de"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "PeopleCheck": {
+            "domains": [
+                "extern.peoplecheck.de"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "PeoplePC": {
+            "domains": [
+                "search.peoplepc.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Perplexity": {
+            "domains": [
+                "www.perplexity.ai"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Picsearch": {
+            "domains": [
+                "www.picsearch.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Plazoo": {
+            "domains": [
+                "www.plazoo.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "PlusNetwork": {
+            "domains": [
+                "plusnetwork.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Poisk.Ru": {
+            "domains": [
+                "poisk.ru"
+            ],
+            "parameters": [
+                "text"
+            ]
+        },
+        "Presearch": {
+            "domains": [
+                "presearch.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "PrivacyWall": {
+            "domains": [
+                "www.privacywall.org"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "qip.ru": {
+            "domains": [
+                "search.qip.ru"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Qualigo": {
+            "domains": [
+                "www.qualigo.at",
+                "www.qualigo.ch",
+                "www.qualigo.de",
+                "www.qualigo.nl"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Quendu": {
+            "domains": [
+                "www.quendu.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Qwant": {
+            "domains": [
+                "www.qwant.com",
+                "lite.qwant.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Rakuten": {
+            "domains": [
+                "websearch.rakuten.co.jp"
+            ],
+            "parameters": [
+                "qt"
+            ]
+        },
+        "Rambler": {
+            "domains": [
+                "nova.rambler.ru"
+            ],
+            "parameters": [
+                "query",
+                "words"
+            ]
+        },
+        "Riksdelen": {
+            "domains": [
+                "www.riksdelen.se"
+            ],
+            "parameters": [
+                "What"
+            ]
+        },
+        "Road Runner": {
+            "domains": [
+                "search.rr.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "rpmfind": {
+            "domains": [
+                "rpmfind.net",
+                "fr2.rpmfind.net"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Sapo": {
+            "domains": [
+                "pesquisa.sapo.pt"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Scour.com": {
+            "domains": [
+                "scour.com"
+            ],
+            "parameters": []
+        },
+        "Search.ch": {
+            "domains": [
+                "www.search.ch"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Search.com": {
+            "domains": [
+                "www.search.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Searchalot": {
+            "domains": [
+                "searchalot.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "SearchCanvas": {
+            "domains": [
+                "www.searchcanvas.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "SearchLock": {
+            "domains": [
+                "searchlock.com",
+                "results.searchlock.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Searchy": {
+            "domains": [
+                "www.searchy.co.uk"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "SeeSaa": {
+            "domains": [
+                "search.seesaa.jp"
+            ],
+            "parameters": []
+        },
+        "Setooz": {
+            "domains": [
+                "bg.setooz.com",
+                "da.setooz.com",
+                "el.setooz.com",
+                "fa.setooz.com",
+                "ur.setooz.com",
+                "com.setooz.com",
+                "ch.setooz.com",
+                "de.setooz.com",
+                "at.setooz.com",
+                "li.setooz.com",
+                "lu.setooz.com",
+                "fr.setooz.com",
+                "it.setooz.com",
+                "nl.setooz.com",
+                "be.setooz.com",
+                "es.setooz.com",
+                "pt.setooz.com",
+                "pl.setooz.com",
+                "co.uk.setooz.com",
+                "ie.setooz.com",
+                "dk.setooz.com",
+                "se.setooz.com",
+                "no.setooz.com",
+                "fi.setooz.com",
+                "cz.setooz.com",
+                "sk.setooz.com",
+                "hu.setooz.com",
+                "ro.setooz.com",
+                "gr.setooz.com",
+                "com.tr.setooz.com",
+                "ru.setooz.com",
+                "com.au.setooz.com",
+                "co.nz.setooz.com",
+                "ca.setooz.com",
+                "com.br.setooz.com",
+                "com.mx.setooz.com",
+                "co.in.setooz.com",
+                "co.jp.setooz.com",
+                "com.hk.setooz.com",
+                "com.sg.setooz.com"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Seznam": {
+            "domains": [
+                "search.seznam.cz"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Seznam Videa": {
+            "domains": [
+                "videa.seznam.cz"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Sharelook": {
+            "domains": [
+                "www.sharelook.fr"
+            ],
+            "parameters": [
+                "keyword"
+            ]
+        },
+        "Skynet": {
+            "domains": [
+                "www.skynet.be"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "sm.cn": {
+            "domains": [
+                "m.sm.cn",
+                "so.m.sm.cn",
+                "m.sp.sm.cn",
+                "yz.m.sm.cn",
+                "quark.sm.cn"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "sm.de": {
+            "domains": [
+                "www.sm.de"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "SmartAddressbar": {
+            "domains": [
+                "search.smartaddressbar.com"
+            ],
+            "parameters": [
+                "s"
+            ]
+        },
+        "SmartShopping": {
+            "domains": [
+                "search.smartshopping.com"
+            ],
+            "parameters": [
+                "kwd",
+                "keywords"
+            ]
+        },
+        "Snap.do": {
+            "domains": [
+                "search.snap.do"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "So-net": {
+            "domains": [
+                "www.so-net.ne.jp"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "So-net Videos": {
+            "domains": [
+                "video.so-net.ne.jp"
+            ],
+            "parameters": [
+                "kw"
+            ]
+        },
+        "Softonic": {
+            "domains": [
+                "search.softonic.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Sogou": {
+            "domains": [
+                "www.sogou.com",
+                "sogou.com",
+                "m.sogou.com",
+                "wap.sogou.com",
+                "english.sogou.com"
+            ],
+            "parameters": [
+                "query",
+                "keyword"
+            ]
+        },
+        "Soso": {
+            "domains": [
+                "www.soso.com"
+            ],
+            "parameters": [
+                "w"
+            ]
+        },
+        "Sputnik": {
+            "domains": [
+                "www.sputnik.ru"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "StartPage": {
+            "domains": [
+                "startpage.com",
+                "classic.startpage.com",
+                "www.startpage.com",
+                "eu.startpage.com",
+                "s6-eu5.ixquick.com",
+                "s2-eu4.startpage.com",
+                "s6-eu4.startpage.com",
+                "s7-eu4.startpage.com",
+                "s1-eu5.startpage.com",
+                "s2-eu5.startpage.com",
+                "s4-eu5.startpage.com",
+                "s5-eu5.startpage.com",
+                "s6-eu5.startpage.com",
+                "s7-eu5.startpage.com",
+                "s8-eu5.startpage.com",
+                "s10-eu5.startpage.com",
+                "s11-eu5.startpage.com",
+                "s12-eu5.startpage.com",
+                "s13-eu5.startpage.com",
+                "s14-eu5.startpage.com",
+                "startpagel6srwcjlue4zgq3zevrujfaow726kjytqbbjyrswwmjzcqd.onion"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Startpagina (Google)": {
+            "domains": [
+                "startgoogle.startpagina.nl"
+            ],
+            "parameters": [
+                "q",
+                "query"
+            ]
+        },
+        "Startsiden": {
+            "domains": [
+                "www.startsiden.no",
+                "startsiden.no"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Stract": {
+            "domains": [
+                "stract.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Suche.info": {
+            "domains": [
+                "suche.info"
+            ],
+            "parameters": [
+                "Keywords"
+            ]
+        },
+        "Suchmaschine.com": {
+            "domains": [
+                "www.suchmaschine.com"
+            ],
+            "parameters": [
+                "suchstr"
+            ]
+        },
+        "Suchnase": {
+            "domains": [
+                "www.suchnase.de"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Surf Canyon": {
+            "domains": [
+                "surfcanyon.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Swiggle": {
+            "domains": [
+                "swiggle.org.uk"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Swisscows": {
+            "domains": [
+                "swisscows.com"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "T-Online": {
+            "domains": [
+                "suche.t-online.de",
+                "brisbane.t-online.de",
+                "navigationshilfe.t-online.de"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "talimba": {
+            "domains": [
+                "www.talimba.com"
+            ],
+            "parameters": [
+                "search"
+            ]
+        },
+        "TalkTalk": {
+            "domains": [
+                "www.talktalk.co.uk"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Tarmot": {
+            "domains": [
+                "tarmot.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Technorati": {
+            "domains": [
+                "technorati.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Teoma": {
+            "domains": [
+                "www.teoma.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Terra": {
+            "domains": [
+                "buscador.terra.es",
+                "buscador.terra.cl",
+                "buscador.terra.com.br"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Tiscali": {
+            "domains": [
+                "search.tiscali.it",
+                "search-dyn.tiscali.it",
+                "hledani.tiscali.cz"
+            ],
+            "parameters": [
+                "q",
+                "key",
+                "query"
+            ]
+        },
+        "Tixuma": {
+            "domains": [
+                "www.tixuma.de"
+            ],
+            "parameters": [
+                "sc"
+            ]
+        },
+        "Toolbarhome": {
+            "domains": [
+                "www.toolbarhome.com",
+                "vshare.toolbarhome.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Toppreise.ch": {
+            "domains": [
+                "www.toppreise.ch",
+                "toppreise.ch",
+                "fr.toppreise.ch",
+                "de.toppreise.ch",
+                "en.toppreise.ch"
+            ],
+            "parameters": [
+                "search"
+            ]
+        },
+        "Torry": {
+            "domains": [
+                "www.torry.io"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "TUSK Search": {
+            "domains": [
+                "tusksearch.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Trouvez.com": {
+            "domains": [
+                "www.trouvez.com"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "TrovaRapido": {
+            "domains": [
+                "www.trovarapido.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Trusted Search": {
+            "domains": [
+                "www.trusted-search.com"
+            ],
+            "parameters": [
+                "w"
+            ]
+        },
+        "Trustnav": {
+            "domains": [
+                "search.trustnav.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Twingly": {
+            "domains": [
+                "www.twingly.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "uol.com.br": {
+            "domains": [
+                "busca.uol.com.br"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "URL.ORGanzier": {
+            "domains": [
+                "www.url.org"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Vinden": {
+            "domains": [
+                "www.vinden.nl"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Vindex": {
+            "domains": [
+                "www.vindex.nl",
+                "search.vindex.nl"
+            ],
+            "parameters": [
+                "search_for"
+            ]
+        },
+        "Virgilio": {
+            "domains": [
+                "ricerca.virgilio.it",
+                "ricercaimmagini.virgilio.it",
+                "ricercavideo.virgilio.it",
+                "ricercanews.virgilio.it",
+                "mobile.virgilio.it"
+            ],
+            "parameters": [
+                "qs",
+                "qrs"
+            ]
+        },
+        "Voila": {
+            "domains": [
+                "search.ke.voila.fr",
+                "www.lemoteur.fr"
+            ],
+            "parameters": [
+                "rdata"
+            ]
+        },
+        "Volny": {
+            "domains": [
+                "web.volny.cz"
+            ],
+            "parameters": [
+                "search"
+            ]
+        },
+        "Vuhuv": {
+            "domains": [
+                "vuhuv.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Walhello": {
+            "domains": [
+                "www.walhello.info",
+                "www.walhello.com",
+                "www.walhello.de",
+                "www.walhello.nl"
+            ],
+            "parameters": [
+                "key"
+            ]
+        },
+        "Web.de": {
+            "domains": [
+                "suche.web.de",
+                "m.suche.web.de"
+            ],
+            "parameters": [
+                "su",
+                "q"
+            ]
+        },
+        "Web.nl": {
+            "domains": [
+                "www.web.nl"
+            ],
+            "parameters": [
+                "zoekwoord"
+            ]
+        },
+        "weborama": {
+            "domains": [
+                "www.weborama.fr"
+            ],
+            "parameters": [
+                "QUERY"
+            ]
+        },
+        "WebSearch": {
+            "domains": [
+                "www.websearch.com"
+            ],
+            "parameters": [
+                "qkw",
+                "q"
+            ]
+        },
+        "Wedoo": {
+            "domains": [
+                "fr.wedoo.com",
+                "en.wedoo.com",
+                "es.wedoo.com"
+            ],
+            "parameters": [
+                "keyword"
+            ]
+        },
+        "Winamp": {
+            "domains": [
+                "search.winamp.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Wirtualna Polska": {
+            "domains": [
+                "szukaj.wp.pl"
+            ],
+            "parameters": [
+                "szukaj"
+            ]
+        },
+        "Witch": {
+            "domains": [
+                "www.witch.de"
+            ],
+            "parameters": [
+                "search"
+            ]
+        },
+        "Woopie": {
+            "domains": [
+                "www.woopie.jp"
+            ],
+            "parameters": [
+                "kw"
+            ]
+        },
+        "www värav": {
+            "domains": [
+                "search.www.ee"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "X-Recherche": {
+            "domains": [
+                "www.x-recherche.com"
+            ],
+            "parameters": [
+                "MOTS"
+            ]
+        },
+        "Yahoo!": {
+            "domains": [
+                "search.yahoo.com",
+                "malaysia.search.yahoo.com",
+                "com.search.yahoo.com",
+                "ch.search.yahoo.com",
+                "de.search.yahoo.com",
+                "at.search.yahoo.com",
+                "li.search.yahoo.com",
+                "lu.search.yahoo.com",
+                "fr.search.yahoo.com",
+                "it.search.yahoo.com",
+                "nl.search.yahoo.com",
+                "be.search.yahoo.com",
+                "es.search.yahoo.com",
+                "pt.search.yahoo.com",
+                "pl.search.yahoo.com",
+                "co.uk.search.yahoo.com",
+                "ie.search.yahoo.com",
+                "dk.search.yahoo.com",
+                "se.search.yahoo.com",
+                "no.search.yahoo.com",
+                "fi.search.yahoo.com",
+                "cz.search.yahoo.com",
+                "sk.search.yahoo.com",
+                "hu.search.yahoo.com",
+                "ro.search.yahoo.com",
+                "gr.search.yahoo.com",
+                "com.tr.search.yahoo.com",
+                "ru.search.yahoo.com",
+                "com.au.search.yahoo.com",
+                "co.nz.search.yahoo.com",
+                "ca.search.yahoo.com",
+                "com.br.search.yahoo.com",
+                "com.mx.search.yahoo.com",
+                "co.in.search.yahoo.com",
+                "co.jp.search.yahoo.com",
+                "com.hk.search.yahoo.com",
+                "com.sg.search.yahoo.com",
+                "cade.yahoo.com",
+                "espanol.search.yahoo.com",
+                "qc.search.yahoo.com",
+                "one.cn.yahoo.com",
+                "r.search.yahoo.com",
+                "www.cercato.it",
+                "search.offerbox.com",
+                "www.benefind.de",
+                "ys.mirostart.com"
+            ],
+            "parameters": [
+                "p",
+                "q"
+            ]
+        },
+        "Yahoo! Directory": {
+            "domains": [
+                "search.yahoo.com/search/dir"
+            ],
+            "parameters": [
+                "p"
+            ]
+        },
+        "Yahoo! Images": {
+            "domains": [
+                "images.search.yahoo.com",
+                "com.images.yahoo.com",
+                "ch.images.yahoo.com",
+                "de.images.yahoo.com",
+                "at.images.yahoo.com",
+                "li.images.yahoo.com",
+                "lu.images.yahoo.com",
+                "fr.images.yahoo.com",
+                "it.images.yahoo.com",
+                "nl.images.yahoo.com",
+                "be.images.yahoo.com",
+                "es.images.yahoo.com",
+                "pt.images.yahoo.com",
+                "pl.images.yahoo.com",
+                "co.uk.images.yahoo.com",
+                "ie.images.yahoo.com",
+                "dk.images.yahoo.com",
+                "se.images.yahoo.com",
+                "no.images.yahoo.com",
+                "fi.images.yahoo.com",
+                "cz.images.yahoo.com",
+                "sk.images.yahoo.com",
+                "hu.images.yahoo.com",
+                "ro.images.yahoo.com",
+                "gr.images.yahoo.com",
+                "com.tr.images.yahoo.com",
+                "ru.images.yahoo.com",
+                "com.au.images.yahoo.com",
+                "co.nz.images.yahoo.com",
+                "ca.images.yahoo.com",
+                "com.br.images.yahoo.com",
+                "com.mx.images.yahoo.com",
+                "co.in.images.yahoo.com",
+                "co.jp.images.yahoo.com",
+                "com.hk.images.yahoo.com",
+                "com.sg.images.yahoo.com",
+                "cade.images.yahoo.com",
+                "espanol.images.yahoo.com",
+                "qc.images.yahoo.com"
+            ],
+            "parameters": [
+                "p",
+                "va"
+            ]
+        },
+        "Yahoo! Japan": {
+            "domains": [
+                "search.yahoo.co.jp",
+                "jp.hao123.com",
+                "home.kingsoft.jp",
+                "jwsearch.jword.jp"
+            ],
+            "parameters": [
+                "p",
+                "vp",
+                "query",
+                "keyword",
+                "q"
+            ]
+        },
+        "Yahoo! Japan Images": {
+            "domains": [
+                "image.search.yahoo.co.jp"
+            ],
+            "parameters": [
+                "p"
+            ]
+        },
+        "Yahoo! Japan Videos": {
+            "domains": [
+                "video.search.yahoo.co.jp"
+            ],
+            "parameters": [
+                "p"
+            ]
+        },
+        "Yam": {
+            "domains": [
+                "search.yam.com"
+            ],
+            "parameters": [
+                "k"
+            ]
+        },
+        "Yandex": {
+            "domains": [
+                "yandex.ru",
+                "yandex.com",
+                "yandex.ch",
+                "yandex.de",
+                "yandex.at",
+                "yandex.li",
+                "yandex.lu",
+                "yandex.fr",
+                "yandex.it",
+                "yandex.nl",
+                "yandex.be",
+                "yandex.es",
+                "yandex.pt",
+                "yandex.pl",
+                "yandex.co.uk",
+                "yandex.ie",
+                "yandex.dk",
+                "yandex.se",
+                "yandex.no",
+                "yandex.fi",
+                "yandex.cz",
+                "yandex.sk",
+                "yandex.hu",
+                "yandex.ro",
+                "yandex.gr",
+                "yandex.com.tr",
+                "yandex.com.au",
+                "yandex.co.nz",
+                "yandex.ca",
+                "yandex.com.br",
+                "yandex.com.mx",
+                "yandex.co.in",
+                "yandex.co.jp",
+                "yandex.com.hk",
+                "yandex.com.sg",
+                "www.yandex.com",
+                "www.yandex.ch",
+                "www.yandex.de",
+                "www.yandex.at",
+                "www.yandex.li",
+                "www.yandex.lu",
+                "www.yandex.fr",
+                "www.yandex.it",
+                "www.yandex.nl",
+                "www.yandex.be",
+                "www.yandex.es",
+                "www.yandex.pt",
+                "www.yandex.pl",
+                "www.yandex.co.uk",
+                "www.yandex.ie",
+                "www.yandex.dk",
+                "www.yandex.se",
+                "www.yandex.no",
+                "www.yandex.fi",
+                "www.yandex.cz",
+                "www.yandex.sk",
+                "www.yandex.hu",
+                "www.yandex.ro",
+                "www.yandex.gr",
+                "www.yandex.com.tr",
+                "www.yandex.ru",
+                "www.yandex.com.au",
+                "www.yandex.co.nz",
+                "www.yandex.ca",
+                "www.yandex.com.br",
+                "www.yandex.com.mx",
+                "www.yandex.co.in",
+                "www.yandex.co.jp",
+                "www.yandex.com.hk",
+                "www.yandex.com.sg",
+                "clck.yandex.com",
+                "clck.yandex.ch",
+                "clck.yandex.de",
+                "clck.yandex.at",
+                "clck.yandex.li",
+                "clck.yandex.lu",
+                "clck.yandex.fr",
+                "clck.yandex.it",
+                "clck.yandex.nl",
+                "clck.yandex.be",
+                "clck.yandex.es",
+                "clck.yandex.pt",
+                "clck.yandex.pl",
+                "clck.yandex.co.uk",
+                "clck.yandex.ie",
+                "clck.yandex.dk",
+                "clck.yandex.se",
+                "clck.yandex.no",
+                "clck.yandex.fi",
+                "clck.yandex.cz",
+                "clck.yandex.sk",
+                "clck.yandex.hu",
+                "clck.yandex.ro",
+                "clck.yandex.gr",
+                "clck.yandex.com.tr",
+                "clck.yandex.ru",
+                "clck.yandex.com.au",
+                "clck.yandex.co.nz",
+                "clck.yandex.ca",
+                "clck.yandex.com.br",
+                "clck.yandex.com.mx",
+                "clck.yandex.co.in",
+                "clck.yandex.co.jp",
+                "clck.yandex.com.hk",
+                "clck.yandex.com.sg",
+                "m.yandex.com",
+                "m.yandex.ch",
+                "m.yandex.de",
+                "m.yandex.at",
+                "m.yandex.li",
+                "m.yandex.lu",
+                "m.yandex.fr",
+                "m.yandex.it",
+                "m.yandex.nl",
+                "m.yandex.be",
+                "m.yandex.es",
+                "m.yandex.pt",
+                "m.yandex.pl",
+                "m.yandex.co.uk",
+                "m.yandex.ie",
+                "m.yandex.dk",
+                "m.yandex.se",
+                "m.yandex.no",
+                "m.yandex.fi",
+                "m.yandex.cz",
+                "m.yandex.sk",
+                "m.yandex.hu",
+                "m.yandex.ro",
+                "m.yandex.gr",
+                "m.yandex.com.tr",
+                "m.yandex.ru",
+                "m.yandex.com.au",
+                "m.yandex.co.nz",
+                "m.yandex.ca",
+                "m.yandex.com.br",
+                "m.yandex.com.mx",
+                "m.yandex.co.in",
+                "m.yandex.co.jp",
+                "m.yandex.com.hk",
+                "m.yandex.com.sg",
+                "ya.ru",
+                "yabs.yandex.com",
+                "yabs.yandex.ch",
+                "yabs.yandex.de",
+                "yabs.yandex.at",
+                "yabs.yandex.li",
+                "yabs.yandex.lu",
+                "yabs.yandex.fr",
+                "yabs.yandex.it",
+                "yabs.yandex.nl",
+                "yabs.yandex.be",
+                "yabs.yandex.es",
+                "yabs.yandex.pt",
+                "yabs.yandex.pl",
+                "yabs.yandex.co.uk",
+                "yabs.yandex.ie",
+                "yabs.yandex.dk",
+                "yabs.yandex.se",
+                "yabs.yandex.no",
+                "yabs.yandex.fi",
+                "yabs.yandex.cz",
+                "yabs.yandex.sk",
+                "yabs.yandex.hu",
+                "yabs.yandex.ro",
+                "yabs.yandex.gr",
+                "yabs.yandex.com.tr",
+                "yabs.yandex.ru",
+                "yabs.yandex.com.au",
+                "yabs.yandex.co.nz",
+                "yabs.yandex.ca",
+                "yabs.yandex.com.br",
+                "yabs.yandex.com.mx",
+                "yabs.yandex.co.in",
+                "yabs.yandex.co.jp",
+                "yabs.yandex.com.hk",
+                "yabs.yandex.com.sg"
+            ],
+            "parameters": [
+                "text",
+                "q"
+            ]
+        },
+        "Yandex Images": {
+            "domains": [
+                "images.yandex.ru",
+                "images.yandex.com",
+                "images.yandex.ch",
+                "images.yandex.de",
+                "images.yandex.at",
+                "images.yandex.li",
+                "images.yandex.lu",
+                "images.yandex.fr",
+                "images.yandex.it",
+                "images.yandex.nl",
+                "images.yandex.be",
+                "images.yandex.es",
+                "images.yandex.pt",
+                "images.yandex.pl",
+                "images.yandex.co.uk",
+                "images.yandex.ie",
+                "images.yandex.dk",
+                "images.yandex.se",
+                "images.yandex.no",
+                "images.yandex.fi",
+                "images.yandex.cz",
+                "images.yandex.sk",
+                "images.yandex.hu",
+                "images.yandex.ro",
+                "images.yandex.gr",
+                "images.yandex.com.tr",
+                "images.yandex.com.au",
+                "images.yandex.co.nz",
+                "images.yandex.ca",
+                "images.yandex.com.br",
+                "images.yandex.com.mx",
+                "images.yandex.co.in",
+                "images.yandex.co.jp",
+                "images.yandex.com.hk",
+                "images.yandex.com.sg"
+            ],
+            "parameters": [
+                "text"
+            ]
+        },
+        "Yasni": {
+            "domains": [
+                "www.yasni.de",
+                "www.yasni.com",
+                "www.yasni.co.uk",
+                "www.yasni.ch",
+                "www.yasni.at"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Yatedo": {
+            "domains": [
+                "www.yatedo.com",
+                "www.yatedo.fr"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Yellowmap": {
+            "domains": [
+                "yellowmap.de"
+            ],
+            "parameters": [
+                " "
+            ]
+        },
+        "Yep": {
+            "domains": [
+                "yep.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Yippy": {
+            "domains": [
+                "search.yippy.com"
+            ],
+            "parameters": [
+                "query"
+            ]
+        },
+        "Yongzin": {
+            "domains": [
+                "www.yongzin.com"
+            ],
+            "parameters": [
+                "word"
+            ]
+        },
+        "You": {
+            "domains": [
+                "you.com"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "YouGoo": {
+            "domains": [
+                "www.yougoo.fr"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "ZapMeta": {
+            "domains": [
+                "www.zapmeta.com",
+                "zapmeta.com",
+                "zapmeta.ch",
+                "zapmeta.de",
+                "zapmeta.at",
+                "zapmeta.li",
+                "zapmeta.lu",
+                "zapmeta.fr",
+                "zapmeta.it",
+                "zapmeta.nl",
+                "zapmeta.be",
+                "zapmeta.es",
+                "zapmeta.pt",
+                "zapmeta.pl",
+                "zapmeta.co.uk",
+                "zapmeta.ie",
+                "zapmeta.dk",
+                "zapmeta.se",
+                "zapmeta.no",
+                "zapmeta.fi",
+                "zapmeta.cz",
+                "zapmeta.sk",
+                "zapmeta.hu",
+                "zapmeta.ro",
+                "zapmeta.gr",
+                "zapmeta.com.tr",
+                "zapmeta.ru",
+                "zapmeta.com.au",
+                "zapmeta.co.nz",
+                "zapmeta.ca",
+                "zapmeta.com.br",
+                "zapmeta.com.mx",
+                "zapmeta.co.in",
+                "zapmeta.co.jp",
+                "zapmeta.com.hk",
+                "zapmeta.com.sg",
+                "com.zapmeta.com",
+                "ch.zapmeta.com",
+                "de.zapmeta.com",
+                "at.zapmeta.com",
+                "li.zapmeta.com",
+                "lu.zapmeta.com",
+                "fr.zapmeta.com",
+                "it.zapmeta.com",
+                "nl.zapmeta.com",
+                "be.zapmeta.com",
+                "es.zapmeta.com",
+                "pt.zapmeta.com",
+                "pl.zapmeta.com",
+                "co.uk.zapmeta.com",
+                "ie.zapmeta.com",
+                "dk.zapmeta.com",
+                "se.zapmeta.com",
+                "no.zapmeta.com",
+                "fi.zapmeta.com",
+                "cz.zapmeta.com",
+                "sk.zapmeta.com",
+                "hu.zapmeta.com",
+                "ro.zapmeta.com",
+                "gr.zapmeta.com",
+                "com.tr.zapmeta.com",
+                "ru.zapmeta.com",
+                "com.au.zapmeta.com",
+                "co.nz.zapmeta.com",
+                "ca.zapmeta.com",
+                "com.br.zapmeta.com",
+                "com.mx.zapmeta.com",
+                "co.in.zapmeta.com",
+                "co.jp.zapmeta.com",
+                "com.hk.zapmeta.com",
+                "com.sg.zapmeta.com",
+                "www.zapmetasearch.com",
+                "www.zapmetasearch.ch",
+                "www.zapmetasearch.de",
+                "www.zapmetasearch.at",
+                "www.zapmetasearch.li",
+                "www.zapmetasearch.lu",
+                "www.zapmetasearch.fr",
+                "www.zapmetasearch.it",
+                "www.zapmetasearch.nl",
+                "www.zapmetasearch.be",
+                "www.zapmetasearch.es",
+                "www.zapmetasearch.pt",
+                "www.zapmetasearch.pl",
+                "www.zapmetasearch.co.uk",
+                "www.zapmetasearch.ie",
+                "www.zapmetasearch.dk",
+                "www.zapmetasearch.se",
+                "www.zapmetasearch.no",
+                "www.zapmetasearch.fi",
+                "www.zapmetasearch.cz",
+                "www.zapmetasearch.sk",
+                "www.zapmetasearch.hu",
+                "www.zapmetasearch.ro",
+                "www.zapmetasearch.gr",
+                "www.zapmetasearch.com.tr",
+                "www.zapmetasearch.ru",
+                "www.zapmetasearch.com.au",
+                "www.zapmetasearch.co.nz",
+                "www.zapmetasearch.ca",
+                "www.zapmetasearch.com.br",
+                "www.zapmetasearch.com.mx",
+                "www.zapmetasearch.co.in",
+                "www.zapmetasearch.co.jp",
+                "www.zapmetasearch.com.hk",
+                "www.zapmetasearch.com.sg"
+            ],
+            "parameters": [
+                "q",
+                "query"
+            ]
+        },
+        "Zhongsou": {
+            "domains": [
+                "p.zhongsou.com"
+            ],
+            "parameters": [
+                "w"
+            ]
+        },
+        "Zoek": {
+            "domains": [
+                "www3.zoek.nl"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Zoeken": {
+            "domains": [
+                "www.zoeken.nl"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Zoohoo": {
+            "domains": [
+                "zoohoo.cz"
+            ],
+            "parameters": [
+                "q"
+            ]
+        },
+        "Zoznam": {
+            "domains": [
+                "www.zoznam.sk"
+            ],
+            "parameters": [
+                "s"
+            ]
+        },
+        "Zxuso": {
+            "domains": [
+                "www.zxuso.com"
+            ],
+            "parameters": [
+                "wd"
+            ]
+        },
+        "묻지마 검색": {
+            "domains": [
+                "kwzf.net"
+            ],
+            "parameters": [
+                "search"
+            ]
+        }
+    },
+    "social": {
+        "Badoo": {
+            "domains": [
+                "badoo.com"
+            ]
+        },
+        "Bebo": {
+            "domains": [
+                "bebo.com"
+            ]
+        },
+        "bilibili": {
+            "domains": [
+                "bilibili.com"
+            ]
+        },
+        "BlackPlanet": {
+            "domains": [
+                "blackplanet.com"
+            ]
+        },
+        "Bluesky": {
+            "domains": [
+                "bsky.app",
+                "skyfeed.app"
+            ]
+        },
+        "Buzznet": {
+            "domains": [
+                "buzznet.com"
+            ]
+        },
+        "Classmates.com": {
+            "domains": [
+                "classmates.com"
+            ]
+        },
+        "Cyworld": {
+            "domains": [
+                "global.cyworld.com"
+            ]
+        },
+        "Douyin": {
+            "domains": [
+                "douyin.com"
+            ]
+        },
+        "Douyu": {
+            "domains": [
+                "douyu.com"
+            ]
+        },
+        "Gaia Online": {
+            "domains": [
+                "gaiaonline.com"
+            ]
+        },
+        "Geni.com": {
+            "domains": [
+                "geni.com"
+            ]
+        },
+        "GitHub": {
+            "domains": [
+                "github.com"
+            ]
+        },
+        "Google%2B": {
+            "domains": [
+                "plus.google.com",
+                "url.google.com",
+                "com.google.android.apps.plus"
+            ]
+        },
+        "Douban": {
+            "domains": [
+                "douban.com"
+            ]
+        },
+        "Dribbble": {
+            "domains": [
+                "dribbble.com"
+            ]
+        },
+        "Facebook": {
+            "domains": [
+                "facebook.com",
+                "fb.me",
+                "m.facebook.com",
+                "l.facebook.com"
+            ]
+        },
+        "Fetlife": {
+            "domains": [
+                "fetlife.com"
+            ]
+        },
+        "Flickr": {
+            "domains": [
+                "flickr.com"
+            ]
+        },
+        "Flixster": {
+            "domains": [
+                "flixster.com"
+            ]
+        },
+        "Fotolog": {
+            "domains": [
+                "fotolog.com"
+            ]
+        },
+        "Foursquare": {
+            "domains": [
+                "foursquare.com"
+            ]
+        },
+        "Friends Reunited": {
+            "domains": [
+                "friendsreunited.com"
+            ]
+        },
+        "Friendster": {
+            "domains": [
+                "friendster.com"
+            ]
+        },
+        "gree": {
+            "domains": [
+                "gree.jp"
+            ]
+        },
+        "Haboo": {
+            "domains": [
+                "habbo.com"
+            ]
+        },
+        "Hacker News": {
+            "domains": [
+                "news.ycombinator.com"
+            ]
+        },
+        "hi5": {
+            "domains": [
+                "hi5.com"
+            ]
+        },
+        "Huya": {
+            "domains": [
+                "huya.com"
+            ]
+        },
+        "Hyves": {
+            "domains": [
+                "hyves.nl"
+            ]
+        },
+        "identi.ca": {
+            "domains": [
+                "identi.ca"
+            ]
+        },
+        "Instagram": {
+            "domains": [
+                "instagram.com",
+                "l.instagram.com"
+            ]
+        },
+        "lang-8": {
+            "domains": [
+                "lang-8.com"
+            ]
+        },
+        "Last.fm": {
+            "domains": [
+                "last.fm",
+                "lastfm.ru",
+                "lastfm.de",
+                "lastfm.es",
+                "lastfm.fr",
+                "lastfm.it",
+                "lastfm.jp",
+                "lastfm.pl",
+                "lastfm.com.br",
+                "lastfm.se",
+                "lastfm.com.tr"
+            ]
+        },
+        "LinkedIn": {
+            "domains": [
+                "linkedin.com",
+                "lnkd.in",
+                "linkedin.android"
+            ]
+        },
+        "LiveJournal": {
+            "domains": [
+                "livejournal.ru",
+                "livejournal.com"
+            ]
+        },
+        "Mastodon": {
+            "domains": [
+                "mastodon.social",
+                "mastodon.cloud",
+                "mastodon.technology",
+                "mastodon.xyz",
+                "mastodon.at",
+                "mastodon.art",
+                "mamot.fr",
+                "pawoo.net",
+                "mstdn.io",
+                "mstdn.jp",
+                "friends.nico",
+                "ro-mastodon.puyo.jp",
+                "quey.org",
+                "botsin.space",
+                "social.tchncs.de",
+                "knzk.me",
+                "mastodont.cat",
+                "bitcoinhackers.org",
+                "fosstodon.org",
+                "chaos.social",
+                "cybre.space",
+                "vis.social",
+                "typo.social",
+                "front-end.social",
+                "hachyderm.io",
+                "mastodon.online",
+                "newsie.social",
+                "mstdn.social",
+                "indieweb.social",
+                "sfba.social",
+                "mas.to",
+                "mstdn.party",
+                "c.im",
+                "mastodonapp.uk",
+                "universeodon.com",
+                "social.vivaldi.net",
+                "ohai.social",
+                "toot.community",
+                "masto.ai",
+                "mastodon.scot",
+                "mastodon.world",
+                "mastodon.nz",
+                "graphics.social",
+                "org.joinmastodon.android",
+                "mastodon.eus",
+                "mastodon.jalgi.eus",
+                "tkm.eus"
+            ]
+        },
+        "MeinVZ": {
+            "domains": [
+                "meinvz.net"
+            ]
+        },
+        "MissEvan": {
+            "domains": [
+                "missevan.com"
+            ]
+        },
+        "Mixi": {
+            "domains": [
+                "mixi.jp"
+            ]
+        },
+        "MoiKrug.ru": {
+            "domains": [
+                "moikrug.ru"
+            ]
+        },
+        "Multiply": {
+            "domains": [
+                "multiply.com"
+            ]
+        },
+        "my.mail.ru": {
+            "domains": [
+                "my.mail.ru"
+            ]
+        },
+        "MyHeritage": {
+            "domains": [
+                "myheritage.com"
+            ]
+        },
+        "MyLife": {
+            "domains": [
+                "mylife.ru"
+            ]
+        },
+        "Myspace": {
+            "domains": [
+                "myspace.com"
+            ]
+        },
+        "myYearbook": {
+            "domains": [
+                "myyearbook.com"
+            ]
+        },
+        "Nasza-klasa.pl": {
+            "domains": [
+                "nk.pl"
+            ]
+        },
+        "Netlog": {
+            "domains": [
+                "netlog.com"
+            ]
+        },
+        "Niconico": {
+            "domains": [
+                "nicovideo.jp"
+            ]
+        },
+        "Odnoklassniki": {
+            "domains": [
+                "odnoklassniki.ru"
+            ]
+        },
+        "Orkut": {
+            "domains": [
+                "orkut.com"
+            ]
+        },
+        "Ozone": {
+            "domains": [
+                "qzone.qq.com"
+            ]
+        },
+        "Peepeth": {
+            "domains": [
+                "peepeth.com"
+            ]
+        },
+        "Pinterest": {
+            "domains": [
+                "pinterest.com",
+                "pinterest.ca",
+                "pinterest.ch",
+                "pinterest.co.uk",
+                "pinterest.com.au",
+                "pinterest.de",
+                "pinterest.dk",
+                "pinterest.es",
+                "pinterest.fr",
+                "pinterest.ie",
+                "pinterest.info",
+                "pinterest.jp",
+                "pinterest.nz",
+                "pinterest.pt",
+                "pinterest.se",
+                "at.pinterest.com",
+                "ch.pinterest.com",
+                "cl.pinterest.com",
+                "co.pinterest.com",
+                "dk.pinterest.com",
+                "es.pinterest.com",
+                "hu.pinterest.com",
+                "id.pinterest.com",
+                "ie.pinterest.com",
+                "in.pinterest.com",
+                "it.pinterest.com",
+                "kr.pinterest.com",
+                "mx.pinterest.com",
+                "nl.pinterest.com",
+                "nz.pinterest.com",
+                "ph.pinterest.com",
+                "pt.pinterest.com",
+                "ru.pinterest.com",
+                "se.pinterest.com"
+            ]
+        },
+        "Pixelfed": {
+            "domains": [
+                "pixelfed.social",
+                "pixelfed.de",
+                "pxlmo.com",
+                "metapixl.com",
+                "pix.toot.wales",
+                "pixelfed.uno",
+                "pixey.org"
+            ]
+        },
+        "Plaxo": {
+            "domains": [
+                "plaxo.com"
+            ]
+        },
+        "reddit": {
+            "domains": [
+                "reddit.com",
+                "np.reddit.com",
+                "pay.reddit.com",
+                "com.reddit.frontpage"
+            ]
+        },
+        "Renren": {
+            "domains": [
+                "renren.com"
+            ]
+        },
+        "Skyrock": {
+            "domains": [
+                "skyrock.com"
+            ]
+        },
+        "Snapchat": {
+            "domains": [
+                "snapchat.com",
+                "com.snapchat.android"
+            ]
+        },
+        "Sonico.com": {
+            "domains": [
+                "sonico.com"
+            ]
+        },
+        "SoundCloud": {
+            "domains": [
+                "soundcloud.com",
+                "gate.sc"
+            ]
+        },
+        "StackOverflow": {
+            "domains": [
+                "stackoverflow.com"
+            ]
+        },
+        "StudiVZ": {
+            "domains": [
+                "studivz.net"
+            ]
+        },
+        "Tagged": {
+            "domains": [
+                "login.tagged.com"
+            ]
+        },
+        "Taringa!": {
+            "domains": [
+                "taringa.net"
+            ]
+        },
+        "Telegram": {
+            "domains": [
+                "web.telegram.org",
+                "org.telegram.messenger"
+            ]
+        },
+        "Threads": {
+            "domains": [
+                "threads.net",
+                "l.threads.net",
+                "threads.com",
+                "l.threads.com"
+            ]
+        },
+        "TikTok": {
+            "domains": [
+                "tiktok.com"
+            ]
+        },
+        "Tuenti": {
+            "domains": [
+                "tuenti.com"
+            ]
+        },
+        "tumblr": {
+            "domains": [
+                "tumblr.com",
+                "t.umblr.com"
+            ]
+        },
+        "Twitcast": {
+            "domains": [
+                "twitcasting.tv"
+            ]
+        },
+        "Twitter": {
+            "domains": [
+                "twitter.com",
+                "t.co",
+                "x.com"
+            ]
+        },
+        "Sourceforge": {
+            "domains": [
+                "sourceforge.net"
+            ]
+        },
+        "StumbleUpon": {
+            "domains": [
+                "stumbleupon.com"
+            ]
+        },
+        "Vkontakte": {
+            "domains": [
+                "vk.com",
+                "vkontakte.ru"
+            ]
+        },
+        "YouTube": {
+            "domains": [
+                "youtube.com",
+                "youtu.be"
+            ]
+        },
+        "V2EX": {
+            "domains": [
+                "v2ex.com"
+            ]
+        },
+        "Viadeo": {
+            "domains": [
+                "viadeo.com"
+            ]
+        },
+        "Vimeo": {
+            "domains": [
+                "vimeo.com"
+            ]
+        },
+        "vkrugudruzei.ru": {
+            "domains": [
+                "vkrugudruzei.ru"
+            ]
+        },
+        "WAYN": {
+            "domains": [
+                "wayn.com"
+            ]
+        },
+        "Weibo": {
+            "domains": [
+                "weibo.com",
+                "t.cn"
+            ]
+        },
+        "WeeWorld": {
+            "domains": [
+                "weeworld.com"
+            ]
+        },
+        "Windows Live Spaces": {
+            "domains": [
+                "login.live.com"
+            ]
+        },
+        "Workplace": {
+            "domains": [
+                "workplace.com",
+                "l.workplace.com",
+                "lm.workplace.com"
+            ]
+        },
+        "Xanga": {
+            "domains": [
+                "xanga.com"
+            ]
+        },
+        "XING": {
+            "domains": [
+                "xing.com"
+            ]
+        }
+    },
+    "ai": {
+        "Baidu AI": {
+            "domains": [
+                "yiyan.baidu.com",
+                "ai.baidu.com"
+            ]
+        },
+        "Chat+": {
+            "domains": [
+                "chatplus.com",
+                "chat-gpt.org"
+            ]
+        },
+        "ChatGPT": {
+            "domains": [
+                "chatgpt.com",
+                "chat.openai.com",
+                "labs.openai.com"
+            ]
+        },
+        "Claude": {
+            "domains": [
+                "claude.ai"
+            ]
+        },
+        "Copilot": {
+            "domains": [
+                "copilot.microsoft.com"
+            ]
+        },
+        "ChatGLM": {
+            "domains": [
+                "chatglm.cn"
+            ]
+        },
+        "Deepseek": {
+            "domains": [
+                "chat.deepseek.com"
+            ]
+        },
+        "Gemini": {
+            "domains": [
+                "gemini.google.com",
+                "bard.google.com"
+            ]
+        },
+        "Grok": {
+            "domains": [
+                "grok.com",
+                "x.com/i/grok"
+            ]
+        },
+        "iAsk": {
+            "domains": [
+                "iask.ai"
+            ]
+        },
+        "Jasper": {
+            "domains": [
+                "app.jasper.ai"
+            ]
+        },
+        "Le Chat": {
+            "domains": [
+                "chat.mistral.ai"
+            ]
+        },
+        "Meta AI": {
+            "domains": [
+                "meta.ai"
+            ]
+        },
+        "NotebookLM": {
+            "domains": [
+                "notebooklm.google.com"
+            ]
+        },
+        "Perplexity": {
+            "domains": [
+                "perplexity.ai"
+            ]
+        },
+        "Qwen": {
+            "domains": [
+                "chat.qwen.ai"
+            ]
+        },
+        "Writesonic": {
+            "domains": [
+                "app.writesonic.com"
+            ]
+        },
+        "You": {
+            "domains": [
+                "you.com"
+            ]
+        }
+    }
+}

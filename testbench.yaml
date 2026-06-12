@@ -1,0 +1,2 @@
+providers:
+  - Topoff\LaravelUserLogger\UserLoggerServiceProvider

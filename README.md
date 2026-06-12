@@ -215,7 +215,23 @@ exercise it.
 
 The package automatically skips DeviceDetector bot matching when the request was already classified as a crawler via `CrawlerDetect`.
 
-## Update
+## Referer Database
 
-This package uses https://github.com/snowplow-referer-parser/referer-parser.
-Use that repository to update the known referer list when needed.
+Referer detection uses the snowplow referer-parser matching logic, but the
+bundled database (`resources/data/referers.json`) is generated from the
+actively maintained
+[matomo/searchengine-and-social-list](https://github.com/matomo-org/searchengine-and-social-list)
+definitions - including search engines (with keyword parameters), social
+networks and AI assistants (medium `ai`: ChatGPT, Claude, Gemini, ...).
+Email provider entries are carried over from the snowplow database.
+
+To refresh the data (in this package repository, requires dev dependencies):
+
+```bash
+composer update matomo/searchengine-and-social-list
+php artisan user-logger:update-referers
+# commit the regenerated resources/data/referers.json
+```
+
+A custom database (snowplow json format) can be configured via
+`user-logger.referer_data_path`.

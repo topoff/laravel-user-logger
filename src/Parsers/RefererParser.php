@@ -23,6 +23,8 @@ class RefererParser
      */
     protected static ?JsonConfigReader $configReader = null;
 
+    protected static ?string $configReaderPath = null;
+
     /**
      * RefererParser constructor.
      */
@@ -38,9 +40,34 @@ class RefererParser
 
     protected static function configReader(): JsonConfigReader
     {
-        return self::$configReader ??= new JsonConfigReader(
-            dirname((string) new ReflectionClass(Parser::class)->getFileName()).'/../../../data/referers.json',
-        );
+        $path = self::resolveDataPath();
+
+        if (! self::$configReader instanceof JsonConfigReader || self::$configReaderPath !== $path) {
+            self::$configReader = new JsonConfigReader($path);
+            self::$configReaderPath = $path;
+        }
+
+        return self::$configReader;
+    }
+
+    /**
+     * Data source order: explicit config path, then the bundled file
+     * generated from matomo/searchengine-and-social-list (see the
+     * user-logger:update-referers command), then snowplow's 2016 default.
+     */
+    protected static function resolveDataPath(): string
+    {
+        $configured = config('user-logger.referer_data_path');
+        if (is_string($configured) && $configured !== '' && is_file($configured)) {
+            return $configured;
+        }
+
+        $bundled = dirname(__DIR__, 2).'/resources/data/referers.json';
+        if (is_file($bundled)) {
+            return $bundled;
+        }
+
+        return dirname((string) new ReflectionClass(Parser::class)->getFileName()).'/../../../data/referers.json';
     }
 
     public function getResultFromPartnerUrl(): ?RefererResult

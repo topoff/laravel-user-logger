@@ -137,6 +137,13 @@ return [
     'path_is_mail' => [],
 
     /*
+     * Optional custom referer database (snowplow referer-parser json format).
+     * Defaults to the bundled file generated from
+     * matomo/searchengine-and-social-list via `user-logger:update-referers`.
+     */
+    'referer_data_path' => null,
+
+    /*
      * Ignore Ips
      */
     'ignore_ips' => [],

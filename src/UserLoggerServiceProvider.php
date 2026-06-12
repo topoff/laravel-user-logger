@@ -15,6 +15,7 @@ use Throwable;
 use Topoff\LaravelUserLogger\Console\Commands\Flush;
 use Topoff\LaravelUserLogger\Console\Commands\HashIp;
 use Topoff\LaravelUserLogger\Console\Commands\PruneIps;
+use Topoff\LaravelUserLogger\Console\Commands\UpdateReferers;
 use Topoff\LaravelUserLogger\Middleware\InjectUserLogger;
 use Topoff\LaravelUserLogger\Nova\Resources\ExperimentMeasurement;
 use Topoff\LaravelUserLogger\Nova\Resources\PerformanceLog;
@@ -53,6 +54,7 @@ class UserLoggerServiceProvider extends ServiceProvider
                 Flush::class,
                 HashIp::class,
                 PruneIps::class,
+                UpdateReferers::class,
             ]);
         }
     }

@@ -59,4 +59,37 @@ class RefererParserTest extends TestCase
         $this->assertNull($result->domain);
         $this->assertSame('', $result->source);
     }
+
+    public function test_detects_country_tld_search_engine(): void
+    {
+        $result = new RefererParser('https://www.google.ch/search?q=umzug+offerte')->getResult();
+
+        $this->assertSame('Google', $result->source);
+        $this->assertSame('search', $result->medium);
+        $this->assertSame('umzug offerte', $result->keywords);
+    }
+
+    public function test_detects_ai_assistant_referer(): void
+    {
+        $result = new RefererParser('https://chatgpt.com/')->getResult();
+
+        $this->assertSame('ChatGPT', $result->source);
+        $this->assertSame('ai', $result->medium);
+    }
+
+    public function test_detects_social_network_referer(): void
+    {
+        $result = new RefererParser('https://www.instagram.com/some-profile')->getResult();
+
+        $this->assertSame('Instagram', $result->source);
+        $this->assertSame('social', $result->medium);
+    }
+
+    public function test_detects_email_provider_referer(): void
+    {
+        $result = new RefererParser('https://mail.google.com/mail/u/0/')->getResult();
+
+        $this->assertSame('Gmail', $result->source);
+        $this->assertSame('email', $result->medium);
+    }
 }

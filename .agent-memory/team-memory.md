@@ -19,6 +19,7 @@ It is versioned in this repository and is intended for Claude Code, Codex, and O
 - IPs: HMAC-SHA256 via `Support\IpHasher` (key `ip_salt`, fallback `app.key`); `hash_ip=false` stores plain text — then schedule `user-logger:prune-ips` (`retention.ip_days`).
 - Retention: `Log`, `Session`, `PerformanceLog` are `MassPrunable` (opt-in via `retention.*` / `performance.retention_days`), pruned via `model:prune`. Sessions prune only when they have no remaining logs.
 - Per-process caches: snowplow `JsonConfigReader` (119KB json), `CrawlerDetect` instance. `UserLogger` is a **scoped** (not singleton) binding — keep it Octane-safe.
+- Referer detection: snowplow matching code + **own bundled database** `resources/data/referers.json`, generated from `matomo/searchengine-and-social-list` (search/social/**ai** mediums, email carried over from snowplow). Refresh: `composer update matomo/searchengine-and-social-list && php artisan user-logger:update-referers`, commit the regenerated json.
 
 ## Commands and workflows
 
@@ -33,10 +34,6 @@ It is versioned in this repository and is intended for Claude Code, Codex, and O
 - `tests/TestCase.php` builds the schema manually — schema changes must be mirrored there.
 - New PHP files use `declare(strict_types=1);`.
 - Schema changes ship as package migrations — never DDL at runtime in the service provider.
-
-## Open follow-ups
-
-- Referer detection data: `snowplow/referer-parser` is unmaintained (release 0.2.0 / 2016, stale `referers.json` — new social/AI referrers log as "unknown"). Agreed direction: keep the snowplow matching code, generate the data file from `matomo/searchengine-and-social-list` (`SearchEngines.yml`, `Socials.yml`, `AIAssistants.yml`) via a converter command.
 
 ## Do not store here
 
