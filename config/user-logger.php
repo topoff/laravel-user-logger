@@ -17,6 +17,13 @@ return [
     'enabled' => env('USER_LOGGER_ENABLED', false),
 
     /*
+     * Allow the logger to run in the "testing" environment.
+     * Normally the logger is disabled in tests; enable this in a host app
+     * (or package) test suite that explicitly wants to exercise the logger.
+     */
+    'enabled_in_testing' => env('USER_LOGGER_ENABLED_IN_TESTING', false),
+
+    /*
      * Log only Events
      */
     'only-events' => env('USER_LOGGER_ONLY_EVENTS', false),
@@ -135,9 +142,24 @@ return [
     'ignore_ips' => [],
 
     /*
-     * log ip -> its always hashed
+     * Log the client ip.
      */
     'log_ip' => true,
+
+    /*
+     * Hash the client ip before storing (keyed HMAC-SHA256, truncated to
+     * 32 chars - see user-logger:haship to compute the stored value).
+     * Set to false to store the ip in plain text; in that case configure
+     * retention.ip_days so ips are removed after a defined period.
+     */
+    'hash_ip' => env('USER_LOGGER_HASH_IP', true),
+
+    /*
+     * Secret used as HMAC key for ip pseudonymization.
+     * Falls back to app.key when null - note that rotating the app key
+     * then changes all future hashes.
+     */
+    'ip_salt' => env('USER_LOGGER_IP_SALT'),
 
     /*
      * Pennant-based experiment measurement
@@ -193,6 +215,24 @@ return [
     ],
 
     /*
+     * Data retention for pruning via `php artisan model:prune`
+     * (schedule it with --model for Log / Session / PerformanceLog).
+     * 0 disables pruning for that table. Sessions are only pruned
+     * when they no longer have any logs - prune logs first.
+     */
+    'retention' => [
+        'logs_days' => 0,
+        'sessions_days' => 0,
+
+        /*
+         * Days after the last session activity until the stored client ip
+         * is removed (the session itself is kept). Applied by the
+         * `user-logger:prune-ips` command. 0 disables ip pruning.
+         */
+        'ip_days' => 0,
+    ],
+
+    /*
      * debug not parsable Agents, Referers, etc. in debugs table
      */
     'debug' => false,
@@ -232,5 +272,18 @@ return [
          * Set 0 to disable slow-request warnings
          */
         'slow_ms' => 0,
+
+        /*
+         * Fraction of requests that persist a performance log row (0.0 - 1.0).
+         * Slow-request warnings are always emitted, regardless of sampling.
+         */
+        'sample_rate' => 1.0,
+
+        /*
+         * Days to keep performance log rows when pruning via
+         * `php artisan model:prune --model="Topoff\LaravelUserLogger\Models\PerformanceLog"`.
+         * Set 0 to disable pruning.
+         */
+        'retention_days' => 30,
     ],
 ];

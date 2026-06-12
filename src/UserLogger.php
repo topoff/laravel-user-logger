@@ -7,7 +7,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log as LaravelLogger;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Ramsey\Uuid\Uuid;
@@ -83,7 +82,7 @@ class UserLogger
         protected ExperimentMeasurementService $experimentMeasurementService,
         protected Request $request)
     {
-        $this->blacklistUris = Cache::rememberForever('user-logger.blacklist_routes', static fn () => config('user-logger.blacklist_routes') ?: []);
+        $this->blacklistUris = config('user-logger.blacklist_routes') ?: [];
         $this->performanceEnabled = config('user-logger.performance.enabled', false) === true;
         if ($this->performanceEnabled) {
             $this->performanceProfiler = new PerformanceProfiler;
@@ -113,7 +112,7 @@ class UserLogger
                 }
             } catch (Exception $e) {
                 // Sometimes reached
-                LaravelLogger::warning('Error in topoff/user-logger: '.$e->getMessage(), $e->getTrace());
+                LaravelLogger::warning('Error in topoff/user-logger: '.$e->getMessage(), ['exception' => $e]);
             }
         }
 
@@ -361,7 +360,13 @@ class UserLogger
             $config = $this->app['config'];
             $configEnabled = $config->get('user-logger.enabled') ?? false;
 
-            $this->enabled = $configEnabled && ! $this->app->runningInConsole() && ! $this->app->environment('testing');
+            if ($this->app->environment('testing')) {
+                // In tests everything runs in console, so the console check must
+                // not apply when the logger is explicitly enabled for testing.
+                $this->enabled = $configEnabled && $config->get('user-logger.enabled_in_testing') === true;
+            } else {
+                $this->enabled = $configEnabled && ! $this->app->runningInConsole();
+            }
         }
 
         return $this->enabled;

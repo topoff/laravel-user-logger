@@ -5,7 +5,6 @@ namespace Topoff\LaravelUserLogger\Tests;
 use Illuminate\Http\Request;
 use Illuminate\Session\ArraySessionHandler;
 use Illuminate\Session\Store;
-use ReflectionProperty;
 use Topoff\LaravelUserLogger\Models\ExperimentMeasurement;
 use Topoff\LaravelUserLogger\Models\Log;
 use Topoff\LaravelUserLogger\Models\Session;
@@ -37,7 +36,7 @@ class UserLoggerIntegrationTest extends TestCase
         ));
 
         $userLogger = $this->app->make(UserLogger::class);
-        $this->forceEnabled($userLogger);
+        $this->forceEnabled();
         $userLogger->boot();
 
         $log = $userLogger->getCurrentLog();
@@ -72,7 +71,7 @@ class UserLoggerIntegrationTest extends TestCase
         ));
 
         $userLogger = $this->app->make(UserLogger::class);
-        $this->forceEnabled($userLogger);
+        $this->forceEnabled();
         $userLogger->boot();
 
         $updatedLog = $userLogger->setEvent('conversion', 'lead', '123');
@@ -93,7 +92,7 @@ class UserLoggerIntegrationTest extends TestCase
 
         $this->bindRequestWithSession(Request::create('/event', 'GET'));
         $userLogger = $this->app->make(UserLogger::class);
-        $this->forceEnabled($userLogger);
+        $this->forceEnabled();
 
         ExperimentMeasurement::query()->create([
             'session_id' => '00000000-0000-0000-0000-000000000501',
@@ -126,7 +125,7 @@ class UserLoggerIntegrationTest extends TestCase
         ));
 
         $userLogger = $this->app->make(UserLogger::class);
-        $this->forceEnabled($userLogger);
+        $this->forceEnabled();
         $userLogger->boot();
 
         $updated = $userLogger->setComment('integration-test-comment');
@@ -143,10 +142,9 @@ class UserLoggerIntegrationTest extends TestCase
         $this->app->instance('request', $request);
     }
 
-    private function forceEnabled(UserLogger $userLogger): void
+    private function forceEnabled(): void
     {
-        $enabled = new ReflectionProperty($userLogger, 'enabled');
-        $enabled->setAccessible(true);
-        $enabled->setValue($userLogger, true);
+        config()->set('user-logger.enabled', true);
+        config()->set('user-logger.enabled_in_testing', true);
     }
 }

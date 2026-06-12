@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Topoff\LaravelUserLogger\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -27,6 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PerformanceLog extends Model
 {
+    use MassPrunable;
+
     public $timestamps = false;
 
     protected $connection = 'user-logger';
@@ -48,4 +52,20 @@ class PerformanceLog extends Model
         'user_logger_meta' => 'array',
         'created_at' => 'datetime',
     ];
+
+    /**
+     * Prune via `php artisan model:prune --model="Topoff\LaravelUserLogger\Models\PerformanceLog"`.
+     * A retention of 0 days disables pruning.
+     *
+     * @return Builder<static>
+     */
+    public function prunable(): Builder
+    {
+        $days = (int) config('user-logger.performance.retention_days', 30);
+        if ($days <= 0) {
+            return static::query()->whereRaw('1 = 0');
+        }
+
+        return static::query()->where('created_at', '<', now()->subDays($days));
+    }
 }

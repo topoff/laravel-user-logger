@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Topoff\LaravelUserLogger\Console\Commands;
 
 use Illuminate\Console\Command;
+use Topoff\LaravelUserLogger\Support\IpHasher;
 
 class HashIp extends Command
 {
@@ -29,7 +30,6 @@ class HashIp extends Command
     {
         $clientIp = $this->ask('Which ip?');
 
-        $clientIp = md5((string) $clientIp);
-        $this->line('This is the hashed value: '.substr($clientIp, 0, 10).substr($clientIp, 20, 12).substr($clientIp, 11, 10));
+        $this->line('This is the hashed value: '.IpHasher::hash((string) $clientIp));
     }
 }

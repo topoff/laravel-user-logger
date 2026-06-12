@@ -21,7 +21,8 @@ class UrlPathParser
     {
         $containsAutologin = $this->urlContainsAutologin();
         if ($containsAutologin) {
-            $host = parse_url($this->url, PHP_URL_HOST);
+            // parse_url returns false for invalid urls and null for missing hosts
+            $host = parse_url($this->url, PHP_URL_HOST) ?: null;
 
             $refererResult = new RefererResult;
             $refererResult->parser = self::class;
@@ -37,7 +38,7 @@ class UrlPathParser
             $refererResult->adposition = '';
             $refererResult->network = '';
             $refererResult->gclid = '';
-            $refererResult->domain_intern = in_array($host, $this->internalHosts);
+            $refererResult->domain_intern = in_array($host, $this->internalHosts, true);
 
             return $refererResult;
         }
@@ -52,6 +53,6 @@ class UrlPathParser
      */
     private function urlContainsAutologin(): bool
     {
-        return Str::contains($this->url, config('user-logger.path_is_mail'));
+        return Str::contains($this->url, config('user-logger.path_is_mail') ?: []);
     }
 }

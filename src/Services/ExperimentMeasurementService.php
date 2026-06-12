@@ -2,6 +2,8 @@
 
 namespace Topoff\LaravelUserLogger\Services;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log as LaravelLogger;
 use Laravel\Pennant\Feature;
@@ -108,72 +110,69 @@ class ExperimentMeasurementService
         }
 
         $now = now();
-        $nowString = $now->format('Y-m-d H:i:s');
         $features = $this->getTrackedFeatures();
         if ($features === []) {
-            $query = ExperimentMeasurement::query()->where('session_id', $session->id);
-            if (! $query->exists()) {
-                return;
-            }
-
-            $updates = [
-                'first_converted_at' => DB::raw("COALESCE(first_converted_at, '{$nowString}')"),
-                'last_converted_at' => $now,
-                'last_conversion_event' => $event,
-                'last_conversion_entity_type' => $entityType,
-                'last_conversion_entity_id' => $entityId,
-                'conversion_count' => DB::raw('conversion_count + 1'),
-                'updated_at' => $now,
-            ];
-
-            if ($log instanceof Log) {
-                $updates['last_log_id'] = $log->id;
-            }
-
-            $query->update($updates);
+            $this->applyConversion(
+                ExperimentMeasurement::query()->where('session_id', $session->id),
+                $now, $event, $entityType, $entityId, $log,
+            );
 
             return;
         }
 
         foreach ($features as $feature) {
             $variant = $this->getVariant($feature, $session);
-            $query = ExperimentMeasurement::query()
+            $exactQuery = ExperimentMeasurement::query()
                 ->where('session_id', $session->id)
                 ->where('feature', $feature);
 
             if ($variant === null) {
-                $query->whereNull('variant');
+                $exactQuery->whereNull('variant');
             } else {
-                $query->where('variant', $variant);
+                $exactQuery->where('variant', $variant);
             }
 
-            if (! $query->exists()) {
-                // Backward compatibility: update any row for the feature in this session
-                // if no exact variant row exists yet.
-                $query = ExperimentMeasurement::query()
-                    ->where('session_id', $session->id)
-                    ->where('feature', $feature);
-                if (! $query->exists()) {
-                    continue;
-                }
+            if ($this->applyConversion($exactQuery, $now, $event, $entityType, $entityId, $log) > 0) {
+                continue;
             }
 
-            $updates = [
-                'first_converted_at' => DB::raw("COALESCE(first_converted_at, '{$nowString}')"),
-                'last_converted_at' => $now,
-                'last_conversion_event' => $event,
-                'last_conversion_entity_type' => $entityType,
-                'last_conversion_entity_id' => $entityId,
-                'conversion_count' => DB::raw('conversion_count + 1'),
-                'updated_at' => $now,
-            ];
+            // Backward compatibility: no exact variant row yet - update only the
+            // most recent row for the feature, never all variant rows at once.
+            $fallbackQuery = ExperimentMeasurement::query()
+                ->where('session_id', $session->id)
+                ->where('feature', $feature)
+                ->orderByDesc('updated_at')
+                ->orderByDesc('id')
+                ->limit(1);
 
-            if ($log instanceof Log) {
-                $updates['last_log_id'] = $log->id;
-            }
-
-            $query->update($updates);
+            $this->applyConversion($fallbackQuery, $now, $event, $entityType, $entityId, $log);
         }
+    }
+
+    /**
+     * Apply conversion updates to all rows matched by the query.
+     * Returns the number of updated rows.
+     *
+     * @param  Builder<ExperimentMeasurement>  $query
+     */
+    protected function applyConversion(Builder $query, Carbon $now, ?string $event, ?string $entityType, ?string $entityId, ?Log $log): int
+    {
+        (clone $query)->whereNull('first_converted_at')->update(['first_converted_at' => $now]);
+
+        $updates = [
+            'last_converted_at' => $now,
+            'last_conversion_event' => $event,
+            'last_conversion_entity_type' => $entityType,
+            'last_conversion_entity_id' => $entityId,
+            'conversion_count' => DB::raw('conversion_count + 1'),
+            'updated_at' => $now,
+        ];
+
+        if ($log instanceof Log) {
+            $updates['last_log_id'] = $log->id;
+        }
+
+        return $query->update($updates);
     }
 
     public function getVariant(string $feature, Session $session): ?string

@@ -3,7 +3,9 @@
 namespace Topoff\LaravelUserLogger\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -27,6 +29,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Session extends Model
 {
+    use MassPrunable;
+
     public $incrementing = false;
 
     public $timestamps = false;
@@ -41,6 +45,25 @@ class Session extends Model
         'is_robot' => 'boolean',
         'is_suspicious' => 'boolean',
     ];
+
+    /**
+     * Prune via `php artisan model:prune --model="Topoff\LaravelUserLogger\Models\Session"`.
+     * Only sessions without remaining logs are pruned (prune logs first).
+     * A retention of 0 days disables pruning.
+     *
+     * @return Builder<static>
+     */
+    public function prunable(): Builder
+    {
+        $days = (int) config('user-logger.retention.sessions_days', 0);
+        if ($days <= 0) {
+            return static::query()->whereRaw('1 = 0');
+        }
+
+        return static::query()
+            ->where('updated_at', '<', now()->subDays($days))
+            ->whereDoesntHave('logs');
+    }
 
     public function isRobot(): bool
     {

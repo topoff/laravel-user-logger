@@ -5,7 +5,6 @@ namespace Topoff\LaravelUserLogger\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log as LaravelLogger;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,12 +21,24 @@ class InjectUserLogger
     protected bool $performanceEnabled = false;
 
     /**
+     * The query listener must be registered only once per PHP process: under
+     * Octane / long-running workers the DB connection outlives the middleware
+     * instance and listeners would otherwise accumulate.
+     */
+    protected static bool $queryListenerRegistered = false;
+
+    /**
+     * @var array{total: int, user_logger: int}
+     */
+    protected static array $queryCounts = ['total' => 0, 'user_logger' => 0];
+
+    /**
      * Create a new middleware instance.
      */
     public function __construct(protected UserLogger $userLogger)
     {
-        $this->exceptUris = Cache::rememberForever('user-logger.do_not_track_routes', static fn () => config('user-logger.do_not_track_routes') ?: []);
-        $this->exceptUsers = Cache::rememberForever('user-logger.do_not_track_user_ids', static fn () => config('user-logger.do_not_track_user_ids') ?: []);
+        $this->exceptUris = config('user-logger.do_not_track_routes') ?: [];
+        $this->exceptUsers = config('user-logger.do_not_track_user_ids') ?: [];
         $this->performanceEnabled = config('user-logger.performance.enabled', false) === true;
     }
 
@@ -39,52 +50,51 @@ class InjectUserLogger
     public function handle(Request $request, Closure $next)
     {
         $requestStart = microtime(true);
-        $queryCounts = ['total' => 0, 'user_logger' => 0];
+        self::$queryCounts = ['total' => 0, 'user_logger' => 0];
         $skipReason = null;
         $bootDurationMs = null;
         $booted = false;
-        $response = null;
 
         if ($this->performanceEnabled && config('user-logger.performance.log_queries', false) === true) {
-            DB::listen(function ($query) use (&$queryCounts): void {
-                $queryCounts['total']++;
-                if ($query->connectionName === 'user-logger') {
-                    $queryCounts['user_logger']++;
-                }
-            });
+            $this->registerQueryListener();
         }
 
         if (Auth::id() && $this->inExceptUserArray(Auth::id())) {
             $skipReason = 'except_user';
-            $response = $next($request);
-            $this->logPerformance($request, $response, $requestStart, $booted, $bootDurationMs, $skipReason, $queryCounts);
-
-            return $response;
-        }
-
-        if (config('app.debug')) {
+        } elseif (config('app.debug')) {
             // Error will be displayed to the user, because it's not in try-catch
             ['booted' => $booted, 'duration_ms' => $bootDurationMs, 'skip_reason' => $skipReason] = $this->bootUserLogger($request);
-            $response = $next($request);
-            $this->logPerformance($request, $response, $requestStart, $booted, $bootDurationMs, $skipReason, $queryCounts);
-
-            return $response;
+        } else {
+            // try - catch in middleware not working as expected: https://github.com/laravel/framework/issues/14573
+            // BUT - regardless use it:
+            // this does not log the error, but suppresses it completely
+            try {
+                ['booted' => $booted, 'duration_ms' => $bootDurationMs, 'skip_reason' => $skipReason] = $this->bootUserLogger($request);
+            } catch (Throwable $th) {
+                // will mostly not be called
+                LaravelLogger::warning('Error in topoff/laravel-user-logger: '.$th->getMessage(), ['exception' => $th]);
+            }
         }
 
-        // try - catch in middleware not working as expected: https://github.com/laravel/framework/issues/14573
-        // BUT - regardless use it:
-        // this does not log the error, but suppresses it completely
-        try {
-            ['booted' => $booted, 'duration_ms' => $bootDurationMs, 'skip_reason' => $skipReason] = $this->bootUserLogger($request);
-        } catch (Throwable $th) {
-            // will mostly not be called
-            LaravelLogger::warning('Error in topoff/laravel-user-logger: '.$th->getMessage(), $th->getTrace());
-        } finally {
-            $response = $next($request);
-            $this->logPerformance($request, $response, $requestStart, $booted, $bootDurationMs, $skipReason, $queryCounts);
+        $response = $next($request);
+        $this->logPerformance($request, $response, $requestStart, $booted, $bootDurationMs, $skipReason, self::$queryCounts);
 
-            return $response;
+        return $response;
+    }
+
+    protected function registerQueryListener(): void
+    {
+        if (self::$queryListenerRegistered) {
+            return;
         }
+
+        self::$queryListenerRegistered = true;
+        DB::listen(static function ($query): void {
+            self::$queryCounts['total']++;
+            if ($query->connectionName === 'user-logger') {
+                self::$queryCounts['user_logger']++;
+            }
+        });
     }
 
     /**
@@ -194,15 +204,18 @@ class InjectUserLogger
             $context['queries_user_logger'] = (int) $queryCounts['user_logger'];
         }
 
-        try {
-            PerformanceLog::query()->create($context);
-        } catch (Throwable $exception) {
-            LaravelLogger::warning(
-                'user-logger.performance.persist-failed: '.$exception->getMessage(),
-                ['path' => $request->path(), 'method' => $request->method()],
-            );
+        if ($this->isSampled()) {
+            try {
+                PerformanceLog::query()->create($context);
+            } catch (Throwable $exception) {
+                LaravelLogger::warning(
+                    'user-logger.performance.persist-failed: '.$exception->getMessage(),
+                    ['path' => $request->path(), 'method' => $request->method()],
+                );
+            }
         }
 
+        // Slow-request warnings are intentionally not sampled.
         if ($slowMs > 0 && $requestDurationMs >= $slowMs) {
             LaravelLogger::warning('user-logger.performance.slow-request', [
                 'path' => $request->path(),
@@ -212,5 +225,18 @@ class InjectUserLogger
                 'slow_threshold_ms' => $slowMs,
             ]);
         }
+    }
+
+    protected function isSampled(): bool
+    {
+        $sampleRate = (float) config('user-logger.performance.sample_rate', 1.0);
+        if ($sampleRate >= 1.0) {
+            return true;
+        }
+        if ($sampleRate <= 0.0) {
+            return false;
+        }
+
+        return mt_rand() / mt_getrandmax() < $sampleRate;
     }
 }

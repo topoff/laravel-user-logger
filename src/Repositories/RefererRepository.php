@@ -20,7 +20,7 @@ class RefererRepository
             $refererResult->url = 'unknown';
         }
 
-        return Referer::firstOrCreate([
+        $attributes = [
             'url' => $refererResult->url,
             'domain_id' => $domain->id,
             'source' => $refererResult->source,
@@ -32,6 +32,13 @@ class RefererRepository
             'device' => $refererResult->device,
             'adposition' => $refererResult->adposition,
             'network' => $refererResult->network,
-        ]);
+        ];
+
+        // Lookup via unique hash: the attribute columns can't carry a unique
+        // index (url is text), without one firstOrCreate is not race-safe.
+        return Referer::firstOrCreate(
+            ['lookup_hash' => sha1(json_encode($attributes, JSON_THROW_ON_ERROR))],
+            $attributes,
+        );
     }
 }

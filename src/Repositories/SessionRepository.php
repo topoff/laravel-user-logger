@@ -10,6 +10,7 @@ use Topoff\LaravelUserLogger\Models\Device;
 use Topoff\LaravelUserLogger\Models\Language;
 use Topoff\LaravelUserLogger\Models\Referer;
 use Topoff\LaravelUserLogger\Models\Session;
+use Topoff\LaravelUserLogger\Support\IpHasher;
 
 class SessionRepository
 {
@@ -37,7 +38,7 @@ class SessionRepository
             'agent_id' => $agent->id ?? null,
             'referer_id' => $referer->id ?? null,
             'language_id' => $language->id ?? null,
-            'client_ip' => in_array($clientIp, [null, '', '0'], true) ? null : $this->hashIp($clientIp),
+            'client_ip' => $this->prepareIp($clientIp),
             'is_suspicious' => $suspicious,
             'is_robot' => $isRobot,
         ]);
@@ -47,24 +48,27 @@ class SessionRepository
         return $session;
     }
 
+    protected function prepareIp(?string $clientIp): ?string
+    {
+        if (in_array($clientIp, [null, '', '0'], true)) {
+            return null;
+        }
+
+        if (config('user-logger.hash_ip', true) === true) {
+            return IpHasher::hash($clientIp);
+        }
+
+        return $clientIp;
+    }
+
     public function setRobotAndSuspicious(Session $session): Session
     {
         $session->is_robot = true;
         $session->is_suspicious = true;
         $session->save();
+        $this->forgetCached($session);
 
         return $session;
-    }
-
-    /**
-     * Hash the ip and change it a bit that it don't fits with lookup tables
-     * a little bit security through obscurity
-     */
-    protected function hashIp(string $clientIp): string
-    {
-        $clientIp = md5($clientIp);
-
-        return substr($clientIp, 0, 10).substr($clientIp, 20, 12).substr($clientIp, 11, 10);
     }
 
     /**
@@ -76,6 +80,7 @@ class SessionRepository
             $session->updated_at = Carbon::now();
             $session->user_id = $user->id;
             $session->save();
+            $this->forgetCached($session);
         }
 
         return $session;
@@ -87,5 +92,10 @@ class SessionRepository
     public function find(string $uuid): ?Session
     {
         return Cache::remember("Session_{$uuid}", 3600, fn () => Session::find($uuid));
+    }
+
+    protected function forgetCached(Session $session): void
+    {
+        Cache::forget("Session_{$session->id}");
     }
 }

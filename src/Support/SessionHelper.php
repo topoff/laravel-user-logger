@@ -18,7 +18,7 @@ class SessionHelper
      */
     public function __construct(protected Request $request)
     {
-        $this->sessionName = config('user-logger.session_name') ?? 'user_logger_session';
+        $this->sessionName = config('user-logger.session_name') ?? 'user-logger-session';
     }
 
     /**

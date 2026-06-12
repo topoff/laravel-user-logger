@@ -110,6 +110,7 @@ class TestCase extends Orchestra
 
         Schema::connection('user-logger')->create('referers', function (Blueprint $table): void {
             $table->bigIncrements('id');
+            $table->string('lookup_hash', 40)->nullable()->unique();
             $table->unsignedBigInteger('domain_id');
             $table->string('url')->nullable();
             $table->string('source')->nullable();

@@ -17,15 +17,16 @@
         "php": "^8.4",
         "jaybizzle/crawler-detect": "^1.2",
         "matomo/device-detector": "^6.3.0",
-        "illuminate/support": "*",
-        "illuminate/database": "*",
-        "illuminate/cache": "*",
-        "illuminate/log": "*",
+        "illuminate/support": "^12.0||^13.0",
+        "illuminate/database": "^12.0||^13.0",
+        "illuminate/cache": "^12.0||^13.0",
+        "illuminate/log": "^12.0||^13.0",
         "laravel/pennant": "^1.0",
+        "ramsey/uuid": "^4.7",
         "snowplow/referer-parser": "~0.2"
     },
-    "_comments": {
-        "snowplow/referer-parser": "Does not use semver and the newest version dev-master#2023-03-15-203816 does not get the php version. But the files seem to be ok, it uses the data/referers.json file from the repo."
+    "suggest": {
+        "laravel/nova": "Required to use the bundled Nova resources, lenses, metrics and dashboards (^5.0)."
     },
     "require-dev": {
         "driftingly/rector-laravel": "^2.0",
@@ -67,6 +68,9 @@
         }
     },
     "extra": {
+        "comments": {
+            "snowplow/referer-parser": "Does not use semver and the newest version dev-master#2023-03-15-203816 does not get the php version. But the files seem to be ok, it uses the data/referers.json file from the repo."
+        },
         "laravel": {
             "providers": [
                 "Topoff\\LaravelUserLogger\\UserLoggerServiceProvider"

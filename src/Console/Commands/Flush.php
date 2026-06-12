@@ -12,7 +12,7 @@ class Flush extends Command
      *
      * @var string
      */
-    protected $signature = 'user-logger:flush';
+    protected $signature = 'user-logger:flush {--force : Delete without confirmation}';
 
     /**
      * The console command description.
@@ -24,8 +24,17 @@ class Flush extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(): int
     {
+        if (! $this->option('force') && ! $this->confirm('This will delete ALL experiment measurements. Continue?')) {
+            $this->info('Aborted.');
+
+            return self::FAILURE;
+        }
+
         ExperimentMeasurement::truncate();
+        $this->info('Experiment measurements flushed.');
+
+        return self::SUCCESS;
     }
 }

@@ -16,7 +16,9 @@ class DomainRepository
             $attributes['name'] = 'unknown';
         }
 
-        return Cache::rememberForever("userlogger:domain:{$attributes['name']}", static fn () => Domain::firstOrCreate(
+        // TTL instead of rememberForever: the key space is client-controlled
+        // (Host header), an unbounded forever-cache would grow without limit.
+        return Cache::remember("userlogger:domain:{$attributes['name']}", 86400, static fn () => Domain::firstOrCreate(
             ['name' => $attributes['name']],
             ['local' => $attributes['local']],
         ));

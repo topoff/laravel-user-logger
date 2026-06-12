@@ -4,6 +4,7 @@ namespace Topoff\LaravelUserLogger;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log as LaravelLogger;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -13,6 +14,7 @@ use Override;
 use Throwable;
 use Topoff\LaravelUserLogger\Console\Commands\Flush;
 use Topoff\LaravelUserLogger\Console\Commands\HashIp;
+use Topoff\LaravelUserLogger\Console\Commands\PruneIps;
 use Topoff\LaravelUserLogger\Middleware\InjectUserLogger;
 use Topoff\LaravelUserLogger\Nova\Resources\ExperimentMeasurement;
 use Topoff\LaravelUserLogger\Nova\Resources\PerformanceLog;
@@ -50,6 +52,7 @@ class UserLoggerServiceProvider extends ServiceProvider
             $this->commands([
                 Flush::class,
                 HashIp::class,
+                PruneIps::class,
             ]);
         }
     }
@@ -64,14 +67,14 @@ class UserLoggerServiceProvider extends ServiceProvider
         $connection = (string) config('user-logger.experiments.pennant.connection', 'user-logger');
         $table = (string) config('user-logger.experiments.pennant.table', 'pennant_features');
 
+        // Only register the package's own named store. The host app's default
+        // "database" store must not be redirected to the user-logger connection.
         config([
             "pennant.stores.{$store}" => [
                 'driver' => 'database',
                 'connection' => $connection,
                 'table' => $table,
             ],
-            'pennant.stores.database.connection' => $connection,
-            'pennant.stores.database.table' => $table,
         ]);
     }
 
@@ -87,20 +90,25 @@ class UserLoggerServiceProvider extends ServiceProvider
 
         $connection = (string) config('user-logger.experiments.pennant.connection', 'user-logger');
         $table = (string) config('user-logger.experiments.pennant.table', 'pennant_features');
+        $cacheKey = "user-logger.pennant-table-exists.{$connection}.{$table}";
 
         try {
-            if (Schema::connection($connection)->hasTable($table)) {
+            if (Cache::get($cacheKey) === true) {
                 return;
             }
 
-            Schema::connection($connection)->create($table, function (Blueprint $table): void {
-                $table->id();
-                $table->string('name');
-                $table->string('scope');
-                $table->text('value');
-                $table->timestamps();
-                $table->unique(['name', 'scope']);
-            });
+            if (! Schema::connection($connection)->hasTable($table)) {
+                Schema::connection($connection)->create($table, function (Blueprint $table): void {
+                    $table->id();
+                    $table->string('name');
+                    $table->string('scope');
+                    $table->text('value');
+                    $table->timestamps();
+                    $table->unique(['name', 'scope']);
+                });
+            }
+
+            Cache::forever($cacheKey, true);
         } catch (Throwable $exception) {
             LaravelLogger::warning('user-logger.pennant.auto-install-failed: '.$exception->getMessage(), [
                 'connection' => $connection,
@@ -147,7 +155,9 @@ class UserLoggerServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/user-logger.php', 'user-logger');
 
-        $this->app->singleton(UserLogger::class, fn ($app): UserLogger => new UserLogger(
+        // scoped (not singleton): the instance captures the current request and
+        // per-request state, which must be flushed between requests under Octane.
+        $this->app->scoped(UserLogger::class, fn ($app): UserLogger => new UserLogger(
             $app,
             new AgentRepository,
             new DeviceRepository,
