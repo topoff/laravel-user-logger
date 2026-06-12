@@ -3,6 +3,7 @@
 namespace Topoff\LaravelUserLogger\Repositories;
 
 use Topoff\LaravelUserLogger\Models\Device;
+use Topoff\LaravelUserLogger\Support\AttributeLimiter;
 
 /**
  * Class DeviceRepository
@@ -14,7 +15,12 @@ class DeviceRepository
      */
     public function findOrCreate(array $attributes): Device
     {
-        return Device::firstOrCreate($attributes);
+        return Device::firstOrCreate(AttributeLimiter::apply($attributes, [
+            'kind' => 16,
+            'model' => 64,
+            'platform' => 64,
+            'platform_version' => 16,
+        ]));
     }
 
     /**

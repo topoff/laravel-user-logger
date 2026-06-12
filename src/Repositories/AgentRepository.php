@@ -3,6 +3,7 @@
 namespace Topoff\LaravelUserLogger\Repositories;
 
 use Topoff\LaravelUserLogger\Models\Agent;
+use Topoff\LaravelUserLogger\Support\AttributeLimiter;
 
 /**
  * Class AgentRepository
@@ -18,7 +19,17 @@ class AgentRepository
             $attributes['name'] = 'unknown';
         }
 
-        return Agent::firstOrCreate($attributes);
+        $attributes = AttributeLimiter::apply($attributes, [
+            'browser' => 255,
+            'browser_version' => 255,
+        ]);
+
+        // Lookup via unique hash: `name` is a text column without a full
+        // unique index, without one firstOrCreate is not race-safe.
+        return Agent::firstOrCreate(
+            ['lookup_hash' => sha1(json_encode($attributes, JSON_THROW_ON_ERROR))],
+            $attributes,
+        );
     }
 
     /**
@@ -26,7 +37,7 @@ class AgentRepository
      */
     public function findOrCreateNotDetected(): Agent
     {
-        return Agent::firstOrCreate([
+        return $this->findOrCreate([
             'name' => 'unknown',
             'browser' => null,
             'browser_version' => null,

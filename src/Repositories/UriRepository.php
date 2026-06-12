@@ -3,6 +3,7 @@
 namespace Topoff\LaravelUserLogger\Repositories;
 
 use Topoff\LaravelUserLogger\Models\Uri;
+use Topoff\LaravelUserLogger\Support\AttributeLimiter;
 
 class UriRepository
 {
@@ -11,6 +12,8 @@ class UriRepository
      */
     public function findOrCreate(array $attributes): Uri
     {
-        return Uri::firstOrCreate($attributes);
+        return Uri::firstOrCreate(AttributeLimiter::apply($attributes, [
+            'uri' => 255,
+        ]));
     }
 }

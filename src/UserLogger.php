@@ -67,6 +67,12 @@ class UserLogger
 
     protected ?PerformanceProfiler $performanceProfiler = null;
 
+    /**
+     * CrawlerDetect compiles its regex list on construction - share one
+     * instance per PHP process and pass the user agent explicitly.
+     */
+    protected static ?CrawlerDetect $crawlerDetect = null;
+
     public function __construct(/**
      * The Laravel application instance.
      */
@@ -95,8 +101,8 @@ class UserLogger
             $this->performanceProfiler?->start('user_logger_total');
         }
 
-        $crawlerDetect = new CrawlerDetect;
-        $isCrawler = $crawlerDetect->isCrawler();
+        self::$crawlerDetect ??= new CrawlerDetect;
+        $isCrawler = self::$crawlerDetect->isCrawler($this->request->userAgent() ?? '');
 
         if (config('app.debug')) {
             if (config('user-logger.log_robots') || ! $isCrawler) {

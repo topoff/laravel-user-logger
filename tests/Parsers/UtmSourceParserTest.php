@@ -48,4 +48,33 @@ class UtmSourceParserTest extends TestCase
         $this->assertSame('tablet', $result->device);
         $this->assertSame('search', $result->network);
     }
+
+    public function test_handles_urls_without_query_string(): void
+    {
+        $parser = new UtmSourceParser('https://example.test/path');
+
+        $this->assertFalse($parser->hasUtmSource());
+        $this->assertNull($parser->getResult());
+    }
+
+    public function test_treats_array_utm_source_as_absent(): void
+    {
+        $parser = new UtmSourceParser('https://example.test/?utm_source[]=google&utm_source[]=bing');
+
+        $this->assertFalse($parser->hasUtmSource());
+        $this->assertNull($parser->getResult());
+    }
+
+    public function test_array_query_parameters_do_not_break_parsing(): void
+    {
+        $url = 'https://example.test/?utm_source=google&keyword[]=a&device[]=m&matchtype[]=e&campaignid[]=x';
+        $result = (new UtmSourceParser($url))->getResult();
+
+        $this->assertNotNull($result);
+        $this->assertSame('google', $result->source);
+        $this->assertSame('', $result->keywords);
+        $this->assertSame('', $result->device);
+        $this->assertSame('', $result->matchtype);
+        $this->assertSame('', $result->campaign);
+    }
 }

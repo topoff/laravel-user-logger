@@ -86,6 +86,7 @@ class TestCase extends Orchestra
 
         Schema::connection('user-logger')->create('agents', function (Blueprint $table): void {
             $table->bigIncrements('id');
+            $table->string('lookup_hash', 40)->nullable()->unique();
             $table->string('name')->nullable();
             $table->string('browser')->nullable();
             $table->string('browser_version')->nullable();

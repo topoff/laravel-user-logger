@@ -16,7 +16,8 @@ class UtmSourceParser
      */
     public function __construct(protected string $url)
     {
-        parse_str(parse_url($this->url, PHP_URL_QUERY), $this->attributes);
+        // parse_url returns null/false for missing queries or invalid urls
+        parse_str((string) parse_url($this->url, PHP_URL_QUERY), $this->attributes);
     }
 
     /**
@@ -40,9 +41,12 @@ class UtmSourceParser
 
     /**
      * Is there a utm_source parameter?
+     * Array values (e.g. utm_source[]=x) are treated as absent.
      */
     public function hasUtmSource(): bool
     {
-        return ! empty($this->attributes['utm_source']);
+        return isset($this->attributes['utm_source'])
+            && is_string($this->attributes['utm_source'])
+            && $this->attributes['utm_source'] !== '';
     }
 }

@@ -29,4 +29,34 @@ class RefererParserTest extends TestCase
         $this->assertSame('https://not-a-known-ref.example/path', $result->url);
         $this->assertSame('not-a-known-ref.example', $result->domain);
     }
+
+    public function test_detects_known_search_engine_referer(): void
+    {
+        $parser = new RefererParser('https://www.google.com/search?q=laravel+logger');
+        $result = $parser->getResult();
+
+        $this->assertNotNull($result);
+        $this->assertSame('Google', $result->source);
+        $this->assertSame('search', $result->medium);
+        $this->assertSame('laravel logger', $result->keywords);
+    }
+
+    public function test_detects_internal_referer_via_page_url(): void
+    {
+        $parser = new RefererParser('https://shop.example/checkout', 'https://shop.example/cart');
+        $result = $parser->getResult();
+
+        $this->assertNotNull($result);
+        $this->assertTrue($result->domain_intern);
+    }
+
+    public function test_handles_invalid_referer_url_without_error(): void
+    {
+        $parser = new RefererParser('http:///broken');
+        $result = $parser->getResult();
+
+        $this->assertNotNull($result);
+        $this->assertNull($result->domain);
+        $this->assertSame('', $result->source);
+    }
 }

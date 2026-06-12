@@ -27,11 +27,7 @@ class UtmSourceGoogle extends AbstractUtmSource
      */
     protected function getDevice(): string
     {
-        if (isset($this->attributes['device']) && array_key_exists($this->attributes['device'], $this->devices)) {
-            return $this->devices[$this->attributes['device']];
-        }
-
-        return '';
+        return $this->devices[$this->attribute('device')] ?? '';
     }
 
     /**
@@ -39,11 +35,7 @@ class UtmSourceGoogle extends AbstractUtmSource
      */
     protected function getMatchtype(): string
     {
-        if (isset($this->attributes['matchtype']) && array_key_exists($this->attributes['matchtype'], $this->matchtypes)) {
-            return $this->matchtypes[$this->attributes['matchtype']];
-        }
-
-        return '';
+        return $this->matchtypes[$this->attribute('matchtype')] ?? '';
     }
 
     /**
@@ -51,10 +43,6 @@ class UtmSourceGoogle extends AbstractUtmSource
      */
     protected function getNetwork(): string
     {
-        if (isset($this->attributes['network']) && array_key_exists($this->attributes['network'], $this->networks)) {
-            return $this->networks[$this->attributes['network']];
-        }
-
-        return '';
+        return $this->networks[$this->attribute('network')] ?? '';
     }
 }

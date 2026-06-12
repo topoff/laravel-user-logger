@@ -16,7 +16,8 @@ abstract class AbstractUtmSource
      */
     public function __construct(protected string $url)
     {
-        parse_str(parse_url($this->url, PHP_URL_QUERY), $this->attributes);
+        // parse_url returns null/false for missing queries or invalid urls
+        parse_str((string) parse_url($this->url, PHP_URL_QUERY), $this->attributes);
     }
 
     /**
@@ -42,19 +43,29 @@ abstract class AbstractUtmSource
         return $refererResult;
     }
 
+    /**
+     * Query parameters can be arrays (e.g. keyword[]=x) - only accept strings.
+     */
+    protected function attribute(string $key): string
+    {
+        $value = $this->attributes[$key] ?? '';
+
+        return is_string($value) ? $value : '';
+    }
+
     protected function getUtmSource(): string
     {
-        return $this->attributes['utm_source'] ?? '';
+        return $this->attribute('utm_source');
     }
 
     protected function getCampaignId(): string
     {
-        return $this->attributes['campaignid'] ?? '';
+        return $this->attribute('campaignid');
     }
 
     protected function getAdgroupId(): string
     {
-        return $this->attributes['adgroupid'] ?? '';
+        return $this->attribute('adgroupid');
     }
 
     abstract protected function getMatchtype(): string;
@@ -63,19 +74,19 @@ abstract class AbstractUtmSource
 
     protected function getKeywords(): string
     {
-        return $this->attributes['keyword'] ?? '';
+        return $this->attribute('keyword');
     }
 
     protected function getAdposition(): string
     {
-        return $this->attributes['adposition'] ?? '';
+        return $this->attribute('adposition');
     }
 
     abstract protected function getNetwork(): string;
 
     protected function getGclid(): string
     {
-        return $this->attributes['gclid'] ?? '';
+        return $this->attribute('gclid');
     }
 
     /**

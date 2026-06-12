@@ -3,6 +3,7 @@
 namespace Topoff\LaravelUserLogger\Repositories;
 
 use Topoff\LaravelUserLogger\Models\Language;
+use Topoff\LaravelUserLogger\Support\AttributeLimiter;
 
 class LanguageRepository
 {
@@ -11,6 +12,9 @@ class LanguageRepository
      */
     public function findOrCreate(array $attributes): Language
     {
-        return Language::firstOrCreate($attributes);
+        return Language::firstOrCreate(AttributeLimiter::apply($attributes, [
+            'preference' => 30,
+            'range' => 255,
+        ]));
     }
 }
