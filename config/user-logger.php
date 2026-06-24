@@ -149,6 +149,15 @@ return [
     'ignore_ips' => [],
 
     /*
+     * Skip tracking for requests whose User-Agent contains any of these
+     * (case-insensitive) needles. Intended for synthetic traffic that should
+     * never reach analytics - e.g. the post-deploy `deploy-warmup` HTTP warm-up
+     * that re-fills the FPM OPcache. Matched as a substring, so `deploy-warmup`
+     * also covers `deploy-warmup/1.0` etc.
+     */
+    'ignore_user_agents' => ['deploy-warmup'],
+
+    /*
      * Log the client ip.
      */
     'log_ip' => true,

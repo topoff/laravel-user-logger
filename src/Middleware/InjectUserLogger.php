@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log as LaravelLogger;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 use Topoff\LaravelUserLogger\Models\PerformanceLog;
@@ -17,6 +18,8 @@ class InjectUserLogger
     protected array $exceptUris = [];
 
     protected array $exceptUsers = [];
+
+    protected array $exceptUserAgents = [];
 
     protected bool $performanceEnabled = false;
 
@@ -39,6 +42,7 @@ class InjectUserLogger
     {
         $this->exceptUris = config('user-logger.do_not_track_routes') ?: [];
         $this->exceptUsers = config('user-logger.do_not_track_user_ids') ?: [];
+        $this->exceptUserAgents = config('user-logger.ignore_user_agents') ?: [];
         $this->performanceEnabled = config('user-logger.performance.enabled', false) === true;
     }
 
@@ -111,6 +115,9 @@ class InjectUserLogger
         if ($this->inIgnoreIpsArray($request)) {
             return ['booted' => false, 'duration_ms' => null, 'skip_reason' => 'ignore_ip'];
         }
+        if ($this->inIgnoreUserAgentsArray($request)) {
+            return ['booted' => false, 'duration_ms' => null, 'skip_reason' => 'ignore_user_agent'];
+        }
         if (config('user-logger.only-events') === true) {
             return ['booted' => false, 'duration_ms' => null, 'skip_reason' => 'only_events'];
         }
@@ -156,6 +163,31 @@ class InjectUserLogger
         return in_array($request->ip(), config('user-logger.ignore_ips'), true);
     }
 
+    /**
+     * Determine if the request's User-Agent matches a configured ignore needle.
+     * Drops synthetic traffic such as the post-deploy `deploy-warmup` HTTP
+     * warm-up, which would otherwise pollute analytics.
+     */
+    protected function inIgnoreUserAgentsArray(Request $request): bool
+    {
+        if ($this->exceptUserAgents === []) {
+            return false;
+        }
+
+        $userAgent = (string) $request->userAgent();
+        if ($userAgent === '') {
+            return false;
+        }
+
+        foreach ($this->exceptUserAgents as $needle) {
+            if ($needle !== '' && Str::contains($userAgent, (string) $needle, ignoreCase: true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     protected function logPerformance(
         Request $request,
         Response $response,
@@ -170,7 +202,8 @@ class InjectUserLogger
         }
 
         // Always honor do_not_track_routes for performance logs, regardless of other skip reasons.
-        if ($this->inExceptUriArray($request) || $skipReason === 'except_uri') {
+        // Synthetic warm-up traffic (ignore_user_agents) must not produce performance rows either.
+        if ($this->inExceptUriArray($request) || $skipReason === 'except_uri' || $this->inIgnoreUserAgentsArray($request)) {
             return;
         }
 
