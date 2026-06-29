@@ -179,13 +179,7 @@ class InjectUserLogger
             return false;
         }
 
-        foreach ($this->exceptUserAgents as $needle) {
-            if ($needle !== '' && Str::contains($userAgent, (string) $needle, ignoreCase: true)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($this->exceptUserAgents, fn ($needle): bool => $needle !== '' && Str::contains($userAgent, (string) $needle, ignoreCase: true));
     }
 
     protected function logPerformance(
