@@ -2,6 +2,7 @@
 
 namespace Topoff\LaravelUserLogger;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Cache;
@@ -15,9 +16,11 @@ use Throwable;
 use Topoff\LaravelUserLogger\Console\Commands\Flush;
 use Topoff\LaravelUserLogger\Console\Commands\HashIp;
 use Topoff\LaravelUserLogger\Console\Commands\PruneIps;
+use Topoff\LaravelUserLogger\Console\Commands\SummarizePerformance;
 use Topoff\LaravelUserLogger\Console\Commands\UpdateReferers;
 use Topoff\LaravelUserLogger\Middleware\InjectUserLogger;
 use Topoff\LaravelUserLogger\Nova\Resources\ExperimentMeasurement;
+use Topoff\LaravelUserLogger\Nova\Resources\PerformanceDailySummary;
 use Topoff\LaravelUserLogger\Nova\Resources\PerformanceLog;
 use Topoff\LaravelUserLogger\Repositories\AgentRepository;
 use Topoff\LaravelUserLogger\Repositories\DeviceRepository;
@@ -54,9 +57,31 @@ class UserLoggerServiceProvider extends ServiceProvider
                 Flush::class,
                 HashIp::class,
                 PruneIps::class,
+                SummarizePerformance::class,
                 UpdateReferers::class,
             ]);
+
+            $this->registerPerformanceSummarySchedule();
         }
+    }
+
+    /**
+     * Auto-register the nightly performance summary in the host scheduler.
+     * Opt out via user-logger.performance.daily_summary.schedule = false.
+     */
+    protected function registerPerformanceSummarySchedule(): void
+    {
+        if (config('user-logger.performance.daily_summary.schedule', true) !== true) {
+            return;
+        }
+
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
+            $at = (string) config('user-logger.performance.daily_summary.schedule_at', '00:21');
+
+            $schedule->command(SummarizePerformance::class)
+                ->dailyAt($at)
+                ->withoutOverlapping();
+        });
     }
 
     protected function configurePennantStore(): void
@@ -141,6 +166,7 @@ class UserLoggerServiceProvider extends ServiceProvider
         Nova::resources([
             ExperimentMeasurement::class,
             PerformanceLog::class,
+            PerformanceDailySummary::class,
         ]);
     }
 

@@ -145,5 +145,48 @@ class TestCase extends Orchestra
             $table->timestamp('updated_at')->nullable();
             $table->unique(['session_id', 'feature', 'variant']);
         });
+
+        Schema::connection('user-logger')->create('performance_logs', function (Blueprint $table): void {
+            $table->bigIncrements('id');
+            $table->string('path')->nullable();
+            $table->string('method', 12)->nullable();
+            $table->unsignedSmallInteger('status')->nullable();
+            $table->boolean('booted')->default(false);
+            $table->string('skip_reason', 50)->nullable();
+            $table->decimal('request_duration_ms', 10, 3)->default(0);
+            $table->decimal('boot_duration_ms', 10, 3)->nullable();
+            $table->unsignedInteger('queries_total')->nullable();
+            $table->unsignedInteger('queries_user_logger')->nullable();
+            $table->unsignedBigInteger('log_id')->nullable();
+            $table->unsignedBigInteger('domain_id')->nullable();
+            $table->json('user_logger_segments')->nullable();
+            $table->json('user_logger_counters')->nullable();
+            $table->json('user_logger_meta')->nullable();
+            $table->timestamp('created_at')->nullable();
+        });
+
+        Schema::connection('user-logger')->create('performance_daily_summaries', function (Blueprint $table): void {
+            $table->bigIncrements('id');
+            $table->date('summary_date')->unique();
+            $table->unsignedInteger('requests')->default(0);
+            $table->decimal('sample_rate', 5, 4)->nullable();
+            $table->decimal('avg_duration_ms', 10, 3)->nullable();
+            $table->decimal('p50_duration_ms', 10, 3)->nullable();
+            $table->decimal('p95_duration_ms', 10, 3)->nullable();
+            $table->decimal('p99_duration_ms', 10, 3)->nullable();
+            $table->decimal('max_duration_ms', 10, 3)->nullable();
+            $table->unsignedInteger('slow_requests')->default(0);
+            $table->unsignedInteger('errors_4xx')->default(0);
+            $table->unsignedInteger('errors_5xx')->default(0);
+            $table->unsignedInteger('cold_boots')->default(0);
+            $table->decimal('avg_boot_duration_ms', 10, 3)->nullable();
+            $table->decimal('avg_queries', 10, 2)->nullable();
+            $table->unsignedInteger('max_queries')->nullable();
+            $table->unsignedInteger('sessions')->default(0);
+            $table->unsignedInteger('conversions')->default(0);
+            $table->decimal('conversion_rate', 8, 5)->nullable();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
+        });
     }
 }

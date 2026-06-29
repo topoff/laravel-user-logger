@@ -301,5 +301,31 @@ return [
          * Set 0 to disable pruning.
          */
         'retention_days' => 30,
+
+        /*
+         * Nightly aggregation of performance_logs (+ that day's conversions)
+         * into one performance_daily_summaries row per day, via
+         * `user-logger:summarize-performance`. The summary table is tiny and is
+         * meant to outlive the pruned raw rows, so trends stay queryable.
+         */
+        'daily_summary' => [
+            /*
+             * Auto-register the nightly run in the host scheduler.
+             * Set false to schedule the command yourself.
+             */
+            'schedule' => true,
+
+            /*
+             * Time of day (host scheduler timezone) for the nightly run.
+             * Keep it outside any host maintenance window.
+             */
+            'schedule_at' => '00:30',
+
+            /*
+             * request_duration_ms at/above which a request is counted as "slow"
+             * in the daily summary (slow_requests column).
+             */
+            'slow_threshold_ms' => 1000,
+        ],
     ],
 ];
