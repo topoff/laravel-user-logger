@@ -17,7 +17,8 @@ It is versioned in this repository and is intended for Claude Code, Codex, and O
 - All lookup tables carry unique constraints; `referers` and `agents` dedupe via a `lookup_hash` (sha1 over the truncated attributes; pre-migration rows keep NULL, deliberately no backfill).
 - Client-controlled input (UTM params, headers, URIs, hosts) is truncated to DB column limits via `Support\AttributeLimiter` **before** hashing/insert.
 - IPs: HMAC-SHA256 via `Support\IpHasher` (key `ip_salt`, fallback `app.key`); `hash_ip=false` stores plain text — then schedule `user-logger:prune-ips` (`retention.ip_days`).
-- Retention: `Log`, `Session`, `PerformanceLog` are `MassPrunable` (opt-in via `retention.*` / `performance.retention_days`), pruned via `model:prune`. Sessions prune only when they have no remaining logs.
+- Retention: `Log`, `Session`, `PerformanceLog` are `MassPrunable` (opt-in via `retention.*` / `performance.retention_days`), pruned via `model:prune`. Sessions prune only when they have no remaining logs. **`Log::prunable()` never deletes conversion logs** — keeps `event IN retention.preserve_events` (default `['conversion']`); NULL events are pruned. Reason: conversions live in `logs` and back the `v_conversions` view / lead-source attribution (host `backend`). The `user-logger:prune` wrapper prunes `performance_logs → logs → sessions` in that order.
+- Performance daily summaries (v10.4.0) + conversion-safe pruning (v10.5.0): `user-logger:summarize-performance` aggregates one `performance_daily_summaries` row/day (latency p50/p95/p99, errors, boots, db load, sessions, conversions, conversion_rate) so trends survive pruning and conversions can be correlated with performance. Auto-scheduled (`performance.daily_summary`); read-only Nova resource `PerformanceDailySummary` + trend cards. Percentiles via `ORDER BY … OFFSET` (portable MySQL/SQLite).
 - Per-process caches: snowplow `JsonConfigReader` (119KB json), `CrawlerDetect` instance. `UserLogger` is a **scoped** (not singleton) binding — keep it Octane-safe.
 - Referer detection: snowplow matching code + **own bundled database** `resources/data/referers.json`, generated from `matomo/searchengine-and-social-list` (search/social/**ai** mediums, email carried over from snowplow). Refresh is automated: monthly GitHub Action (commits + patch-tags on change), `post-update-cmd` regenerates on every local `composer update`, manual via `composer update-referers`.
 
@@ -25,7 +26,7 @@ It is versioned in this repository and is intended for Claude Code, Codex, and O
 
 - Tests: `composer test` (Pest). Full toolchain before finalizing: `composer clean` (Rector + Pint + PHPStan).
 - Release: commit → `git tag vX.Y.Z` → `git push origin master && git push origin vX.Y.Z`.
-- Artisan: `user-logger:flush` (asks for confirmation, `--force` for cron), `user-logger:haship`, `user-logger:prune-ips [--days=N]`.
+- Artisan: `user-logger:flush` (asks for confirmation, `--force` for cron), `user-logger:haship`, `user-logger:prune-ips [--days=N]`, `user-logger:summarize-performance [--date=Y-m-d] [--days=N]` (backfill), `user-logger:prune [--pretend]`.
 
 ## Conventions specific to this project
 
