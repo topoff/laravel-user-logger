@@ -43,7 +43,17 @@ class Log extends Model
             return static::query()->whereRaw('1 = 0');
         }
 
-        return static::query()->where('created_at', '<', now()->subDays($days));
+        $preserveEvents = array_values(array_filter((array) config('user-logger.retention.preserve_events', ['conversion'])));
+
+        return static::query()
+            ->where('created_at', '<', now()->subDays($days))
+            ->when($preserveEvents !== [], function (Builder $query) use ($preserveEvents): void {
+                // Keep conversion logs forever: they back the v_conversions view
+                // and lead-source attribution. NULL events are not preserved.
+                $query->where(function (Builder $inner) use ($preserveEvents): void {
+                    $inner->whereNull('event')->orWhereNotIn('event', $preserveEvents);
+                });
+            });
     }
 
     /**

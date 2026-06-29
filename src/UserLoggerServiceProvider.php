@@ -15,6 +15,7 @@ use Override;
 use Throwable;
 use Topoff\LaravelUserLogger\Console\Commands\Flush;
 use Topoff\LaravelUserLogger\Console\Commands\HashIp;
+use Topoff\LaravelUserLogger\Console\Commands\Prune;
 use Topoff\LaravelUserLogger\Console\Commands\PruneIps;
 use Topoff\LaravelUserLogger\Console\Commands\SummarizePerformance;
 use Topoff\LaravelUserLogger\Console\Commands\UpdateReferers;
@@ -56,6 +57,7 @@ class UserLoggerServiceProvider extends ServiceProvider
             $this->commands([
                 Flush::class,
                 HashIp::class,
+                Prune::class,
                 PruneIps::class,
                 SummarizePerformance::class,
                 UpdateReferers::class,

@@ -241,6 +241,14 @@ return [
         'sessions_days' => 0,
 
         /*
+         * Log events never deleted by pruning, regardless of age. Conversions
+         * live in the logs table (event = 'conversion') and back the
+         * v_conversions view / lead-source attribution, so they must survive.
+         * Empty array prunes every old log row.
+         */
+        'preserve_events' => ['conversion'],
+
+        /*
          * Days after the last session activity until the stored client ip
          * is removed (the session itself is kept). Applied by the
          * `user-logger:prune-ips` command. 0 disables ip pruning.
@@ -319,7 +327,7 @@ return [
              * Time of day (host scheduler timezone) for the nightly run.
              * Keep it outside any host maintenance window.
              */
-            'schedule_at' => '00:30',
+            'schedule_at' => '00:21',
 
             /*
              * request_duration_ms at/above which a request is counted as "slow"
