@@ -55,7 +55,7 @@ class TestCase extends Orchestra
             $table->unsignedBigInteger('agent_id')->nullable();
             $table->unsignedBigInteger('referer_id')->nullable();
             $table->unsignedBigInteger('language_id')->nullable();
-            $table->string('client_ip')->nullable();
+            $table->string('client_ip')->nullable()->index();
             $table->boolean('is_robot')->default(false);
             $table->boolean('is_suspicious')->default(false);
             $table->timestamp('updated_at')->nullable();
