@@ -7,9 +7,8 @@ use Topoff\LaravelUserLogger\Nova\Metrics\Experiment\ExperimentConversionRateByV
 use Topoff\LaravelUserLogger\Nova\Metrics\Experiment\ExperimentConversionRateValueMetric;
 use Topoff\LaravelUserLogger\Nova\Metrics\Experiment\ExperimentConversionsByVariantPartitionMetric;
 use Topoff\LaravelUserLogger\Nova\Metrics\Experiment\ExperimentConversionsValueMetric;
-use Topoff\LaravelUserLogger\Nova\Metrics\Experiment\ExperimentExposuresByFeaturePartitionMetric;
-use Topoff\LaravelUserLogger\Nova\Metrics\Experiment\ExperimentExposuresByVariantPartitionMetric;
 use Topoff\LaravelUserLogger\Nova\Metrics\Experiment\ExperimentExposuresValueMetric;
+use Topoff\LaravelUserLogger\Nova\Metrics\Experiment\ExperimentResultsTableMetric;
 
 class ExperimentResultsDashboard extends Dashboard
 {
@@ -26,13 +25,14 @@ class ExperimentResultsDashboard extends Dashboard
     public function cards(): array
     {
         return [
+            (new ExperimentResultsTableMetric)
+                ->emptyText('Noch keine Experiment-Messungen vorhanden.')
+                ->width('full'),
             (new ExperimentExposuresValueMetric)->width('1/3'),
             (new ExperimentConversionsValueMetric)->width('1/3'),
             (new ExperimentConversionRateValueMetric)->width('1/3'),
-            (new ExperimentExposuresByFeaturePartitionMetric)->width('1/2'),
-            (new ExperimentExposuresByVariantPartitionMetric)->width('1/2'),
-            (new ExperimentConversionsByVariantPartitionMetric)->width('1/2'),
             (new ExperimentConversionRateByVariantPartitionMetric)->width('1/2'),
+            (new ExperimentConversionsByVariantPartitionMetric)->width('1/2'),
         ];
     }
 }
