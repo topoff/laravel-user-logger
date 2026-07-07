@@ -68,3 +68,26 @@ it('falls back to only the most recent row when no exact variant row exists', fu
     expect($older->refresh()->conversion_count)->toBe(0)
         ->and($newer->refresh()->conversion_count)->toBe(1);
 });
+
+it('attributes conversions to on-read features that are exposed but not listed in config', function (): void {
+    config()->set('user-logger.experiments.enabled', true);
+    config()->set('user-logger.experiments.features', ['headline']);
+    config()->set('user-logger.experiments.conversion_events', ['conversion']);
+
+    $session = makeConversionSession('00000000-0000-0000-0000-000000000703');
+
+    // On-read experiment: the flag is intentionally kept out of the config
+    // features list (so it is not eagerly exposed), but the page that rendered
+    // it recorded an exposure row via setVariant().
+    $onRead = ExperimentMeasurement::query()->create([
+        'session_id' => $session->id,
+        'feature' => 'landingpage-city-trustsignals',
+        'variant' => null,
+        'exposure_count' => 1,
+        'conversion_count' => 0,
+    ]);
+
+    new ExperimentMeasurementService()->recordConversion($session, 'conversion');
+
+    expect($onRead->refresh()->conversion_count)->toBe(1);
+});

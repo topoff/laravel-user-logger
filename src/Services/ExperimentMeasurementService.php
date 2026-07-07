@@ -110,7 +110,7 @@ class ExperimentMeasurementService
         }
 
         $now = now();
-        $features = $this->getTrackedFeatures();
+        $features = $this->getConversionFeatures($session);
         if ($features === []) {
             $this->applyConversion(
                 ExperimentMeasurement::query()->where('session_id', $session->id),
@@ -222,6 +222,30 @@ class ExperimentMeasurementService
             config('user-logger.experiments.features', []),
             static fn ($feature): bool => is_string($feature) && $feature !== '',
         ));
+    }
+
+    /**
+     * Features a conversion should be attributed to: the configured tracked
+     * features plus any feature the session already holds an exposure row for.
+     *
+     * The latter covers on-read experiments whose flags are intentionally kept
+     * out of config('user-logger.experiments.features') (so they are not
+     * eagerly exposed on every request, but only recorded via setVariant() on
+     * the pages that actually render them) — those flags must still receive
+     * this session's conversions.
+     *
+     * @return list<string>
+     */
+    protected function getConversionFeatures(Session $session): array
+    {
+        $exposed = ExperimentMeasurement::query()
+            ->where('session_id', $session->id)
+            ->distinct()
+            ->pluck('feature')
+            ->filter(static fn ($feature): bool => is_string($feature) && $feature !== '')
+            ->all();
+
+        return array_values(array_unique([...$this->getTrackedFeatures(), ...$exposed]));
     }
 
     protected function isMeasurementEnabled(): bool
