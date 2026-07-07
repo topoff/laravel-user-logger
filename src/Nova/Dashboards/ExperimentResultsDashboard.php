@@ -3,7 +3,9 @@
 namespace Topoff\LaravelUserLogger\Nova\Dashboards;
 
 use Laravel\Nova\Dashboard;
+use Topoff\LaravelUserLogger\Nova\Metrics\Experiment\ExperimentConversionRateByVariantPartitionMetric;
 use Topoff\LaravelUserLogger\Nova\Metrics\Experiment\ExperimentConversionRateValueMetric;
+use Topoff\LaravelUserLogger\Nova\Metrics\Experiment\ExperimentConversionsByVariantPartitionMetric;
 use Topoff\LaravelUserLogger\Nova\Metrics\Experiment\ExperimentConversionsValueMetric;
 use Topoff\LaravelUserLogger\Nova\Metrics\Experiment\ExperimentExposuresByFeaturePartitionMetric;
 use Topoff\LaravelUserLogger\Nova\Metrics\Experiment\ExperimentExposuresByVariantPartitionMetric;
@@ -29,6 +31,8 @@ class ExperimentResultsDashboard extends Dashboard
             (new ExperimentConversionRateValueMetric)->width('1/3'),
             (new ExperimentExposuresByFeaturePartitionMetric)->width('1/2'),
             (new ExperimentExposuresByVariantPartitionMetric)->width('1/2'),
+            (new ExperimentConversionsByVariantPartitionMetric)->width('1/2'),
+            (new ExperimentConversionRateByVariantPartitionMetric)->width('1/2'),
         ];
     }
 }

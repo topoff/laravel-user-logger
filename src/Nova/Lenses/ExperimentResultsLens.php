@@ -23,7 +23,9 @@ class ExperimentResultsLens extends Lens
             DB::raw('COUNT(*) as sessions'),
             DB::raw('SUM(exposure_count) as exposures'),
             DB::raw('SUM(conversion_count) as conversions'),
+            DB::raw('SUM(CASE WHEN conversion_count > 0 THEN 1 ELSE 0 END) as converting_sessions'),
             DB::raw('ROUND((SUM(conversion_count) / NULLIF(SUM(exposure_count), 0)) * 100, 2) as conversion_rate'),
+            DB::raw('ROUND((SUM(CASE WHEN conversion_count > 0 THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0)) * 100, 2) as conversion_rate_per_session'),
         ])->groupBy('feature', 'variant');
 
         return $request->withOrdering(
@@ -45,7 +47,9 @@ class ExperimentResultsLens extends Lens
             Number::make('Sessions', 'sessions')->sortable(),
             Number::make('Exposures', 'exposures')->sortable(),
             Number::make('Conversions', 'conversions')->sortable(),
-            Number::make('Conversion Rate', 'conversion_rate')->sortable(),
+            Number::make('Converting Sessions', 'converting_sessions')->sortable(),
+            Number::make('CVR per Session (%)', 'conversion_rate_per_session')->sortable(),
+            Number::make('CVR per Exposure (%)', 'conversion_rate')->sortable(),
         ];
     }
 
