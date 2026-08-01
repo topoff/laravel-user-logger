@@ -4205,6 +4205,13 @@
                 "global.cyworld.com"
             ]
         },
+        "Discord": {
+            "domains": [
+                "discord.com",
+                "discord.gg",
+                "discordapp.com"
+            ]
+        },
         "Douyin": {
             "domains": [
                 "douyin.com"
@@ -4698,6 +4705,14 @@
                 "wayn.com"
             ]
         },
+        "WeChat": {
+            "domains": [
+                "wechat.com",
+                "mp.weixin.qq.com",
+                "open.weixin.qq.com",
+                "channels.weixin.qq.com"
+            ]
+        },
         "Weibo": {
             "domains": [
                 "weibo.com",
@@ -4770,6 +4785,11 @@
         "Deepseek": {
             "domains": [
                 "chat.deepseek.com"
+            ]
+        },
+        "Duck.ai": {
+            "domains": [
+                "duck.ai"
             ]
         },
         "Gemini": {
