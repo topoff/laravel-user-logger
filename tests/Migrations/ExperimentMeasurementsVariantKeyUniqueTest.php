@@ -6,6 +6,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Throwable;
 use Topoff\LaravelUserLogger\Models\ExperimentMeasurement;
 use Topoff\LaravelUserLogger\Tests\TestCase;
 
@@ -98,5 +99,47 @@ class ExperimentMeasurementsVariantKeyUniqueTest extends TestCase
             'variant' => null,
             'variant_key' => '',
         ]);
+    }
+
+    public function test_failed_index_creation_keeps_the_old_unique_index_in_place(): void
+    {
+        // Persisting duplicates (as live traffic could recreate them) make
+        // every CREATE UNIQUE INDEX attempt fail. The migration must throw —
+        // and must NOT have dropped the old unique index beforehand, so the
+        // table never ends up without any unique protection at all.
+        $insert = fn () => DB::connection('user-logger')->table('experiment_measurements')->insert([
+            'session_id' => '00000000-0000-0000-0000-00000000000c',
+            'feature' => 'which-landingpage',
+            'variant' => null,
+            'exposure_count' => 1,
+            'conversion_count' => 0,
+        ]);
+        $insert();
+        $insert();
+
+        $migration = new class extends \ExperimentMeasurementsVariantKeyUnique
+        {
+            protected function mergeDuplicates(): void
+            {
+                // simulate duplicates reappearing faster than the dedupe runs
+            }
+        };
+
+        $thrown = null;
+
+        try {
+            $migration->up();
+        } catch (Throwable $throwable) {
+            $thrown = $throwable;
+        }
+
+        $this->assertNotNull($thrown, 'The migration must fail loudly when the unique index cannot be created.');
+        $this->assertTrue(
+            Schema::connection('user-logger')->hasIndex('experiment_measurements', 'experiment_measurements_session_id_feature_variant_unique'),
+            'The old unique index must survive a failed migration.'
+        );
+        $this->assertFalse(
+            Schema::connection('user-logger')->hasIndex('experiment_measurements', 'experiment_measurements_session_feature_variant_key_unique'),
+        );
     }
 }

@@ -15,6 +15,13 @@ use Topoff\LaravelUserLogger\Support\Migration;
  * never collide with NULL); existing duplicates are merged per variant_key
  * before the index is created. The encoding must match
  * ExperimentMeasurement::variantKeyFor().
+ *
+ * Deploy note: preferably run this while experiment writes are quiesced
+ * (maintenance mode / paused workers). An un-quiesced run cannot corrupt data
+ * — the old unique index stays in place until the new one is verified, and
+ * each merge group is processed in a lockForUpdate transaction — but a
+ * concurrent exposure increment on a row the merge deletes can be lost
+ * (bounded to the few NULL-duplicate rows this migration touches).
  */
 class ExperimentMeasurementsVariantKeyUnique extends Migration
 {
@@ -36,14 +43,6 @@ class ExperimentMeasurementsVariantKeyUnique extends Migration
         }
 
         $this->backfillVariantKeys();
-
-        try {
-            $schema->table('experiment_measurements', function (Blueprint $table): void {
-                $table->dropUnique('experiment_measurements_session_id_feature_variant_unique');
-            });
-        } catch (Throwable) {
-            // ignore — index may not exist on this installation
-        }
 
         if (! $schema->hasIndex('experiment_measurements', self::UNIQUE_INDEX)) {
             $attempts = 0;
@@ -72,6 +71,16 @@ class ExperimentMeasurementsVariantKeyUnique extends Migration
         if (! $schema->hasIndex('experiment_measurements', self::UNIQUE_INDEX)) {
             throw new RuntimeException('Unique index '.self::UNIQUE_INDEX.' was not created on experiment_measurements.');
         }
+
+        // Only after the new index is in place and verified may the old one
+        // go — if anything above threw, the table keeps its old protection.
+        try {
+            $schema->table('experiment_measurements', function (Blueprint $table): void {
+                $table->dropUnique('experiment_measurements_session_id_feature_variant_unique');
+            });
+        } catch (Throwable) {
+            // ignore — index may not exist on this installation
+        }
     }
 
     public function down(): void
@@ -80,6 +89,15 @@ class ExperimentMeasurementsVariantKeyUnique extends Migration
 
         if (! $schema->hasTable('experiment_measurements')) {
             return;
+        }
+
+        // Mirror of up(): restore the old protection before removing the new.
+        try {
+            $schema->table('experiment_measurements', function (Blueprint $table): void {
+                $table->unique(['session_id', 'feature', 'variant'], 'experiment_measurements_session_id_feature_variant_unique');
+            });
+        } catch (Throwable) {
+            // ignore — already present
         }
 
         try {
@@ -94,14 +112,6 @@ class ExperimentMeasurementsVariantKeyUnique extends Migration
             $schema->table('experiment_measurements', function (Blueprint $table): void {
                 $table->dropColumn('variant_key');
             });
-        }
-
-        try {
-            $schema->table('experiment_measurements', function (Blueprint $table): void {
-                $table->unique(['session_id', 'feature', 'variant'], 'experiment_measurements_session_id_feature_variant_unique');
-            });
-        } catch (Throwable) {
-            // ignore
         }
     }
 
@@ -131,6 +141,13 @@ class ExperimentMeasurementsVariantKeyUnique extends Migration
      * last_* the maximum, and the last_conversion_* details follow the row
      * with the most recent last_converted_at. Only NULL-variant rows can be
      * affected (real variants were unique before), so the volume is small.
+     *
+     * Each group runs in its own transaction with the rows locked FOR UPDATE:
+     * concurrent recordExposure()/recordConversion() writes on these rows
+     * block until the merge committed, so they cannot interleave between the
+     * read, the keeper update and the delete. Deletion targets the locked ids
+     * explicitly — rows inserted after the locked read are left for the
+     * retry loop around the index creation.
      */
     protected function mergeDuplicates(): void
     {
@@ -141,38 +158,42 @@ class ExperimentMeasurementsVariantKeyUnique extends Migration
             ->get();
 
         foreach ($duplicateGroups as $group) {
-            $rows = DB::connection($this->connection)->table('experiment_measurements')
-                ->where('session_id', $group->session_id)
-                ->where('feature', $group->feature)
-                ->where('variant_key', $group->variant_key)
-                ->orderBy('id')
-                ->get();
+            DB::connection($this->connection)->transaction(function () use ($group): void {
+                $rows = DB::connection($this->connection)->table('experiment_measurements')
+                    ->where('session_id', $group->session_id)
+                    ->where('feature', $group->feature)
+                    ->where('variant_key', $group->variant_key)
+                    ->orderBy('id')
+                    ->lockForUpdate()
+                    ->get();
 
-            $keeper = $rows->first();
-            $latestConversion = $rows->whereNotNull('last_converted_at')->sortByDesc('last_converted_at')->first();
+                if ($rows->count() < 2) {
+                    return;
+                }
 
-            DB::connection($this->connection)->table('experiment_measurements')
-                ->where('id', $keeper->id)
-                ->update([
-                    'exposure_count' => (int) $rows->sum('exposure_count'),
-                    'conversion_count' => (int) $rows->sum('conversion_count'),
-                    'first_log_id' => $rows->whereNotNull('first_log_id')->min('first_log_id'),
-                    'last_log_id' => $rows->whereNotNull('last_log_id')->max('last_log_id'),
-                    'first_exposed_at' => $rows->whereNotNull('first_exposed_at')->min('first_exposed_at'),
-                    'last_exposed_at' => $rows->whereNotNull('last_exposed_at')->max('last_exposed_at'),
-                    'first_converted_at' => $rows->whereNotNull('first_converted_at')->min('first_converted_at'),
-                    'last_converted_at' => $latestConversion->last_converted_at ?? null,
-                    'last_conversion_event' => $latestConversion->last_conversion_event ?? null,
-                    'last_conversion_entity_type' => $latestConversion->last_conversion_entity_type ?? null,
-                    'last_conversion_entity_id' => $latestConversion->last_conversion_entity_id ?? null,
-                ]);
+                $keeper = $rows->first();
+                $latestConversion = $rows->whereNotNull('last_converted_at')->sortByDesc('last_converted_at')->first();
 
-            DB::connection($this->connection)->table('experiment_measurements')
-                ->where('session_id', $group->session_id)
-                ->where('feature', $group->feature)
-                ->where('variant_key', $group->variant_key)
-                ->where('id', '!=', $keeper->id)
-                ->delete();
+                DB::connection($this->connection)->table('experiment_measurements')
+                    ->where('id', $keeper->id)
+                    ->update([
+                        'exposure_count' => (int) $rows->sum('exposure_count'),
+                        'conversion_count' => (int) $rows->sum('conversion_count'),
+                        'first_log_id' => $rows->whereNotNull('first_log_id')->min('first_log_id'),
+                        'last_log_id' => $rows->whereNotNull('last_log_id')->max('last_log_id'),
+                        'first_exposed_at' => $rows->whereNotNull('first_exposed_at')->min('first_exposed_at'),
+                        'last_exposed_at' => $rows->whereNotNull('last_exposed_at')->max('last_exposed_at'),
+                        'first_converted_at' => $rows->whereNotNull('first_converted_at')->min('first_converted_at'),
+                        'last_converted_at' => $latestConversion->last_converted_at ?? null,
+                        'last_conversion_event' => $latestConversion->last_conversion_event ?? null,
+                        'last_conversion_entity_type' => $latestConversion->last_conversion_entity_type ?? null,
+                        'last_conversion_entity_id' => $latestConversion->last_conversion_entity_id ?? null,
+                    ]);
+
+                DB::connection($this->connection)->table('experiment_measurements')
+                    ->whereIn('id', $rows->skip(1)->pluck('id')->all())
+                    ->delete();
+            });
         }
     }
 }
