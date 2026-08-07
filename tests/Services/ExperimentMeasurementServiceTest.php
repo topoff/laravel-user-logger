@@ -187,4 +187,91 @@ class ExperimentMeasurementServiceTest extends TestCase
         $this->assertCount(2, $rows);
         $this->assertSame(['old-b', 'cityTemplate2025'], $rows->pluck('variant')->all());
     }
+
+    public function test_set_variant_survives_losing_the_insert_race_and_updates_the_existing_row(): void
+    {
+        config()->set('user-logger.experiments.enabled', true);
+
+        $session = Session::query()->create(['id' => '00000000-0000-0000-0000-000000000007']);
+        $firstLog = Log::query()->create(['session_id' => $session->id]);
+        $secondLog = Log::query()->create(['session_id' => $session->id]);
+
+        // Simulates two parallel requests of the same session: the first
+        // lookup misses (the parallel insert has not landed yet), the create
+        // then hits the unique index, and the recovery lookup sees the row.
+        $service = new class extends ExperimentMeasurementService
+        {
+            public int $lookups = 0;
+
+            protected function findMeasurement(string $sessionId, string $feature, ?string $variant): ?ExperimentMeasurement
+            {
+                $this->lookups++;
+
+                return $this->lookups === 1 ? null : parent::findMeasurement($sessionId, $feature, $variant);
+            }
+        };
+
+        ExperimentMeasurement::query()->create([
+            'session_id' => $session->id,
+            'feature' => 'which-landingpage',
+            'variant' => 'cityTemplate2025',
+            'first_log_id' => $firstLog->id,
+            'last_log_id' => $firstLog->id,
+            'exposure_count' => 4,
+            'conversion_count' => 1,
+            'first_exposed_at' => now(),
+            'last_exposed_at' => now(),
+        ]);
+
+        $service->setVariant($session, 'which-landingpage', 'cityTemplate2025', $secondLog);
+
+        $rows = ExperimentMeasurement::query()->where('session_id', $session->id)->get();
+        $this->assertCount(1, $rows);
+        $this->assertSame($secondLog->id, $rows->first()->last_log_id);
+        $this->assertSame(4, $rows->first()->exposure_count);
+        $this->assertSame(2, $service->lookups);
+    }
+
+    public function test_record_exposure_survives_losing_the_insert_race_and_counts_on_the_existing_row(): void
+    {
+        config()->set('user-logger.experiments.enabled', true);
+        config()->set('user-logger.experiments.features', ['headline']);
+
+        $session = Session::query()->create(['id' => '00000000-0000-0000-0000-000000000008']);
+        $log = Log::query()->create(['session_id' => $session->id]);
+
+        // getVariant() runs between the prefetch of existing rows and the
+        // insert — the override plants the parallel request's row exactly
+        // there, so the create is guaranteed to lose the race.
+        $service = new class extends ExperimentMeasurementService
+        {
+            public ?Session $raceSession = null;
+
+            public function getVariant(string $feature, Session $session): ?string
+            {
+                if ($this->raceSession instanceof Session) {
+                    ExperimentMeasurement::query()->create([
+                        'session_id' => $this->raceSession->id,
+                        'feature' => $feature,
+                        'variant' => 'b',
+                        'exposure_count' => 1,
+                        'conversion_count' => 0,
+                        'first_exposed_at' => now(),
+                        'last_exposed_at' => now(),
+                    ]);
+                    $this->raceSession = null;
+                }
+
+                return 'b';
+            }
+        };
+        $service->raceSession = $session;
+
+        $service->recordExposure($session, $log);
+
+        $rows = ExperimentMeasurement::query()->where('session_id', $session->id)->get();
+        $this->assertCount(1, $rows);
+        $this->assertSame(2, $rows->first()->exposure_count);
+        $this->assertSame($log->id, $rows->first()->last_log_id);
+    }
 }

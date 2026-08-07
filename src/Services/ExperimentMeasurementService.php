@@ -3,6 +3,7 @@
 namespace Topoff\LaravelUserLogger\Services;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log as LaravelLogger;
@@ -28,29 +29,44 @@ class ExperimentMeasurementService
         $measurement = $this->findMeasurement($session->id, $feature, $normalizedVariant);
 
         if ($measurement instanceof ExperimentMeasurement) {
-            if ($lastLogId !== null) {
-                $measurement->last_log_id = $lastLogId;
-            }
-            $measurement->updated_at = $now;
-            $measurement->save();
+            $this->touchVariantMeasurement($measurement, $lastLogId, $now);
 
             return;
         }
 
-        ExperimentMeasurement::query()->create([
-            'session_id' => $session->id,
-            'feature' => $feature,
-            'variant' => $normalizedVariant,
-            'first_log_id' => $lastLogId,
-            'last_log_id' => $lastLogId,
-            // If no exposure row exists yet, create a baseline row for this request.
-            'exposure_count' => 1,
-            'conversion_count' => 0,
-            'first_exposed_at' => $now,
-            'last_exposed_at' => $now,
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
+        try {
+            ExperimentMeasurement::query()->create([
+                'session_id' => $session->id,
+                'feature' => $feature,
+                'variant' => $normalizedVariant,
+                'first_log_id' => $lastLogId,
+                'last_log_id' => $lastLogId,
+                // If no exposure row exists yet, create a baseline row for this request.
+                'exposure_count' => 1,
+                'conversion_count' => 0,
+                'first_exposed_at' => $now,
+                'last_exposed_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+        } catch (UniqueConstraintViolationException) {
+            // Lost the insert race against a parallel request of the same
+            // session (double navigation, prefetch): the row exists now, so
+            // apply the update path instead of surfacing the violation.
+            $measurement = $this->findMeasurement($session->id, $feature, $normalizedVariant);
+            if ($measurement instanceof ExperimentMeasurement) {
+                $this->touchVariantMeasurement($measurement, $lastLogId, $now);
+            }
+        }
+    }
+
+    protected function touchVariantMeasurement(ExperimentMeasurement $measurement, ?int $lastLogId, Carbon $now): void
+    {
+        if ($lastLogId !== null) {
+            $measurement->last_log_id = $lastLogId;
+        }
+        $measurement->updated_at = $now;
+        $measurement->save();
     }
 
     public function recordExposure(Session $session, Log $log): void
@@ -78,29 +94,43 @@ class ExperimentMeasurementService
             );
 
             if ($measurement instanceof ExperimentMeasurement) {
-                $measurement->variant = $variant;
-                $measurement->last_log_id = $log->id;
-                $measurement->last_exposed_at = $now;
-                $measurement->exposure_count++;
-                $measurement->save();
+                $this->touchExposureMeasurement($measurement, $log, $now);
 
                 continue;
             }
 
-            ExperimentMeasurement::query()->create([
-                'session_id' => $session->id,
-                'feature' => $feature,
-                'variant' => $variant,
-                'first_log_id' => $log->id,
-                'last_log_id' => $log->id,
-                'exposure_count' => 1,
-                'conversion_count' => 0,
-                'first_exposed_at' => $now,
-                'last_exposed_at' => $now,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+            try {
+                ExperimentMeasurement::query()->create([
+                    'session_id' => $session->id,
+                    'feature' => $feature,
+                    'variant' => $variant,
+                    'first_log_id' => $log->id,
+                    'last_log_id' => $log->id,
+                    'exposure_count' => 1,
+                    'conversion_count' => 0,
+                    'first_exposed_at' => $now,
+                    'last_exposed_at' => $now,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+            } catch (UniqueConstraintViolationException) {
+                // Same insert race as in setVariant(): a parallel request of
+                // this session created the row after our prefetch — count the
+                // exposure on the existing row instead of throwing.
+                $measurement = $this->findMeasurement($session->id, $feature, $variant);
+                if ($measurement instanceof ExperimentMeasurement) {
+                    $this->touchExposureMeasurement($measurement, $log, $now);
+                }
+            }
         }
+    }
+
+    protected function touchExposureMeasurement(ExperimentMeasurement $measurement, Log $log, Carbon $now): void
+    {
+        $measurement->last_log_id = $log->id;
+        $measurement->last_exposed_at = $now;
+        $measurement->exposure_count++;
+        $measurement->save();
     }
 
     public function recordConversion(Session $session, ?string $event = null, ?string $entityType = null, ?string $entityId = null, ?Log $log = null): void
