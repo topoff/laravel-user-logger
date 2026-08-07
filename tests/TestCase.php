@@ -130,7 +130,8 @@ class TestCase extends Orchestra
             $table->uuid('session_id')->index();
             $table->string('feature', 100)->index();
             $table->string('variant', 120)->nullable()->index();
-            $table->string('variant_key', 121)->default('');
+            // Database-generated, mirrors the variant_key migration (sqlite syntax).
+            $table->string('variant_key', 121)->virtualAs("case when variant is null then '' else 'v' || variant end");
             $table->unsignedBigInteger('first_log_id')->nullable()->index();
             $table->unsignedBigInteger('last_log_id')->nullable()->index();
             $table->unsignedInteger('exposure_count')->default(0);

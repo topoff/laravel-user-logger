@@ -6,14 +6,13 @@ namespace Topoff\LaravelUserLogger\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Override;
 
 /**
  * @property int $id
  * @property string $session_id
  * @property string $feature
  * @property string|null $variant
- * @property string $variant_key
+ * @property string $variant_key Database-generated (virtual): '' for NULL variant, 'v'.variant otherwise — never write it
  * @property int|null $first_log_id
  * @property int|null $last_log_id
  * @property int $exposure_count
@@ -36,29 +35,6 @@ class ExperimentMeasurement extends Model
     protected $table = 'experiment_measurements';
 
     protected $guarded = [];
-
-    /**
-     * Injective encoding of variant for the unique index: '' stands for NULL,
-     * real values get a 'v' prefix — so a genuine '' variant (key 'v') can
-     * never collide with NULL (key ''). Needed because NULLs never conflict
-     * in a unique index, which let the parallel-insert race duplicate
-     * NULL-variant rows. The migration's SQL backfill mirrors this encoding.
-     */
-    public static function variantKeyFor(?string $variant): string
-    {
-        return $variant === null ? '' : 'v'.$variant;
-    }
-
-    /**
-     * variant_key is derived on every save so no writer can forget it.
-     */
-    #[Override]
-    protected static function booted(): void
-    {
-        static::saving(function (self $measurement): void {
-            $measurement->variant_key = self::variantKeyFor($measurement->variant);
-        });
-    }
 
     protected $casts = [
         'exposure_count' => 'integer',

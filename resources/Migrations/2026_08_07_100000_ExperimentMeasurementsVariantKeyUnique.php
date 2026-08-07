@@ -13,8 +13,15 @@ use Topoff\LaravelUserLogger\Support\Migration;
  * fired there. variant_key is the non-nullable, injective stand-in ('' for
  * NULL, 'v'.value for real variants — a genuine '' variant maps to 'v' and can
  * never collide with NULL); existing duplicates are merged per variant_key
- * before the index is created. The encoding must match
- * ExperimentMeasurement::variantKeyFor().
+ * before the index is created.
+ *
+ * variant_key is a DATABASE-GENERATED (virtual) column on purpose: rows
+ * written by still-running pre-v10.9 workers during a rolling deploy carry no
+ * application-side knowledge of the encoding — a plain column with a ''
+ * default would collapse their distinct variants into one merge group. The
+ * database deriving the value makes every writer correct by construction.
+ * (VIRTUAL, not STORED: SQLite cannot ALTER TABLE ADD a stored generated
+ * column, and both MySQL and SQLite support unique indexes on virtual ones.)
  *
  * Deploy note: preferably run this while experiment writes are quiesced
  * (maintenance mode / paused workers). An un-quiesced run cannot corrupt data:
@@ -39,22 +46,22 @@ class ExperimentMeasurementsVariantKeyUnique extends Migration
         }
 
         if (! $schema->hasColumn('experiment_measurements', 'variant_key')) {
-            $schema->table('experiment_measurements', function (Blueprint $table): void {
+            $expression = $this->variantKeyExpression();
+            $schema->table('experiment_measurements', function (Blueprint $table) use ($expression): void {
                 // variant is 120 chars; the 'v' prefix needs one more.
-                $table->string('variant_key', 121)->default('')->after('variant');
+                $table->string('variant_key', 121)->virtualAs($expression)->after('variant');
             });
         }
 
-        $this->backfillVariantKeys();
-
-        if (! $schema->hasIndex('experiment_measurements', self::UNIQUE_INDEX)) {
+        if (! $schema->hasIndex('experiment_measurements', self::UNIQUE_INDEX, 'unique')) {
             $attempts = 0;
             while (true) {
                 // Re-run the dedupe immediately before every index attempt:
                 // under live traffic a fresh NULL-duplicate can appear between
                 // the merge and CREATE UNIQUE INDEX. The creation failure is
-                // deliberately NOT swallowed — a silently missing index would
-                // leave the table unprotected with the old index already gone.
+                // deliberately NOT swallowed — the old unique index is only
+                // dropped further below once this one is verified, so a failed
+                // run leaves the table with its old protection intact.
                 $this->mergeDuplicates();
 
                 try {
@@ -71,7 +78,7 @@ class ExperimentMeasurementsVariantKeyUnique extends Migration
             }
         }
 
-        if (! $schema->hasIndex('experiment_measurements', self::UNIQUE_INDEX)) {
+        if (! $schema->hasIndex('experiment_measurements', self::UNIQUE_INDEX, 'unique')) {
             throw new RuntimeException('Unique index '.self::UNIQUE_INDEX.' was not created on experiment_measurements.');
         }
 
@@ -97,13 +104,13 @@ class ExperimentMeasurementsVariantKeyUnique extends Migration
         // Mirror of up(): restore the old protection — failing loudly if that
         // does not work — before the new index and the column are removed, so
         // a broken rollback never leaves the table without any unique index.
-        if (! $schema->hasIndex('experiment_measurements', self::LEGACY_UNIQUE_INDEX)) {
+        if (! $schema->hasIndex('experiment_measurements', self::LEGACY_UNIQUE_INDEX, 'unique')) {
             $schema->table('experiment_measurements', function (Blueprint $table): void {
                 $table->unique(['session_id', 'feature', 'variant'], self::LEGACY_UNIQUE_INDEX);
             });
         }
 
-        if (! $schema->hasIndex('experiment_measurements', self::LEGACY_UNIQUE_INDEX)) {
+        if (! $schema->hasIndex('experiment_measurements', self::LEGACY_UNIQUE_INDEX, 'unique')) {
             throw new RuntimeException('Unique index '.self::LEGACY_UNIQUE_INDEX.' was not restored on experiment_measurements.');
         }
 
@@ -123,23 +130,15 @@ class ExperimentMeasurementsVariantKeyUnique extends Migration
     }
 
     /**
-     * SQL mirror of ExperimentMeasurement::variantKeyFor(): '' for NULL,
-     * 'v'.value for real variants. Two driver-specific bulk updates instead of
-     * one CASE expression because string concatenation differs (MySQL CONCAT
-     * vs. SQLite ||).
+     * The injective encoding as a generated-column expression: '' for NULL,
+     * 'v'.value for real variants. Driver-specific because string
+     * concatenation differs (MySQL CONCAT vs. SQLite ||).
      */
-    protected function backfillVariantKeys(): void
+    protected function variantKeyExpression(): string
     {
-        $connection = DB::connection($this->connection);
-
-        $connection->table('experiment_measurements')
-            ->whereNull('variant')
-            ->update(['variant_key' => '']);
-
-        $prefixedVariant = $connection->getDriverName() === 'sqlite' ? "'v' || variant" : "CONCAT('v', variant)";
-        $connection->table('experiment_measurements')
-            ->whereNotNull('variant')
-            ->update(['variant_key' => DB::raw($prefixedVariant)]);
+        return DB::connection($this->connection)->getDriverName() === 'sqlite'
+            ? "case when variant is null then '' else 'v' || variant end"
+            : "case when variant is null then '' else concat('v', variant) end";
     }
 
     /**
