@@ -271,6 +271,31 @@ class ExperimentMeasurementServiceTest extends TestCase
         $this->assertSame($log->id, $rows->first()->last_log_id);
     }
 
+    public function test_null_and_empty_string_variants_stay_distinct_measurements(): void
+    {
+        config()->set('user-logger.experiments.enabled', true);
+
+        $session = Session::query()->create(['id' => '00000000-0000-0000-0000-00000000000b']);
+        $log = Log::query()->create(['session_id' => $session->id]);
+
+        // normalizeVariant() accepts '' as a real scalar variant — the
+        // injective variant_key encoding ('' = NULL, 'v' = '') must keep the
+        // two apart instead of colliding them on the unique index.
+        $this->service->setVariant($session, 'which-landingpage', null, $log);
+        $this->service->setVariant($session, 'which-landingpage', '', $log);
+
+        $rows = ExperimentMeasurement::query()
+            ->where('session_id', $session->id)
+            ->orderBy('id')
+            ->get();
+
+        $this->assertCount(2, $rows);
+        $this->assertNull($rows[0]->variant);
+        $this->assertSame('', $rows[0]->variant_key);
+        $this->assertSame('', $rows[1]->variant);
+        $this->assertSame('v', $rows[1]->variant_key);
+    }
+
     public function test_record_exposure_survives_losing_the_insert_race_and_counts_on_the_existing_row(): void
     {
         config()->set('user-logger.experiments.enabled', true);

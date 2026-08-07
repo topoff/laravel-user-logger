@@ -10,67 +10,94 @@ use Topoff\LaravelUserLogger\Support\Migration;
  * variant = NULL — MySQL and SQLite both allow any number of NULLs in a unique
  * index, so the parallel-insert race kept producing duplicate measurement rows
  * for NULL variants and the service's UniqueConstraintViolation recovery never
- * fired there. variant_key is the non-nullable stand-in ('' for NULL) that
- * closes the gap; existing duplicates are merged before the index is created.
+ * fired there. variant_key is the non-nullable, injective stand-in ('' for
+ * NULL, 'v'.value for real variants — a genuine '' variant maps to 'v' and can
+ * never collide with NULL); existing duplicates are merged per variant_key
+ * before the index is created. The encoding must match
+ * ExperimentMeasurement::variantKeyFor().
  */
 class ExperimentMeasurementsVariantKeyUnique extends Migration
 {
+    private const string UNIQUE_INDEX = 'experiment_measurements_session_feature_variant_key_unique';
+
     public function up(): void
     {
-        if (! Schema::connection($this->connection)->hasTable('experiment_measurements')) {
+        $schema = Schema::connection($this->connection);
+
+        if (! $schema->hasTable('experiment_measurements')) {
             return;
         }
 
-        if (! Schema::connection($this->connection)->hasColumn('experiment_measurements', 'variant_key')) {
-            Schema::connection($this->connection)->table('experiment_measurements', function (Blueprint $table): void {
-                $table->string('variant_key', 120)->default('')->after('variant');
+        if (! $schema->hasColumn('experiment_measurements', 'variant_key')) {
+            $schema->table('experiment_measurements', function (Blueprint $table): void {
+                // variant is 120 chars; the 'v' prefix needs one more.
+                $table->string('variant_key', 121)->default('')->after('variant');
             });
         }
 
-        DB::connection($this->connection)->table('experiment_measurements')
-            ->update(['variant_key' => DB::raw("COALESCE(variant, '')")]);
-
-        $this->mergeDuplicates();
+        $this->backfillVariantKeys();
 
         try {
-            Schema::connection($this->connection)->table('experiment_measurements', function (Blueprint $table): void {
+            $schema->table('experiment_measurements', function (Blueprint $table): void {
                 $table->dropUnique('experiment_measurements_session_id_feature_variant_unique');
             });
         } catch (Throwable) {
             // ignore — index may not exist on this installation
         }
 
-        try {
-            Schema::connection($this->connection)->table('experiment_measurements', function (Blueprint $table): void {
-                $table->unique(['session_id', 'feature', 'variant_key'], 'experiment_measurements_session_feature_variant_key_unique');
-            });
-        } catch (Throwable) {
-            // ignore — already created
+        if (! $schema->hasIndex('experiment_measurements', self::UNIQUE_INDEX)) {
+            $attempts = 0;
+            while (true) {
+                // Re-run the dedupe immediately before every index attempt:
+                // under live traffic a fresh NULL-duplicate can appear between
+                // the merge and CREATE UNIQUE INDEX. The creation failure is
+                // deliberately NOT swallowed — a silently missing index would
+                // leave the table unprotected with the old index already gone.
+                $this->mergeDuplicates();
+
+                try {
+                    $schema->table('experiment_measurements', function (Blueprint $table): void {
+                        $table->unique(['session_id', 'feature', 'variant_key'], self::UNIQUE_INDEX);
+                    });
+
+                    break;
+                } catch (Throwable $exception) {
+                    if (++$attempts >= 3) {
+                        throw $exception;
+                    }
+                }
+            }
+        }
+
+        if (! $schema->hasIndex('experiment_measurements', self::UNIQUE_INDEX)) {
+            throw new RuntimeException('Unique index '.self::UNIQUE_INDEX.' was not created on experiment_measurements.');
         }
     }
 
     public function down(): void
     {
-        if (! Schema::connection($this->connection)->hasTable('experiment_measurements')) {
+        $schema = Schema::connection($this->connection);
+
+        if (! $schema->hasTable('experiment_measurements')) {
             return;
         }
 
         try {
-            Schema::connection($this->connection)->table('experiment_measurements', function (Blueprint $table): void {
-                $table->dropUnique('experiment_measurements_session_feature_variant_key_unique');
+            $schema->table('experiment_measurements', function (Blueprint $table): void {
+                $table->dropUnique(self::UNIQUE_INDEX);
             });
         } catch (Throwable) {
             // ignore
         }
 
-        if (Schema::connection($this->connection)->hasColumn('experiment_measurements', 'variant_key')) {
-            Schema::connection($this->connection)->table('experiment_measurements', function (Blueprint $table): void {
+        if ($schema->hasColumn('experiment_measurements', 'variant_key')) {
+            $schema->table('experiment_measurements', function (Blueprint $table): void {
                 $table->dropColumn('variant_key');
             });
         }
 
         try {
-            Schema::connection($this->connection)->table('experiment_measurements', function (Blueprint $table): void {
+            $schema->table('experiment_measurements', function (Blueprint $table): void {
                 $table->unique(['session_id', 'feature', 'variant'], 'experiment_measurements_session_id_feature_variant_unique');
             });
         } catch (Throwable) {
@@ -79,11 +106,31 @@ class ExperimentMeasurementsVariantKeyUnique extends Migration
     }
 
     /**
+     * SQL mirror of ExperimentMeasurement::variantKeyFor(): '' for NULL,
+     * 'v'.value for real variants. Two driver-specific bulk updates instead of
+     * one CASE expression because string concatenation differs (MySQL CONCAT
+     * vs. SQLite ||).
+     */
+    protected function backfillVariantKeys(): void
+    {
+        $connection = DB::connection($this->connection);
+
+        $connection->table('experiment_measurements')
+            ->whereNull('variant')
+            ->update(['variant_key' => '']);
+
+        $prefixedVariant = $connection->getDriverName() === 'sqlite' ? "'v' || variant" : "CONCAT('v', variant)";
+        $connection->table('experiment_measurements')
+            ->whereNotNull('variant')
+            ->update(['variant_key' => DB::raw($prefixedVariant)]);
+    }
+
+    /**
      * Merge duplicate (session_id, feature, variant_key) groups into their
      * oldest row: counts are summed, first_* timestamps take the minimum,
      * last_* the maximum, and the last_conversion_* details follow the row
      * with the most recent last_converted_at. Only NULL-variant rows can be
-     * affected, so the volume is small.
+     * affected (real variants were unique before), so the volume is small.
      */
     protected function mergeDuplicates(): void
     {

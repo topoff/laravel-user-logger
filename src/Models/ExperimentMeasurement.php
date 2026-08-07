@@ -38,16 +38,25 @@ class ExperimentMeasurement extends Model
     protected $guarded = [];
 
     /**
-     * variant_key is the non-nullable stand-in for variant in the unique
-     * index (session_id, feature, variant_key): NULLs never conflict in a
-     * unique index, so rows with variant = NULL could be duplicated by the
-     * parallel-insert race. Derived on every save so no writer can forget it.
+     * Injective encoding of variant for the unique index: '' stands for NULL,
+     * real values get a 'v' prefix — so a genuine '' variant (key 'v') can
+     * never collide with NULL (key ''). Needed because NULLs never conflict
+     * in a unique index, which let the parallel-insert race duplicate
+     * NULL-variant rows. The migration's SQL backfill mirrors this encoding.
+     */
+    public static function variantKeyFor(?string $variant): string
+    {
+        return $variant === null ? '' : 'v'.$variant;
+    }
+
+    /**
+     * variant_key is derived on every save so no writer can forget it.
      */
     #[Override]
     protected static function booted(): void
     {
         static::saving(function (self $measurement): void {
-            $measurement->variant_key = $measurement->variant ?? '';
+            $measurement->variant_key = self::variantKeyFor($measurement->variant);
         });
     }
 

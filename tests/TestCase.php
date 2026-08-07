@@ -130,7 +130,7 @@ class TestCase extends Orchestra
             $table->uuid('session_id')->index();
             $table->string('feature', 100)->index();
             $table->string('variant', 120)->nullable()->index();
-            $table->string('variant_key', 120)->default('');
+            $table->string('variant_key', 121)->default('');
             $table->unsignedBigInteger('first_log_id')->nullable()->index();
             $table->unsignedBigInteger('last_log_id')->nullable()->index();
             $table->unsignedInteger('exposure_count')->default(0);

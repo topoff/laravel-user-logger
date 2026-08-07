@@ -56,8 +56,11 @@ class ExperimentMeasurementsVariantKeyUniqueTest extends TestCase
             'first_converted_at' => '2026-08-02 12:00:00', 'last_converted_at' => '2026-08-02 12:00:00',
             'last_conversion_event' => 'conversion-new',
         ]);
-        // … and an unrelated row that must stay untouched.
+        // … an unrelated real variant that must stay untouched …
         $insert(['variant' => 'b', 'exposure_count' => 7, 'conversion_count' => 0]);
+        // … and a genuine ''-variant, which must NOT be merged into the NULL
+        // group (injective encoding: NULL → '', '' → 'v').
+        $insert(['variant' => '', 'exposure_count' => 9, 'conversion_count' => 0]);
 
         (new \ExperimentMeasurementsVariantKeyUnique)->up();
 
@@ -66,9 +69,9 @@ class ExperimentMeasurementsVariantKeyUniqueTest extends TestCase
             ->orderBy('id')
             ->get();
 
-        $this->assertCount(2, $rows);
+        $this->assertCount(3, $rows);
 
-        $merged = $rows->firstWhere('variant', null);
+        $merged = $rows->first(fn (ExperimentMeasurement $row): bool => $row->variant === null);
         $this->assertSame('', $merged->variant_key);
         $this->assertSame(5, $merged->exposure_count);
         $this->assertSame(3, $merged->conversion_count);
@@ -80,8 +83,12 @@ class ExperimentMeasurementsVariantKeyUniqueTest extends TestCase
         $this->assertSame('conversion-new', $merged->last_conversion_event);
 
         $untouched = $rows->firstWhere('variant', 'b');
-        $this->assertSame('b', $untouched->variant_key);
+        $this->assertSame('vb', $untouched->variant_key);
         $this->assertSame(7, $untouched->exposure_count);
+
+        $emptyStringVariant = $rows->first(fn (ExperimentMeasurement $row): bool => $row->variant === '');
+        $this->assertSame('v', $emptyStringVariant->variant_key);
+        $this->assertSame(9, $emptyStringVariant->exposure_count);
 
         // The new index must now reject exactly the duplicate the old one allowed.
         $this->expectException(UniqueConstraintViolationException::class);
