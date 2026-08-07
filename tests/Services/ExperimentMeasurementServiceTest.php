@@ -232,6 +232,45 @@ class ExperimentMeasurementServiceTest extends TestCase
         $this->assertSame(2, $service->lookups);
     }
 
+    public function test_set_variant_survives_the_insert_race_for_null_variants(): void
+    {
+        config()->set('user-logger.experiments.enabled', true);
+
+        $session = Session::query()->create(['id' => '00000000-0000-0000-0000-000000000009']);
+        $log = Log::query()->create(['session_id' => $session->id]);
+
+        // NULLs never conflict in a unique index — only the non-nullable
+        // variant_key ('' for NULL) makes the parallel insert collide at all.
+        $service = new class extends ExperimentMeasurementService
+        {
+            public int $lookups = 0;
+
+            protected function findMeasurement(string $sessionId, string $feature, ?string $variant): ?ExperimentMeasurement
+            {
+                $this->lookups++;
+
+                return $this->lookups === 1 ? null : parent::findMeasurement($sessionId, $feature, $variant);
+            }
+        };
+
+        ExperimentMeasurement::query()->create([
+            'session_id' => $session->id,
+            'feature' => 'which-landingpage',
+            'variant' => null,
+            'exposure_count' => 1,
+            'conversion_count' => 0,
+            'first_exposed_at' => now(),
+            'last_exposed_at' => now(),
+        ]);
+
+        $service->setVariant($session, 'which-landingpage', null, $log);
+
+        $rows = ExperimentMeasurement::query()->where('session_id', $session->id)->get();
+        $this->assertCount(1, $rows);
+        $this->assertSame('', $rows->first()->variant_key);
+        $this->assertSame($log->id, $rows->first()->last_log_id);
+    }
+
     public function test_record_exposure_survives_losing_the_insert_race_and_counts_on_the_existing_row(): void
     {
         config()->set('user-logger.experiments.enabled', true);

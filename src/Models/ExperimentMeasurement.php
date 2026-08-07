@@ -6,12 +6,14 @@ namespace Topoff\LaravelUserLogger\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Override;
 
 /**
  * @property int $id
  * @property string $session_id
  * @property string $feature
  * @property string|null $variant
+ * @property string $variant_key
  * @property int|null $first_log_id
  * @property int|null $last_log_id
  * @property int $exposure_count
@@ -34,6 +36,20 @@ class ExperimentMeasurement extends Model
     protected $table = 'experiment_measurements';
 
     protected $guarded = [];
+
+    /**
+     * variant_key is the non-nullable stand-in for variant in the unique
+     * index (session_id, feature, variant_key): NULLs never conflict in a
+     * unique index, so rows with variant = NULL could be duplicated by the
+     * parallel-insert race. Derived on every save so no writer can forget it.
+     */
+    #[Override]
+    protected static function booted(): void
+    {
+        static::saving(function (self $measurement): void {
+            $measurement->variant_key = $measurement->variant ?? '';
+        });
+    }
 
     protected $casts = [
         'exposure_count' => 'integer',

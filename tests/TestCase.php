@@ -130,6 +130,7 @@ class TestCase extends Orchestra
             $table->uuid('session_id')->index();
             $table->string('feature', 100)->index();
             $table->string('variant', 120)->nullable()->index();
+            $table->string('variant_key', 120)->default('');
             $table->unsignedBigInteger('first_log_id')->nullable()->index();
             $table->unsignedBigInteger('last_log_id')->nullable()->index();
             $table->unsignedInteger('exposure_count')->default(0);
@@ -143,7 +144,7 @@ class TestCase extends Orchestra
             $table->string('last_conversion_entity_id', 100)->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
-            $table->unique(['session_id', 'feature', 'variant']);
+            $table->unique(['session_id', 'feature', 'variant_key'], 'experiment_measurements_session_feature_variant_key_unique');
         });
 
         Schema::connection('user-logger')->create('performance_logs', function (Blueprint $table): void {
