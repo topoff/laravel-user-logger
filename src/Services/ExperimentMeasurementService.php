@@ -125,12 +125,32 @@ class ExperimentMeasurementService
         }
     }
 
+    /**
+     * Count an exposure as an atomic relative increment instead of saving the
+     * loaded model's absolute value: the instance can be stale by the time the
+     * write executes (a parallel request incremented meanwhile, or the
+     * variant_key migration merged counters into this row) and a plain save()
+     * would overwrite those counters with outdated numbers. When the loaded
+     * row was deleted by such a merge (0 rows updated), the increment is
+     * re-applied once to the canonical row.
+     */
     protected function touchExposureMeasurement(ExperimentMeasurement $measurement, Log $log, Carbon $now): void
     {
-        $measurement->last_log_id = $log->id;
-        $measurement->last_exposed_at = $now;
-        $measurement->exposure_count++;
-        $measurement->save();
+        $updates = [
+            'last_log_id' => $log->id,
+            'last_exposed_at' => $now,
+            'exposure_count' => DB::raw('exposure_count + 1'),
+            'updated_at' => $now,
+        ];
+
+        $updated = ExperimentMeasurement::query()->whereKey($measurement->id)->update($updates);
+
+        if ($updated === 0) {
+            $canonical = $this->findMeasurement($measurement->session_id, $measurement->feature, $measurement->variant);
+            if ($canonical instanceof ExperimentMeasurement) {
+                ExperimentMeasurement::query()->whereKey($canonical->id)->update($updates);
+            }
+        }
     }
 
     public function recordConversion(Session $session, ?string $event = null, ?string $entityType = null, ?string $entityId = null, ?Log $log = null): void

@@ -142,4 +142,42 @@ class ExperimentMeasurementsVariantKeyUniqueTest extends TestCase
             Schema::connection('user-logger')->hasIndex('experiment_measurements', 'experiment_measurements_session_feature_variant_key_unique'),
         );
     }
+
+    public function test_failed_rollback_keeps_the_new_unique_index_and_column_in_place(): void
+    {
+        (new \ExperimentMeasurementsVariantKeyUnique)->up();
+
+        // Two rows that are distinct under the NEW index but identical under
+        // the OLD one (same variant, hand-written diverging variant_keys) —
+        // restoring the legacy unique in down() must fail, and the rollback
+        // must then keep the new protection instead of dropping it anyway.
+        $insert = fn (string $variantKey) => DB::connection('user-logger')->table('experiment_measurements')->insert([
+            'session_id' => '00000000-0000-0000-0000-00000000000d',
+            'feature' => 'which-landingpage',
+            'variant' => 'x',
+            'variant_key' => $variantKey,
+            'exposure_count' => 1,
+            'conversion_count' => 0,
+        ]);
+        $insert('a');
+        $insert('b');
+
+        $thrown = null;
+
+        try {
+            (new \ExperimentMeasurementsVariantKeyUnique)->down();
+        } catch (Throwable $throwable) {
+            $thrown = $throwable;
+        }
+
+        $this->assertNotNull($thrown, 'The rollback must fail loudly when the legacy unique index cannot be restored.');
+        $this->assertTrue(
+            Schema::connection('user-logger')->hasIndex('experiment_measurements', 'experiment_measurements_session_feature_variant_key_unique'),
+            'The new unique index must survive a failed rollback.'
+        );
+        $this->assertTrue(Schema::connection('user-logger')->hasColumn('experiment_measurements', 'variant_key'));
+        $this->assertFalse(
+            Schema::connection('user-logger')->hasIndex('experiment_measurements', 'experiment_measurements_session_id_feature_variant_unique'),
+        );
+    }
 }

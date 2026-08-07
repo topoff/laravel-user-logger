@@ -17,15 +17,18 @@ use Topoff\LaravelUserLogger\Support\Migration;
  * ExperimentMeasurement::variantKeyFor().
  *
  * Deploy note: preferably run this while experiment writes are quiesced
- * (maintenance mode / paused workers). An un-quiesced run cannot corrupt data
- * — the old unique index stays in place until the new one is verified, and
- * each merge group is processed in a lockForUpdate transaction — but a
- * concurrent exposure increment on a row the merge deletes can be lost
- * (bounded to the few NULL-duplicate rows this migration touches).
+ * (maintenance mode / paused workers). An un-quiesced run cannot corrupt data:
+ * the old unique index stays in place until the new one is verified, each
+ * merge group is processed in a lockForUpdate transaction, and the service
+ * counts exposures as atomic relative increments that re-target the canonical
+ * row when the loaded one was merged away. At worst a single increment is
+ * lost if the canonical row vanishes again in that same instant.
  */
 class ExperimentMeasurementsVariantKeyUnique extends Migration
 {
     private const string UNIQUE_INDEX = 'experiment_measurements_session_feature_variant_key_unique';
+
+    private const string LEGACY_UNIQUE_INDEX = 'experiment_measurements_session_id_feature_variant_unique';
 
     public function up(): void
     {
@@ -76,7 +79,7 @@ class ExperimentMeasurementsVariantKeyUnique extends Migration
         // go — if anything above threw, the table keeps its old protection.
         try {
             $schema->table('experiment_measurements', function (Blueprint $table): void {
-                $table->dropUnique('experiment_measurements_session_id_feature_variant_unique');
+                $table->dropUnique(self::LEGACY_UNIQUE_INDEX);
             });
         } catch (Throwable) {
             // ignore — index may not exist on this installation
@@ -91,13 +94,17 @@ class ExperimentMeasurementsVariantKeyUnique extends Migration
             return;
         }
 
-        // Mirror of up(): restore the old protection before removing the new.
-        try {
+        // Mirror of up(): restore the old protection — failing loudly if that
+        // does not work — before the new index and the column are removed, so
+        // a broken rollback never leaves the table without any unique index.
+        if (! $schema->hasIndex('experiment_measurements', self::LEGACY_UNIQUE_INDEX)) {
             $schema->table('experiment_measurements', function (Blueprint $table): void {
-                $table->unique(['session_id', 'feature', 'variant'], 'experiment_measurements_session_id_feature_variant_unique');
+                $table->unique(['session_id', 'feature', 'variant'], self::LEGACY_UNIQUE_INDEX);
             });
-        } catch (Throwable) {
-            // ignore — already present
+        }
+
+        if (! $schema->hasIndex('experiment_measurements', self::LEGACY_UNIQUE_INDEX)) {
+            throw new RuntimeException('Unique index '.self::LEGACY_UNIQUE_INDEX.' was not restored on experiment_measurements.');
         }
 
         try {

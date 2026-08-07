@@ -271,6 +271,93 @@ class ExperimentMeasurementServiceTest extends TestCase
         $this->assertSame($log->id, $rows->first()->last_log_id);
     }
 
+    public function test_record_exposure_increments_atomically_instead_of_writing_the_stale_absolute_count(): void
+    {
+        config()->set('user-logger.experiments.enabled', true);
+        config()->set('user-logger.experiments.features', ['headline']);
+
+        $session = Session::query()->create(['id' => '00000000-0000-0000-0000-00000000000c']);
+        $log = Log::query()->create(['session_id' => $session->id]);
+
+        ExperimentMeasurement::query()->create([
+            'session_id' => $session->id,
+            'feature' => 'headline',
+            'variant' => 'b',
+            'exposure_count' => 5,
+            'conversion_count' => 0,
+            'first_exposed_at' => now(),
+            'last_exposed_at' => now(),
+        ]);
+
+        // getVariant() runs between the prefetch (which loaded count 5) and
+        // the write — the override simulates the variant_key migration merging
+        // counters into this row meanwhile. A stale absolute save() would
+        // write 6 and wipe the merge; the atomic increment must yield 101.
+        $service = new class extends ExperimentMeasurementService
+        {
+            public function getVariant(string $feature, Session $session): ?string
+            {
+                ExperimentMeasurement::query()
+                    ->where('session_id', $session->id)
+                    ->update(['exposure_count' => 100]);
+
+                return 'b';
+            }
+        };
+
+        $service->recordExposure($session, $log);
+
+        $this->assertSame(101, ExperimentMeasurement::query()->where('session_id', $session->id)->firstOrFail()->exposure_count);
+    }
+
+    public function test_record_exposure_reapplies_the_increment_to_the_canonical_row_when_the_loaded_one_was_merged_away(): void
+    {
+        config()->set('user-logger.experiments.enabled', true);
+        config()->set('user-logger.experiments.features', ['headline']);
+
+        $session = Session::query()->create(['id' => '00000000-0000-0000-0000-00000000000d']);
+        $log = Log::query()->create(['session_id' => $session->id]);
+
+        ExperimentMeasurement::query()->create([
+            'session_id' => $session->id,
+            'feature' => 'headline',
+            'variant' => 'b',
+            'exposure_count' => 3,
+            'conversion_count' => 0,
+            'first_exposed_at' => now(),
+            'last_exposed_at' => now(),
+        ]);
+
+        // Simulates a merge deleting the prefetched row and leaving a
+        // canonical replacement: the update on the stale id hits 0 rows and
+        // the increment must land on the canonical row instead.
+        $service = new class extends ExperimentMeasurementService
+        {
+            public function getVariant(string $feature, Session $session): ?string
+            {
+                ExperimentMeasurement::query()->where('session_id', $session->id)->delete();
+                ExperimentMeasurement::query()->create([
+                    'session_id' => $session->id,
+                    'feature' => 'headline',
+                    'variant' => 'b',
+                    'exposure_count' => 10,
+                    'conversion_count' => 0,
+                    'first_exposed_at' => now(),
+                    'last_exposed_at' => now(),
+                ]);
+
+                return 'b';
+            }
+        };
+
+        $service->recordExposure($session, $log);
+
+        $rows = ExperimentMeasurement::query()->where('session_id', $session->id)->get();
+        $this->assertCount(1, $rows);
+        $this->assertSame(11, $rows->first()->exposure_count);
+        $this->assertSame($log->id, $rows->first()->last_log_id);
+    }
+
     public function test_null_and_empty_string_variants_stay_distinct_measurements(): void
     {
         config()->set('user-logger.experiments.enabled', true);
