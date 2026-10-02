@@ -1,7 +1,7 @@
 # Team Memory: laravel-user-logger
 
 This file contains deliberate, team-reviewed memory for this project.
-It is versioned in this repository and is intended for Claude Code, Codex, and OpenCode.
+It is versioned in this repository and is intended for Claude Code and Codex.
 
 ## Stable facts
 
@@ -26,7 +26,7 @@ It is versioned in this repository and is intended for Claude Code, Codex, and O
 ## Commands and workflows
 
 - Tests: `composer test` (Pest). Full toolchain before finalizing: `composer clean` (Rector + Pint + PHPStan).
-- Release: commit → `git tag vX.Y.Z` → `git push origin master && git push origin vX.Y.Z`.
+- Release: commit → `git tag vX.Y.Z` → **after the owner's push go** `git push origin master && git push origin vX.Y.Z`.
 - Artisan: `user-logger:flush` (asks for confirmation, `--force` for cron), `user-logger:haship`, `user-logger:prune-ips [--days=N]`, `user-logger:summarize-performance [--date=Y-m-d] [--days=N]` (backfill), `user-logger:prune [--pretend]`.
 
 ## Conventions specific to this project
