@@ -53,6 +53,10 @@
         }
     },
     "scripts": {
+        "gates": [
+            "@test",
+            "@clean"
+        ],
         "clean" : "vendor/bin/rector && vendor/bin/pint && vendor/bin/phpstan analyse",
         "format": "vendor/bin/pint",
         "analyse": "vendor/bin/phpstan analyse",

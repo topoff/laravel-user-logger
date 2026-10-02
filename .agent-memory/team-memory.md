@@ -25,7 +25,7 @@ It is versioned in this repository and is intended for Claude Code and Codex.
 
 ## Commands and workflows
 
-- Tests: `composer test` (Pest). Full toolchain before finalizing: `composer clean` (Rector + Pint + PHPStan).
+- Tests: `composer test` (Pest). Before committing: `composer gates` (`composer test` + `composer clean`) (Rector + Pint + PHPStan).
 - Release: commit → `git tag vX.Y.Z` → **after the owner's push go** `git push origin master && git push origin vX.Y.Z`.
 - Artisan: `user-logger:flush` (asks for confirmation, `--force` for cron), `user-logger:haship`, `user-logger:prune-ips [--days=N]`, `user-logger:summarize-performance [--date=Y-m-d] [--days=N]` (backfill), `user-logger:prune [--pretend]`.
 
