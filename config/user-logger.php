@@ -192,6 +192,13 @@ return [
         'features' => [],
 
         /*
+         * Finished experiments to hide from the Nova «Experiment Results»
+         * dashboard and ExperimentStats. Rows are kept (history); only the
+         * reports skip these feature names. Recording is unaffected.
+         */
+        'hidden_features' => [],
+
+        /*
          * Log events that count as conversions
          */
         'conversion_events' => [

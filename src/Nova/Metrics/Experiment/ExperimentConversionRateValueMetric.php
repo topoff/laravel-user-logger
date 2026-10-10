@@ -15,8 +15,8 @@ class ExperimentConversionRateValueMetric extends Value
 
     public function calculate(NovaRequest $request)
     {
-        $exposures = (int) ExperimentMeasurement::query()->sum('exposure_count');
-        $conversions = (int) ExperimentMeasurement::query()->sum('conversion_count');
+        $exposures = (int) ExperimentMeasurement::visible()->sum('exposure_count');
+        $conversions = (int) ExperimentMeasurement::visible()->sum('conversion_count');
 
         $rate = $exposures > 0 ? round(($conversions / $exposures) * 100, 2) : 0.0;
 

@@ -11,7 +11,7 @@ class ExperimentConversionRateByVariantPartitionMetric extends Partition
 {
     public function calculate(NovaRequest $request)
     {
-        $rows = ExperimentMeasurement::query()
+        $rows = ExperimentMeasurement::visible()
             ->select([
                 DB::raw("COALESCE(variant, '') as variant"),
                 DB::raw('COUNT(*) as sessions'),

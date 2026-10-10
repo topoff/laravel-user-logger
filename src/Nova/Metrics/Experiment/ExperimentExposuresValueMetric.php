@@ -15,7 +15,7 @@ class ExperimentExposuresValueMetric extends Value
 
     public function calculate(NovaRequest $request)
     {
-        return $this->sum($request, ExperimentMeasurement::query(), 'exposure_count');
+        return $this->sum($request, ExperimentMeasurement::visible(), 'exposure_count');
     }
 
     public function ranges(): array

@@ -10,7 +10,7 @@ class ExperimentExposuresByVariantPartitionMetric extends Partition
 {
     public function calculate(NovaRequest $request)
     {
-        return $this->sum($request, ExperimentMeasurement::query(), 'exposure_count', 'variant')
+        return $this->sum($request, ExperimentMeasurement::visible(), 'exposure_count', 'variant')
             ->label(fn ($value): string => match ((string) $value) {
                 'true' => 'B',
                 'false' => 'A',

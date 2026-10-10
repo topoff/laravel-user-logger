@@ -10,7 +10,7 @@ class ExperimentExposuresByFeaturePartitionMetric extends Partition
 {
     public function calculate(NovaRequest $request)
     {
-        return $this->sum($request, ExperimentMeasurement::query(), 'exposure_count', 'feature')
+        return $this->sum($request, ExperimentMeasurement::visible(), 'exposure_count', 'feature')
             ->label(fn ($value): string => (string) $value);
     }
 

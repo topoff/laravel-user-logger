@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Topoff\LaravelUserLogger\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -44,6 +45,24 @@ class ExperimentMeasurement extends Model
         'first_converted_at' => 'datetime',
         'last_converted_at' => 'datetime',
     ];
+
+    /**
+     * Reporting scope: hides finished experiments listed in
+     * config('user-logger.experiments.hidden_features') from the Nova dashboard
+     * and ExperimentStats. Deliberately a local scope, not a global one — the
+     * recorder (ExperimentMeasurementService) must keep seeing every row, or a
+     * late exposure of a hidden feature would violate the session/feature/variant
+     * unique key. Rows stay in the table (history), only the reports skip them.
+     *
+     * @param  Builder<static>  $query
+     * @return Builder<static>
+     */
+    public function scopeVisible(Builder $query): Builder
+    {
+        $hidden = array_values(array_filter(array_map(strval(...), (array) config('user-logger.experiments.hidden_features', []))));
+
+        return $hidden === [] ? $query : $query->whereNotIn($query->qualifyColumn('feature'), $hidden);
+    }
 
     public function getConversionRateAttribute(): float
     {

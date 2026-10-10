@@ -24,7 +24,7 @@ class ExperimentStats
      */
     public function summary(?string $feature = null): array
     {
-        $rows = ExperimentMeasurement::query()->toBase()
+        $rows = ExperimentMeasurement::visible()->toBase()
             ->selectRaw("feature, COALESCE(NULLIF(variant, ''), '(none)') as variant")
             ->selectRaw('COUNT(*) as sessions')
             ->selectRaw('SUM(CASE WHEN conversion_count > 0 THEN 1 ELSE 0 END) as converting_sessions')

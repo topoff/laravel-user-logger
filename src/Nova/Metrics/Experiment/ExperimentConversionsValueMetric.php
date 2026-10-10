@@ -15,7 +15,7 @@ class ExperimentConversionsValueMetric extends Value
 
     public function calculate(NovaRequest $request)
     {
-        return $this->sum($request, ExperimentMeasurement::query(), 'conversion_count');
+        return $this->sum($request, ExperimentMeasurement::visible(), 'conversion_count');
     }
 
     public function ranges(): array

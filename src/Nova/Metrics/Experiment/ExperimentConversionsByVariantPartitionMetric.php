@@ -10,7 +10,7 @@ class ExperimentConversionsByVariantPartitionMetric extends Partition
 {
     public function calculate(NovaRequest $request)
     {
-        return $this->sum($request, ExperimentMeasurement::query(), 'conversion_count', 'variant')
+        return $this->sum($request, ExperimentMeasurement::visible(), 'conversion_count', 'variant')
             ->label(fn ($value): string => match ((string) $value) {
                 'true' => 'B',
                 'false' => 'A',
