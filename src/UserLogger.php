@@ -320,8 +320,6 @@ class UserLogger
         if (! $this->isEnabled()) {
             return null;
         }
-
-        $log = null;
         if ($this->log instanceof Log) {
             $log = $this->logRepository->updateWithEvent($this->log, $event, $entityType, $entityId);
         } else {
@@ -384,7 +382,7 @@ class UserLogger
     public function setComment(string $comment): ?Log
     {
         // If there is no log present, don't do anything. Could be a robot when robot is disabled are something like this.
-        if ($this->isEnabled() && $this->log) {
+        if ($this->isEnabled() && $this->log instanceof Log) {
             return $this->logRepository->updateWithComment($this->log, $comment);
         }
 
