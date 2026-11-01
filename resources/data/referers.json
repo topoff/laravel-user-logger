@@ -4788,6 +4788,11 @@
                 "chat.deepseek.com"
             ]
         },
+        "Doubao": {
+            "domains": [
+                "doubao.com"
+            ]
+        },
         "Duck.ai": {
             "domains": [
                 "duck.ai"
@@ -4813,6 +4818,12 @@
         "Jasper": {
             "domains": [
                 "app.jasper.ai"
+            ]
+        },
+        "Kimi": {
+            "domains": [
+                "kimi.com",
+                "kimi.moonshot.cn"
             ]
         },
         "Le Chat": {
@@ -4848,6 +4859,11 @@
         "You": {
             "domains": [
                 "you.com"
+            ]
+        },
+        "Yuanbao": {
+            "domains": [
+                "yuanbao.tencent.com"
             ]
         }
     }
