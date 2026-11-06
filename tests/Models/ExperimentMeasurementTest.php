@@ -3,6 +3,7 @@
 namespace Topoff\LaravelUserLogger\Tests\Models;
 
 use Topoff\LaravelUserLogger\Models\ExperimentMeasurement;
+use Topoff\LaravelUserLogger\Models\Session;
 use Topoff\LaravelUserLogger\Tests\TestCase;
 
 require_once __DIR__.'/../TestCase.php';
@@ -47,5 +48,22 @@ class ExperimentMeasurementTest extends TestCase
         config()->set('user-logger.experiments.hidden_features', []);
 
         $this->assertSame(1, ExperimentMeasurement::visible()->count());
+    }
+
+    public function test_visible_scope_combines_hidden_features_and_robot_filter_on_the_user_logger_connection(): void
+    {
+        config()->set('user-logger.experiments.hidden_features', ['old-test']);
+
+        Session::query()->create(['id' => '00000000-0000-0000-0000-00000000v0b1', 'is_robot' => true]);
+        Session::query()->create(['id' => '00000000-0000-0000-0000-00000000v0h1', 'is_robot' => false]);
+        ExperimentMeasurement::query()->create(['session_id' => '00000000-0000-0000-0000-00000000v0b1', 'feature' => 'live-test', 'variant' => 'a']);
+        ExperimentMeasurement::query()->create(['session_id' => '00000000-0000-0000-0000-00000000v0h1', 'feature' => 'live-test', 'variant' => 'a']);
+        ExperimentMeasurement::query()->create(['session_id' => '00000000-0000-0000-0000-00000000v0h1', 'feature' => 'old-test', 'variant' => 'a']);
+
+        $visible = ExperimentMeasurement::visible();
+
+        $this->assertSame('user-logger', $visible->getConnection()->getName());
+        $this->assertSame(['00000000-0000-0000-0000-00000000v0h1'], $visible->pluck('session_id')->all());
+        $this->assertSame(3, ExperimentMeasurement::query()->count());
     }
 }

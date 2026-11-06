@@ -6,6 +6,7 @@ namespace Topoff\LaravelUserLogger\Tests\Support;
 
 use Illuminate\Support\Str;
 use Topoff\LaravelUserLogger\Models\ExperimentMeasurement;
+use Topoff\LaravelUserLogger\Models\Session;
 use Topoff\LaravelUserLogger\Support\ExperimentStats;
 use Topoff\LaravelUserLogger\Tests\TestCase;
 
@@ -64,5 +65,63 @@ class ExperimentStatsTest extends TestCase
         $comparison = (new ExperimentStats)->summary('homepage-trustsignals')['homepage-trustsignals']['comparison'];
 
         $this->assertNull($comparison);
+    }
+
+    private function seedSession(string $variant, bool $robot, bool $converted, string $feature = 'homepage-trustsignals', bool $withSessionRow = true): void
+    {
+        $sessionId = (string) Str::uuid();
+        if ($withSessionRow) {
+            Session::query()->create(['id' => $sessionId, 'is_robot' => $robot]);
+        }
+
+        ExperimentMeasurement::create([
+            'session_id' => $sessionId,
+            'feature' => $feature,
+            'variant' => $variant,
+            'exposure_count' => 2,
+            'conversion_count' => $converted ? 1 : 0,
+        ]);
+    }
+
+    public function test_summary_ignores_robot_sessions_in_every_figure(): void
+    {
+        $this->seedSession('control', robot: false, converted: true);
+        $this->seedSession('control', robot: false, converted: false);
+        $this->seedSession('control', robot: true, converted: false);
+        $this->seedSession('control', robot: true, converted: false);
+        $this->seedSession('badges', robot: false, converted: false);
+        $this->seedSession('badges', robot: false, converted: true, withSessionRow: false);
+
+        $variants = collect((new ExperimentStats)->summary('homepage-trustsignals')['homepage-trustsignals']['variants'])->keyBy('variant');
+
+        $this->assertSame(2, $variants['control']['sessions']);
+        $this->assertSame(1, $variants['control']['converting_sessions']);
+        $this->assertSame(4, $variants['control']['exposures']);
+        $this->assertSame(50.0, $variants['control']['cvr_per_session_pct']);
+        $this->assertSame(2, $variants['badges']['sessions'], 'a measurement without session row (pruned) still counts');
+    }
+
+    public function test_robots_are_ignored_even_when_robots_are_logged(): void
+    {
+        config()->set('user-logger.log_robots', true);
+        $this->seedSession('control', robot: false, converted: false);
+        $this->seedSession('control', robot: true, converted: false);
+
+        $variants = collect((new ExperimentStats)->summary('homepage-trustsignals')['homepage-trustsignals']['variants'])->keyBy('variant');
+
+        $this->assertSame(1, $variants['control']['sessions']);
+    }
+
+    public function test_a_variant_of_only_robots_disappears_and_leaves_no_comparison(): void
+    {
+        $this->seedSession('control', robot: false, converted: false);
+        $this->seedSession('badges', robot: true, converted: true);
+        $this->seedSession('bots-only', robot: true, converted: false, feature: 'other-feature');
+
+        $summary = (new ExperimentStats)->summary();
+
+        $this->assertArrayNotHasKey('other-feature', $summary);
+        $this->assertSame(['control'], collect($summary['homepage-trustsignals']['variants'])->pluck('variant')->all());
+        $this->assertNull($summary['homepage-trustsignals']['comparison']);
     }
 }

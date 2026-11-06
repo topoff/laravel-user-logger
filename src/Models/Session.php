@@ -49,6 +49,9 @@ class Session extends Model
     /**
      * Prune via `php artisan model:prune --model="Topoff\LaravelUserLogger\Models\Session"`.
      * Only sessions without remaining logs are pruned (prune logs first).
+     * Prune through `user-logger:prune`, not model:prune directly: it removes the
+     * experiment measurements of robot sessions first, which would otherwise stay
+     * behind as unrecognisable orphans and count in the experiment reports again.
      * A retention of 0 days disables pruning.
      *
      * @return Builder<static>

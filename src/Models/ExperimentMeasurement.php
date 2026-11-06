@@ -7,6 +7,7 @@ namespace Topoff\LaravelUserLogger\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
  * @property int $id
@@ -48,10 +49,14 @@ class ExperimentMeasurement extends Model
 
     /**
      * Reporting scope: hides finished experiments listed in
-     * config('user-logger.experiments.hidden_features') from the Nova dashboard
-     * and ExperimentStats. Deliberately a local scope, not a global one — the
-     * recorder (ExperimentMeasurementService) must keep seeing every row, or a
-     * late exposure of a hidden feature would violate the session/feature/variant
+     * config('user-logger.experiments.hidden_features') and every measurement of
+     * a robot session (sessions.is_robot = 1) from the Nova dashboard and
+     * ExperimentStats. Measurements without a session row (pruned) or with
+     * is_robot NULL still count; robot measurements are deleted by
+     * user-logger:prune before their session goes, so they never come back as
+     * orphans. Deliberately a local scope, not a global one — the recorder
+     * (ExperimentMeasurementService) must keep seeing every row, or a late
+     * exposure of a hidden feature would violate the session/feature/variant
      * unique key. Rows stay in the table (history), only the reports skip them.
      *
      * @param  Builder<static>  $query
@@ -61,7 +66,19 @@ class ExperimentMeasurement extends Model
     {
         $hidden = array_values(array_filter(array_map(strval(...), (array) config('user-logger.experiments.hidden_features', []))));
 
-        return $hidden === [] ? $query : $query->whereNotIn($query->qualifyColumn('feature'), $hidden);
+        if ($hidden !== []) {
+            $query->whereNotIn($query->qualifyColumn('feature'), $hidden);
+        }
+
+        $sessionsTable = (new Session)->getTable();
+        $sessionIdColumn = $query->qualifyColumn('session_id');
+
+        return $query->whereNotExists(function (QueryBuilder $robotSessions) use ($sessionsTable, $sessionIdColumn): void {
+            $robotSessions->selectRaw('1')
+                ->from($sessionsTable)
+                ->whereColumn($sessionsTable.'.id', $sessionIdColumn)
+                ->where($sessionsTable.'.is_robot', true);
+        });
     }
 
     public function getConversionRateAttribute(): float
