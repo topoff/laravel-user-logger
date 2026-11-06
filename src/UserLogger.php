@@ -101,8 +101,7 @@ class UserLogger
             $this->performanceProfiler?->start('user_logger_total');
         }
 
-        self::$crawlerDetect ??= new CrawlerDetect;
-        $isCrawler = self::$crawlerDetect->isCrawler($this->request->userAgent() ?? '');
+        $isCrawler = $this->isCrawlerRequest();
 
         if (config('app.debug')) {
             if (config('user-logger.log_robots') || ! $isCrawler) {
@@ -542,12 +541,25 @@ class UserLogger
             return;
         }
 
+        // boot() does not log crawlers (log_robots=false): creating or reusing a session
+        // here would count every crawler hit as a new experiment session.
+        if (! config('user-logger.log_robots') && $this->isCrawlerRequest()) {
+            return;
+        }
+
         $session = $this->session;
         if (! $session instanceof Session) {
             $session = $this->getOrCreateSession();
         }
 
         $this->experimentMeasurementService->setVariant($session, $feature, $variant, $this->log);
+    }
+
+    protected function isCrawlerRequest(): bool
+    {
+        self::$crawlerDetect ??= new CrawlerDetect;
+
+        return self::$crawlerDetect->isCrawler($this->request->userAgent() ?? '');
     }
 
     /**

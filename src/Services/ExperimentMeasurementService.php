@@ -23,6 +23,10 @@ class ExperimentMeasurementService
 
         $this->activateFeature($session, $feature, $variant);
 
+        if ($this->isExcludedRobot($session)) {
+            return;
+        }
+
         $now = now();
         $normalizedVariant = $this->normalizeVariant($variant);
         $lastLogId = $log?->id;
@@ -71,7 +75,7 @@ class ExperimentMeasurementService
 
     public function recordExposure(Session $session, Log $log): void
     {
-        if (! $this->isMeasurementEnabled()) {
+        if (! $this->isMeasurementEnabled() || $this->isExcludedRobot($session)) {
             return;
         }
 
@@ -155,7 +159,7 @@ class ExperimentMeasurementService
 
     public function recordConversion(Session $session, ?string $event = null, ?string $entityType = null, ?string $entityId = null, ?Log $log = null): void
     {
-        if (! $this->isMeasurementEnabled() || ! $this->isConversionEvent($event, $entityType)) {
+        if (! $this->isMeasurementEnabled() || ! $this->isConversionEvent($event, $entityType) || $this->isExcludedRobot($session)) {
             return;
         }
 
@@ -301,6 +305,15 @@ class ExperimentMeasurementService
     protected function isMeasurementEnabled(): bool
     {
         return config('user-logger.experiments.enabled', false) === true;
+    }
+
+    /**
+     * Robot sessions never enter an experiment unless robots are logged on purpose
+     * (log_robots) — otherwise crawlers dilute every variant's session conversion rate.
+     */
+    protected function isExcludedRobot(Session $session): bool
+    {
+        return ! config('user-logger.log_robots') && $session->is_robot === true;
     }
 
     protected function isConversionEvent(?string $event = null, ?string $entityType = null): bool

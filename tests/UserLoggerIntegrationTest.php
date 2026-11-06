@@ -134,6 +134,88 @@ class UserLoggerIntegrationTest extends TestCase
         $this->assertSame('integration-test-comment', $updated->comment);
     }
 
+    public function test_set_experiment_variant_ignores_crawlers_when_robots_are_not_logged(): void
+    {
+        config()->set('user-logger.log_robots', false);
+        config()->set('user-logger.experiments.enabled', true);
+
+        $this->bindRequestWithSession($this->crawlerRequest());
+
+        $userLogger = $this->app->make(UserLogger::class);
+        $this->forceEnabled();
+        $userLogger->boot();
+        $userLogger->setExperimentVariant('which-landingpage', 'cityTemplate2025');
+
+        $this->assertNull($userLogger->getCurrentSession());
+        $this->assertSame(0, Session::query()->count());
+        $this->assertSame(0, ExperimentMeasurement::query()->count());
+    }
+
+    public function test_set_experiment_variant_ignores_crawlers_after_a_variant_read_created_a_session(): void
+    {
+        config()->set('user-logger.log_robots', false);
+        config()->set('user-logger.experiments.enabled', true);
+
+        $this->bindRequestWithSession($this->crawlerRequest());
+
+        $userLogger = $this->app->make(UserLogger::class);
+        $this->forceEnabled();
+        $userLogger->boot();
+        $userLogger->getExperimentVariant('which-landingpage');
+        $userLogger->setExperimentVariant('which-landingpage', 'cityTemplate2025');
+
+        $this->assertSame(0, ExperimentMeasurement::query()->count());
+    }
+
+    public function test_set_experiment_variant_measures_crawlers_when_robots_are_logged(): void
+    {
+        config()->set('app.debug', true);
+        config()->set('user-logger.debug', false);
+        config()->set('user-logger.log_robots', true);
+        config()->set('user-logger.experiments.enabled', true);
+
+        $this->bindRequestWithSession($this->crawlerRequest());
+
+        $userLogger = $this->app->make(UserLogger::class);
+        $this->forceEnabled();
+        $userLogger->boot();
+        $userLogger->setExperimentVariant('which-landingpage', 'cityTemplate2025');
+
+        $this->assertSame(1, ExperimentMeasurement::query()->where('variant', 'cityTemplate2025')->count());
+    }
+
+    public function test_set_experiment_variant_measures_browsers_when_robots_are_not_logged(): void
+    {
+        config()->set('app.debug', true);
+        config()->set('user-logger.debug', false);
+        config()->set('user-logger.log_robots', false);
+        config()->set('user-logger.experiments.enabled', true);
+
+        $this->bindRequestWithSession(Request::create('/landing', 'GET', [], [], [], [
+            'HTTP_HOST' => 'example.test',
+            'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
+            'HTTP_ACCEPT_LANGUAGE' => 'de-CH,de;q=0.9',
+        ]));
+
+        $userLogger = $this->app->make(UserLogger::class);
+        $this->forceEnabled();
+        $userLogger->boot();
+        $userLogger->setExperimentVariant('which-landingpage', 'cityTemplate2025');
+
+        $session = $userLogger->getCurrentSession();
+        $this->assertInstanceOf(Session::class, $session);
+        $this->assertFalse($session->is_robot);
+        $this->assertSame(1, ExperimentMeasurement::query()->where('session_id', $session->id)->count());
+    }
+
+    private function crawlerRequest(): Request
+    {
+        return Request::create('/landing?campaignid=123&cro=umzug-v1', 'GET', [], [], [], [
+            'HTTP_HOST' => 'example.test',
+            'HTTP_USER_AGENT' => 'AdsBot-Google (+http://www.google.com/adsbot.html)',
+        ]);
+    }
+
     private function bindRequestWithSession(Request $request): void
     {
         $session = new Store('test', new ArraySessionHandler(120));

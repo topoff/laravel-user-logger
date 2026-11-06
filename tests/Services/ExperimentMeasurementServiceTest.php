@@ -425,4 +425,61 @@ class ExperimentMeasurementServiceTest extends TestCase
         $this->assertSame(2, $rows->first()->exposure_count);
         $this->assertSame($log->id, $rows->first()->last_log_id);
     }
+
+    public function test_robot_sessions_get_no_measurements_unless_robots_are_logged(): void
+    {
+        config()->set('user-logger.experiments.enabled', true);
+        config()->set('user-logger.experiments.features', ['headline']);
+        config()->set('user-logger.log_robots', false);
+
+        $robot = Session::query()->create(['id' => '00000000-0000-0000-0000-0000000000r1', 'is_robot' => true]);
+        $log = Log::query()->create(['session_id' => $robot->id]);
+
+        $this->service->setVariant($robot, 'which-landingpage', 'cityTemplate2025', $log);
+        $this->service->recordExposure($robot, $log);
+
+        $this->assertSame(0, ExperimentMeasurement::query()->where('session_id', $robot->id)->count());
+
+        config()->set('user-logger.log_robots', true);
+
+        $this->service->setVariant($robot, 'which-landingpage', 'cityTemplate2025', $log);
+        $this->service->recordExposure($robot, $log);
+
+        $this->assertSame(2, ExperimentMeasurement::query()->where('session_id', $robot->id)->count());
+    }
+
+    public function test_robot_sessions_with_existing_measurements_record_no_conversions(): void
+    {
+        config()->set('user-logger.experiments.enabled', true);
+        config()->set('user-logger.experiments.conversion_events', ['conversion']);
+        config()->set('user-logger.log_robots', false);
+
+        $robot = Session::query()->create(['id' => '00000000-0000-0000-0000-0000000000r2', 'is_robot' => true]);
+        ExperimentMeasurement::query()->create([
+            'session_id' => $robot->id,
+            'feature' => 'which-landingpage',
+            'variant' => 'cityTemplate2025',
+            'exposure_count' => 1,
+            'conversion_count' => 0,
+        ]);
+
+        $this->service->recordConversion($robot, 'conversion');
+
+        $this->assertSame(0, ExperimentMeasurement::query()->where('session_id', $robot->id)->value('conversion_count'));
+    }
+
+    public function test_human_sessions_are_measured_with_robots_not_logged(): void
+    {
+        config()->set('user-logger.experiments.enabled', true);
+        config()->set('user-logger.experiments.features', ['headline']);
+        config()->set('user-logger.log_robots', false);
+
+        $human = Session::query()->create(['id' => '00000000-0000-0000-0000-0000000000h1', 'is_robot' => false]);
+        $log = Log::query()->create(['session_id' => $human->id]);
+
+        $this->service->setVariant($human, 'which-landingpage', 'cityTemplate2025', $log);
+        $this->service->recordExposure($human, $log);
+
+        $this->assertSame(2, ExperimentMeasurement::query()->where('session_id', $human->id)->count());
+    }
 }
